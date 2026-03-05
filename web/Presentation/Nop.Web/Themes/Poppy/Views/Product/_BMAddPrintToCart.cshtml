@@ -1,0 +1,137 @@
+﻿@model ProductDetailsModel
+<div class="gallery picture-add-print">
+  <div class="picture element-scroll">
+    @if (Model.DefaultPictureZoomEnabled)
+    {
+      <a title="@Model.DefaultPictureModel.Title" id="main-product-img-lightbox-anchor-@Model.Id">
+        <img title="@Model.DefaultPictureModel.Title" itemprop="image" id="main-product-img-@Model.Id" alt="" />
+      </a>
+      <script asp-location="Footer">
+                $(document).ready(function () {
+                    $('#main-product-img-lightbox-anchor-@Model.Id').magnificPopup(
+                        {
+                            type: 'image',
+                            removalDelay: 300,
+                            gallery: {
+                                enabled: true,
+                                tPrev: '@T("Media.MagnificPopup.Previous")',
+                                tNext: '@T("Media.MagnificPopup.Next")',
+                                tCounter: '@T("Media.MagnificPopup.Counter")'
+                            },
+                            tClose: '@T("Media.MagnificPopup.Close")',
+                            tLoading: '@T("Media.MagnificPopup.Loading")'
+                        });
+                });
+      </script>
+    }
+    else
+    {
+      <img title="@Model.DefaultPictureModel.Title" itemprop="image" id="main-product-img-@Model.Id" alt="" />
+    }
+  </div>
+  @if (Model.PictureModels.Count > 1)
+  {
+    <div class="element-fixed">
+      <div class="row">
+        <div class="col-md-12 col-xs-12">
+          <select id="add-print-to-cart-select" class="form-control dropdown-toggle hide">
+            <option value="-1">...Choose Print...</option>
+            @foreach (var item in Model.AddToCart.Prints)
+            {
+              <option value="@item.Id" data-image-path="@item.ImagePath" data-thumbnail-path="@item.ThumbnailPath">@item.Name</option>
+            }
+          </select>
+          <input type="hidden" name="add-print-to-cart-select" />
+        </div>
+      </div>
+      <nav aria-label="..." class="text-center">
+        <ul class="pager">
+          @for (var i = 1; i < Model.PictureModels.Count; i++)
+          {
+            <li class="thumb-item-by-pos individual-page">
+              <a href="javascript:void(0);"
+                 data-src="@Model.PictureModels[i].ThumbImageUrl"
+                 data-alt="@Model.PictureModels[i].AlternateText"
+                 data-title="@Model.PictureModels[i].Title"
+                 data-defaultsize="@Model.PictureModels[i].ImageUrl"
+                 data-fullsize="@Model.PictureModels[i].FullSizeImageUrl"
+                 data-product-picture-id="@Model.PictureModels[i].ProductPictureId"
+                 data-number="@i">@i</a>
+              </li>
+            }
+        </ul>
+      </nav>
+    </div>
+    <script asp-location="Footer">
+            var add_print_to_cart_select = []; // List  printId_productpictureId
+            $(document).ready(function () {
+                $('.thumb-item-by-pos a').on('click', function () {
+                    $('#main-product-img-@Model.Id').attr('src', $(this).attr('data-defaultsize'));
+                    $('#main-product-img-@Model.Id').attr('title', $(this).attr('data-title'));
+                    $('#main-product-img-@Model.Id').attr('alt', $(this).attr('data-alt'));
+                    $('#main-product-img-lightbox-anchor-@Model.Id').attr('href', $(this).attr('data-fullsize'));
+                    $('#main-product-img-lightbox-anchor-@Model.Id').attr('title', $(this).attr('data-title'));
+                  $('.thumb-item-by-pos').removeClass('current-page');
+                  $(this).closest('li').addClass('current-page');
+                    //$(this).addClass('current-page');
+                    $('#add-print-to-cart-select').attr('data-product-picture-id', $(this).attr('data-product-picture-id'));
+                    $('#add-print-to-cart-select').removeClass('hide');
+
+                    loadSelectedPrint();
+                });
+
+                $('#add-print-to-cart-select').on('change', function() {
+                    var items = [];
+                    // clear selected print
+                    for (var i = 0; i < add_print_to_cart_select.length; i++) {
+                        if (add_print_to_cart_select[i].indexOf('_' + $(this).attr('data-product-picture-id')) >
+                            -1) {
+                            continue;
+                        }
+                        items.push(add_print_to_cart_select[i]);
+                    }
+                    add_print_to_cart_select = items;
+
+                    if ($(this).val() > 0) {
+                        // printId_productpictureId
+                        var item = $(this).val() + '_' + $(this).attr('data-product-picture-id');
+                        add_print_to_cart_select.push(item);
+                    }
+
+                    $('input[name=add-print-to-cart-select]').val(add_print_to_cart_select);
+
+                    showPrintPreview();
+                });
+
+                $('.picture-add-print img').on('click', function() {
+                    var currentNumber = parseInt($('.thumb-item-by-pos a.active').attr('data-number'), 10);
+                    if (currentNumber < $('.thumb-item-by-pos a').length) {
+                        $($('.thumb-item-by-pos a')[currentNumber]).trigger('click');
+                    }
+                });
+
+                function loadSelectedPrint() {
+                    $('#add-print-to-cart-select').val(-1);
+                    for (var i = 0; i < add_print_to_cart_select.length; i++) {
+                        if (add_print_to_cart_select[i].indexOf('_' + $('#add-print-to-cart-select').attr('data-product-picture-id')) > -1) {
+                            var printId = add_print_to_cart_select[i].split('_')[0];
+                            $('#add-print-to-cart-select').val(printId);
+                            continue;
+                        }
+                    }
+                }
+
+                function showPrintPreview() {
+                    // Show Preview if all selected prints
+                    if (add_print_to_cart_select.length === $('.thumb-item-by-pos a').length) {
+                        console.log('Preview');
+                        bm.printPreview(@Model.AddToCart.ProductId, $('#product-details-form'));
+                    }
+                }
+
+                // Show first picture
+                $('.thumb-item-by-pos a:first').trigger('click');
+            });
+    </script>
+  }
+</div>

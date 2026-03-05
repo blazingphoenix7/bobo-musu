@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>extrusionHeight</key>
+	<real>1.5</real>
+	<key>objects</key>
+	<array>
+		<dict>
+			<key>mask_rectangle</key>
+			<string>{{170,100},{60, 300}}</string>
+			<key>transform</key>
+			<dict>
+				<key>scaleX</key>
+				<real>0.125</real>
+				<key>scaleY</key>
+				<real>0.1</real>
+				<key>scaleZ</key>
+				<real>0.125</real>
+				<key>translateX</key>
+				<integer>0</integer>
+				<key>translateY</key>
+				<integer>-3</integer>
+				<key>translateZ</key>
+				<string>0</string>
+				<key>file</key>
+				<string>ring</string>
+			</dict>
+		</dict>
+	</array>
+	<key>imageSize</key>
+	<integer>400</integer>
+</dict>
+</plist>

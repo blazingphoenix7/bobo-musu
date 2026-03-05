@@ -1,0 +1,12 @@
+ninja: Entering directory `/Users/iphtech34/Downloads/crowdbotics/app/.cxx/cmake/debug/armeabi-v7a'
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /Users/iphtech34/Downloads/crowdbotics/app/.cxx/cmake/debug/armeabi-v7a
+[1/2] Building CXX object CMakeFiles/Server.dir/native-lib.cpp.o
+[2/2] Linking CXX executable Server
+FAILED: Server 
+: && /Users/iphtech34/Library/Android/sdk/ndk/20.0.5594570/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang++ --target=armv7-none-linux-androideabi26 --gcc-toolchain=/Users/iphtech34/Library/Android/sdk/ndk/20.0.5594570/toolchains/llvm/prebuilt/darwin-x86_64 --sysroot=/Users/iphtech34/Library/Android/sdk/ndk/20.0.5594570/toolchains/llvm/prebuilt/darwin-x86_64/sysroot  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -fno-addrsig -march=armv7-a -mthumb -Wa,--noexecstack -Wformat -Werror=format-security  -std=c++11 -O0 -fno-limit-debug-info  -Wl,--exclude-libs,libgcc.a -Wl,--exclude-libs,libatomic.a -static-libstdc++ -Wl,--build-id -Wl,--warn-shared-textrel -Wl,--fatal-warnings -Wl,--exclude-libs,libunwind.a -Wl,--no-undefined -Qunused-arguments -Wl,-z,noexecstack -Wl,--gc-sections CMakeFiles/Server.dir/native-lib.cpp.o  -o Server  -latomic -lm && :
+/Users/iphtech34/Library/Android/sdk/ndk/20.0.5594570/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/arm-linux-androideabi/26/crtbegin_dynamic.o:crtbegin.c:function _start_main: error: undefined reference to 'main'
+clang++: error: linker command failed with exit code 1 (use -v to see invocation)
+ninja: build stopped: subcommand failed.

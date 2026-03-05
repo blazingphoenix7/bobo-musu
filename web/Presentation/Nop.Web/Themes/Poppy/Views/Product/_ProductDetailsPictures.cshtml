@@ -1,0 +1,60 @@
+﻿@model ProductDetailsModel
+@{
+    var onePictureOnly = Model.PictureModels.Count > 1 ? "" : "one-image";
+}
+<div class="gallery">
+    <div class="picture-wrapper @onePictureOnly">
+        <div class="picture">
+            @if (Model.DefaultPictureZoomEnabled)
+            {
+                Html.AddScriptParts(ResourceLocation.Footer, "~/lib/magnific-popup/jquery.magnific-popup.min.js");
+                Html.AddCssFileParts("~/lib/magnific-popup/magnific-popup.css");
+
+                <script type="text/javascript">
+                $(document).ready(function () {
+                    $('#main-product-img-lightbox-anchor-@Model.Id').magnificPopup(
+                    {
+                        type: 'image',
+                        removalDelay: 300,
+                        gallery: {
+                            enabled: true,
+                            tPrev: '@T("Media.MagnificPopup.Previous")',
+                            tNext: '@T("Media.MagnificPopup.Next")',
+                            tCounter: '@T("Media.MagnificPopup.Counter")'
+                        },
+                        tClose: '@T("Media.MagnificPopup.Close")',
+                        tLoading: '@T("Media.MagnificPopup.Loading")'
+                    });
+                });
+                </script>
+
+                <a href="@Model.DefaultPictureModel.FullSizeImageUrl" title="@Model.DefaultPictureModel.Title" id="main-product-img-lightbox-anchor-@Model.Id">
+                    <img alt="@Model.DefaultPictureModel.AlternateText" src="@Model.DefaultPictureModel.ImageUrl" title="@Model.DefaultPictureModel.Title" itemprop="image" id="main-product-img-@Model.Id" />
+                </a>
+            }
+            else
+            {
+                <img alt="@Model.DefaultPictureModel.AlternateText" src="@Model.DefaultPictureModel.ImageUrl" title="@Model.DefaultPictureModel.Title" itemprop="image" id="main-product-img-@Model.Id" />
+            }
+        </div>
+        @if (Model.PictureModels.Count > 1)
+        {
+            <div class="picture-thumbs-navigation-arrow picture-thumbs-prev-arrow">
+                <span>@T("SevenSpikes.Themes.Poppy.Product.ImageThumbs.Prev")</span>
+                <img src="@Model.DefaultPictureModel.ImageUrl" data-fullsizeimageurl="@Model.DefaultPictureModel.FullSizeImageUrl" alt="Previous" />
+            </div>
+            <div class="picture-thumbs-navigation-arrow picture-thumbs-next-arrow">
+                <span>@T("SevenSpikes.Themes.Poppy.Product.ImageThumbs.Next")</span>
+                <img src="@Model.DefaultPictureModel.ImageUrl" data-fullsizeimageurl="@Model.DefaultPictureModel.FullSizeImageUrl" alt="Next" />
+            </div>
+            <div class="picture-thumbs">
+                @foreach (var picture in Model.PictureModels)
+                {
+                    <a class="thumb-popup-link" href="@picture.FullSizeImageUrl" title="@picture.Title">
+                        <img src="@picture.ImageUrl" alt="@picture.AlternateText" title="@picture.Title" />
+                    </a>
+                }
+            </div>
+        }
+    </div>
+</div>

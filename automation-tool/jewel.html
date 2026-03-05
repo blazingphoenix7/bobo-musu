@@ -1,0 +1,398 @@
+<html>
+
+
+	<head>
+
+
+		<title>
+			jewel v210615 x joserpagil@gmail.com
+		</title>
+
+
+	</head>
+
+
+	<body>
+
+
+		<style>
+		
+			.tool_table {
+				height : 4vmax ;
+				width  : 100%  ;
+			}
+			
+			td {
+				vertical-align : center ;
+			}
+			
+			
+			.w25 {
+				width :  25% ;
+			}
+
+			.w50 {
+				width :  50% ;
+			}
+
+			.w100 {
+				width : 100% ;
+			}
+
+			body {
+				margin      : 0     ;
+				padding     : 0     ;	
+				font-family : Arial ;
+				font-size   : 2vmax ;
+			}
+			
+			.toolbar {
+				height : 32px ;
+				line-height:16px; 
+				text-align:center;
+				display: table-cell;
+				vertical-align: middle;
+			}
+			
+			.toolbar_img {
+				background-color : transparent ;
+			}
+
+			.toolbar_img:hover {
+				background-color : #36c ;
+			}			
+
+			label {
+				font-family    : Arial  ;
+				font-size      : 2vmax  ;
+				color          : white  ;
+			}
+			
+			button {
+				height : 2.5vmax ;
+			}
+			
+			select {
+				font-size        : 2vmax          ;
+				padding          : 6px            ;
+				display          : inline-block   ;
+				border           : 1px solid #000 ;
+				box-sizing       : border-box     ;
+				background-color : white          ;
+				color            : black          ;
+				width            : 100%           ;
+			}
+		
+			input {
+				font-size        : 2vmax          ;
+				padding          : 6px            ;
+				display          : inline-block   ;
+				border           : 1px solid #000 ;
+				box-sizing       : border-box     ;
+				background-color : white          ;
+				color            : black          ;
+				width            : 100%           ;
+			}
+									
+			.width_100 {
+				width : 100% ;
+			}			
+			
+			.command_button {
+				height           : 6vmax           ;
+				padding          : .3vmax           ;	
+				font-size        : 2vmax           ;	
+				color            : white           ;
+				background-color : transparent     ;
+				border           : 2px solid white ;
+				z-index          : 9               ;
+				border-radius    : 10%             ;
+			}
+			
+			
+			.command_button:hover {
+				color            : black ;
+				background-color : white ;
+				border           : 2px solid black;
+			}			
+			
+	
+			.command_button.disabled {
+				color            : white ;
+				background-color : gray  ;
+			}
+
+			.close_button {
+				position  : absolute ;
+				top       : 0.5vmax  ;
+				right     : 1vmax    ;
+				cursor    : pointer  ;
+				color     : white    ;
+			}
+					
+			.window {
+				resize           : both      ;
+				display          : block            ;
+				overflow         : hidden          ;
+				position         : absolute        ;
+				left             : 12vh            ;
+				top              :  1vh            ;
+				width            : 33vh       ;
+				margin           : auto            ;
+				z-index          : 1               ; 
+				background-color : #888            ;
+				border           : 2px solid black ;
+				padding          : 0 ;
+			}
+
+			.window_title {
+				font-family      : Arial   ;
+				font-size        : 3vh   ;
+				padding          : 0.5vmax ;
+				cursor           : move    ;
+				z-index          : 10      ;
+				background-color : black   ;
+				color            : white   ;
+				resize           : both    ;
+				height           : 4vh   ;
+			}		
+
+			.window_content {
+				padding    : 1vmax ;
+			}
+			
+			.animate {
+				-webkit-animation : animatezoom 0.6s ;
+				animation         : animatezoom 0.6s ;
+			}
+						
+			@-webkit-keyframes animatezoom {
+				from {-webkit-transform: scale(0)} 
+				to {-webkit-transform: scale(1)}
+			}
+
+			@keyframes animatezoom {
+				from {transform: scale(0)} 
+				to {transform: scale(1)}
+			}			
+						
+			.switch {
+			  vertical-align : bottom ;
+			  background-color : transparent ;
+			  position: relative;
+			  display: inline-block;
+			  width: 4vw;
+			  height: 2vw;
+			}
+
+			.switch input {
+			  opacity: 0;
+			  width: 0;
+			  height: 0;
+			}
+
+			.slider {
+			  position: absolute;
+			  cursor: pointer;
+			  top: 0;
+			  left: 0;
+			  right: 0;
+			  bottom: 0;
+			  background-color: #ccc;
+			  -webkit-transition: .4s;
+			  transition: .4s;
+			}
+
+			.slider:before {
+			  position: absolute;
+			  content: "";
+			  height: 2vw;
+			  width: 2vw;
+			  left: 0vw;
+			  top: 0vw;
+			  bottom: 1vw;
+			  background-color: white;
+			  -webkit-transition: .4s;
+			  transition: .4s;
+			}
+
+			input:checked + .slider {
+			  background-color: green;
+			}
+
+			input:focus + .slider {
+			  box-shadow: 0 0 1px #2196F3;
+			}
+
+			input:checked + .slider:before {
+			  -webkit-transform: translateX(2vw);
+			  -ms-transform: translateX(2vw);
+			  transform: translateX(2vw);
+			}
+
+			.slider.round {
+			  border-radius: 5vw;
+			}
+
+			.slider.round:before {
+			  border-radius: 50%;
+			}
+			
+			.info_window {
+				display          : none ;
+				position         : absolute ;
+				color            : black ;
+				background-color : white ;
+				left             : 10vmin  ;
+				width            : 80vmin ; 
+				top              : 10vmin ;
+				height           : 80vmin ;
+				z-index          : 3 ;
+				border           : 2px solid black;
+				padding          : 1vh ;
+				overflow         : scroll ;
+				text-align       : center;
+			}
+			
+		</style>
+
+
+		<div id = 'info_window' class = 'info_window'>
+			<H1>Jewel mapper v210615</H1>
+			<br>
+			<button onclick = 'info_window . style . display = "none"'>Got it !</button>
+			<br>
+				<h3>
+					- Send edited model to server.<br>
+					- Subtitutes normal mapping with bump mapping.<br>					
+					- Implements decal textures with diffuse & normal mapping.<br>
+					- Multiple materials.<br>
+					- Standalone version.<br>
+					- Desktop interface.<br>
+					- Multiple models each with multitexturing.<br>
+					- Save button stores GLB model for consumption with the viewer.<br>
+					- Keyboard commands :<br>
+					    i   = displays this window.<br>
+					    t   = displays the tools window.<br>
+						q   = toggles local / global references.<br>
+						w   = translate tool.<br>
+						e   = rotate tool.<br>
+						r   = scale tool.<br>
+						x   = toggles x axis constraint.<br>
+						y   = toggles y axis constraint.<br>
+						z   = toggles z axis constraint.<br>
+						esc = removes the displayed tool from the interface.<br>
+					- Mouse buttons :<br>
+						left   = places texture map.<br>
+						middle = rotates camera.<br>
+						right  = pans camera.<br>
+					<br>
+				</h3>
+			<button onclick = 'info_window . style . display = "none"'>Got it !</button>
+			<br>
+		</div>
+		
+
+		<div                id = "tools_window"       class = "window animate"       style = "z-index :  2 ;">
+			<div            id = "tools_window_title" class = "window_title" onmousedown ="Drag_element ( this )">jewel v210615
+				<a                                    class = "close_button" onclick="tools_window . style . display = 'none'">&times;</a>
+			</div>
+			<div     class = 'window_content'>
+				<label>model</label>
+
+				<button onclick = 'Save_file ()'>save</button>
+				
+				<table class = 'tool_table'>
+					<tr>
+						<td class = 'w100'>
+							<select id = 'model_select' onchange = 'Model_select_change ()'></select>
+						</td>
+						<td>
+							<img class = 'toolbar_img' onmousedown = 'Open_file    ()'  src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADUAAAAvCAYAAABDq4KNAAAAAXNSR0IArs4c6QAAAJZJREFUaIHtmUEKwDAIBGvJ/79s7yWHYkzJLjN3g4MYTIyrSGZmNfYLERHV2LszkVNASgVLqdF5WLW5uy8dy0ohpQJSKlhKjd0zXJWVvCwrhZQKllIxa8iVB9rfzPK3rBRSKiClAlIqIKUCUipMZ7/yYfz77QMpFSylxinN/YZN4gukVEBKBaRUaF1kn7JBsawUUipYSj1XIChUhw8FCwAAAABJRU5ErkJggg'></img>
+						</td>
+					</tr>
+				</table>
+				
+				<table class = 'tool_table'>
+					<tr>
+						<td>
+							<label>material</label>
+						</td>
+					</tr>
+				</table>
+				<table>
+					<tr>
+						<select id="material_select" onchange = 'Material_select_change ()'>
+							<option>original</option>
+							<option>gold</option>
+							<option>silver</option>
+						</select>		
+					</tr>
+				</table>
+				
+				<label>maps</label>
+				<table class = 'tool_table'>
+					<tr>
+						<td>
+							<select id="mapings_select" onchange = 'Mapings_select_change ()'></select>
+						</td>
+					</tr>
+				</table>
+				<label>position</label>
+				<input id = 'position_text' type = 'text' value = '0,0,0'  onchange = 'Update_from_values ()'>
+				<label>rotation</label>
+				<input id = 'rotation_text' type = 'text' value = '0,0,1'  onchange = 'Update_from_values ()'>
+				<label>scale</label>
+				<input id = 'scale_text'    type = 'text' value = '5,5,.1' onchange = 'Update_from_values ()'>
+								
+				<label>diffuse</label>
+				<label class = 'switch'>
+					<input  id = 'diffuse_switch' onclick = 'Diffuse_switch_change ()' type  = "checkbox" unchecked>
+					<span  class = 'slider round'></span>
+				</label>
+				<table class = 'tool_table'>
+					<tr>
+						<td class = 'w100'>
+							<select id = 'diffuse_select' onchange = 'Diffuse_select_change ()'></select>
+						</td>
+						<td>
+							<img class = 'toolbar_img' onmousedown = 'Open_diffuse_file    ()'  src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADUAAAAvCAYAAABDq4KNAAAAAXNSR0IArs4c6QAAAJZJREFUaIHtmUEKwDAIBGvJ/79s7yWHYkzJLjN3g4MYTIyrSGZmNfYLERHV2LszkVNASgVLqdF5WLW5uy8dy0ohpQJSKlhKjd0zXJWVvCwrhZQKllIxa8iVB9rfzPK3rBRSKiClAlIqIKUCUipMZ7/yYfz77QMpFSylxinN/YZN4gukVEBKBaRUaF1kn7JBsawUUipYSj1XIChUhw8FCwAAAABJRU5ErkJggg'></img>
+						</td>						
+					</tr>
+				</table>				
+				
+				<label>normal</label>
+				<label class = 'switch'>
+					<input  id = 'normal_switch' onclick = 'Normal_switch_change ()' type  = "checkbox" checked>
+					<span  class = 'slider round'></span>
+				</label>
+				<table class = 'tool_table'>
+					<tr>
+						<td class = 'w100'>
+							<select id="normal_select" onchange = 'Normal_select_change ()'></select>
+						</td>
+						<td>
+							<img class = 'toolbar_img' onmousedown = 'Open_normal_file   ()'  src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADUAAAAvCAYAAABDq4KNAAAAAXNSR0IArs4c6QAAAJZJREFUaIHtmUEKwDAIBGvJ/79s7yWHYkzJLjN3g4MYTIyrSGZmNfYLERHV2LszkVNASgVLqdF5WLW5uy8dy0ohpQJSKlhKjd0zXJWVvCwrhZQKllIxa8iVB9rfzPK3rBRSKiClAlIqIKUCUipMZ7/yYfz77QMpFSylxinN/YZN4gukVEBKBaRUaF1kn7JBsawUUipYSj1XIChUhw8FCwAAAABJRU5ErkJggg'></img>
+						</td>						
+					</tr>
+				</table>
+			</div>
+		</div>
+
+
+		<script src = './libs/Three.min.js'></script>
+		<script src = './libs/OrbitControls.js'></script>
+		<script src = './libs/TransformControls.js'></script>
+		<script src = './libs/GLTFLoader.js'></script>
+		<script src = './libs/GLTFExporter.js'></script>
+		<script src = './libs/DecalGeometry.js'></script>
+
+
+		<script src = 'jewel.js'></script>
+		
+		
+	</body>
+
+
+</html>
+		

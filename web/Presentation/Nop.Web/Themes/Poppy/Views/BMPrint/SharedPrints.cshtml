@@ -1,0 +1,73 @@
+﻿@model MyPrintListModel
+@using System.Text.Encodings.Web
+@using Nop.Core
+@using Nop.Web.Models.BM
+@using Nop.Core.Domain.Common
+
+@inject Nop.Core.IWebHelper webHelper
+@inject CommonSettings commonSettings
+
+@{
+  Layout = "_CustomColumns";
+
+  //title
+  Html.AddTitleParts("Shared Prints");
+  Html.AppendPageCssClassParts("print-vault");
+  var breadcrumbDelimiter = commonSettings.BreadcrumbDelimiter;
+
+}
+
+  <div class="page account-page address-list-page shared-print-panel from-panel">
+    <div class="page-title">
+      <h1>Shared Prints</h1>
+    </div>
+
+    @*<div class="breadcrumb">
+      <ul itemscope itemtype="http://schema.org/BreadcrumbList">
+        <li>
+          <a href="@Url.RouteUrl("HomePage")" title="@T("Categories.Breadcrumb.Top")">@T("Categories.Breadcrumb.Top")</a>
+          <span class="delimiter">@breadcrumbDelimiter</span>
+        </li>
+        <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+          <strong class="current-item" itemprop="name">Shared prints</strong>
+        </li>
+      </ul>
+    </div>*@
+    @*<div class="row panel-footer element-fixed">
+      <div class="col-xs-12 col-md-12 col-sm-12 text-center">
+        <a href="@Url.RouteUrl("BMMyPrints")" class="btn btn-primary-custom">My Prints</a>
+      </div>
+    </div>*@
+  <div class="page-body panel-body element-scroll">
+    @await Component.InvokeAsync("BMPrintVaultNavigation", new { selectedTabId = PrintVaultNavigationEnum.SharedPrints })
+
+    @if (!Model.Prints.Any())
+    {
+      <div class="no-data">
+        No shared print(s) found!
+      </div>
+    }
+    <div class="col-md-12" style="padding:20px;">
+      @foreach (var item in Model.Prints)
+      {
+        <div class="col-xs-6 col-md-3 col-sm-4 print-box">
+          <div class="thumbnail">
+            <img src="@item.ThumbnailPath" class="my-print-icon" />
+            <div class="caption text-center">
+              <h5>@item.Name</h5>
+              @if (!string.IsNullOrEmpty(item.SharedBy))
+              {
+                <h6><i>By: @item.SharedBy</i></h6>
+              }
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+    @*<div class="row panel-footer element-fixed">
+      <div class="col-xs-12 col-md-12 col-sm-12 text-center">
+        <a href="@Url.RouteUrl("BMMyPrints")" class="btn btn-primary-custom">My Prints</a>
+      </div>
+    </div>*@
+  </div>

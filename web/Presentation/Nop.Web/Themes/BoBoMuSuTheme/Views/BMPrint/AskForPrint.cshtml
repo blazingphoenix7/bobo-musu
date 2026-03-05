@@ -1,0 +1,188 @@
+﻿@using Nop.Core
+@using Nop.Core.Domain.BM
+@using Nop.Web.Models.BM
+@model AskForPrintListModel
+@inject IWebHelper webHelper
+@{
+    Layout = "_ColumnsTwo";
+
+    //title
+    Html.AddTitleParts(T("PageTitle.Account").Text);
+    Html.AppendPageCssClassParts("print-vault");
+}
+@section left
+{
+    @await Component.InvokeAsync("BMPrintVaultNavigation", new { selectedTabId = PrintVaultNavigationEnum.AskForPrint })
+}
+
+<div class="page account-page ask-for-print-panel from-panel">
+    <div class="page-body panel-body element-scroll">
+        <form asp-route="BMAskForPrint_Save" class="form-horizontal" method="post">
+            <div class="form-group">
+                <label class="col-md-2 control-label">To:</label>
+                <div class="col-sm-8 col-md-8 col-xs-12">
+                    <input type="text" asp-for="AskForPrintSave.ToCustomerName" placeholder="Customer Name" class="form-control typeahead" autocomplete="off"/>
+                </div>
+                <div class="col-sm-2 col-md-2 col-xs-1">
+                    <nop-required/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label">Request for:</label>
+                <div class="col-sm-8 col-md-8 col-xs-12">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Enter the print are you requesting" asp-for="AskForPrintSave.Title" />
+                        <span class="input-group-addon input-group-addon-custom">'s print</span>
+                    </div>
+                </div>
+                <div class="col-sm-2 col-md-2 col-xs-1">
+                    <nop-required/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-md-offset-2 col-sm-8 col-md-8 col-xs-12">
+                    <textarea rows="10" class="form-control" placeholder="@Html.DisplayNameFor(m=>m.AskForPrintSave.Message)" asp-for="AskForPrintSave.Message"></textarea>
+                </div>
+                <div class="col-sm-2 col-md-2 col-xs-1">
+                    <nop-required />
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-3 col-md-3"></div>
+                <div class="col-sm-9 col-md-9 col-xs-12">
+                    <div class="pull-right">
+                        <button type="submit" class="btn btn-primary-custom">SEND</button>
+                        @if (!string.IsNullOrEmpty(Context.Request.Query["from"]))
+                        {
+                            <a href="/@Context.Request.Query["from"]" class="btn btn-default">CANCEL</a>
+                        }
+                    </div>
+                </div>
+            </div>
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success" role="alert">@TempData["SuccessMessage"]</div>
+            }
+            <input type="hidden" id="AskForPrintSave_Type" asp-for="AskForPrintSave.Type" />
+            <input type="hidden" id="AskForPrintSave_ToCustomerId" asp-for="AskForPrintSave.ToCustomerId" />
+            <input type="hidden" id="AskForPrintSave_Phone" asp-for="AskForPrintSave.Phone" />
+            <input type="hidden" id="AskForPrintSave_Email" asp-for="AskForPrintSave.Email" />
+            <input type="hidden" id="AskForPrintSave_Identifier" asp-for="AskForPrintSave.Identifier" />
+        </form>
+    </div>
+</div>
+<script asp-location="Footer">
+    var typeaheadSource = []; //  [{id: "someId1", name: "Display name 1"},{id: "someId2", name: "Display name 2"}]
+    $(document).ready(function () {
+        //For Testing
+        //loadContactsInUserPhone('[{\n    \"phone\" : \"0913091361\",\n    \"name\" : \" Test from phone\",\n    \"identifier\" : \"B434EC2C-9DB8-42AB-93A0-BA4DADC1439D\",\n  \"email\" : \"testfromphone@gmail.com\"\n }]');
+        @if (Context.Request.IsMobileBrowser())
+        {
+            @Html.Raw(@"bm.getPhoneContacts();");
+        }
+
+        var $input = $(".typeahead");
+        $input.typeahead({
+            source: typeaheadSource,
+            autoSelect: true,
+            minLength: 3
+        });
+        $input.change(function () {
+            var current = $input.typeahead("getActive");
+            var defaultMessage = 'Hi!\n\n'+
+                'I\'m creating a custom piece of fingerprint jewelry and I need your help.\n\n' +
+                'Please open this message on your mobile device and download the Bobo and Musu app.\n\n' +
+                'Login using your email address.\n\n' +
+                'Click on the \'pending requests\ message at the top of the screen.\n\n' +
+                'Accept my request and follow the directions.\n\n' +
+                'If you have any trouble, click on the \'HOW IT WORKS\' bar at the bottom of the screen.\n\n' +
+                'Thank you!';
+
+            if (current) {
+                if (current.name.trim().toLowerCase() !== $input.val().trim().toLowerCase() &&
+                    current.data.email.trim().toLowerCase() !== $input.val().trim().toLowerCase()) {
+                    $input.val('');
+                } else { // Fill other data to the form
+                    var data = current.data;
+                    var selectedEmail = '';
+                    $('#AskForPrintSave_Type').val(data.Type);
+                    if (data.ToCustomerId > 0) {
+                        $('#AskForPrintSave_ToCustomerId').val(data.ToCustomerId);
+                        selectedEmail = data.Email;
+                    } else if (data.Type === @Convert.ToInt32(ExternalRequestType.PhoneUserEmail)) {
+                        $('#AskForPrintSave_Phone').val(data.phone);
+                        $('#AskForPrintSave_Email').val(data.email);
+                        $('#AskForPrintSave_Identifier').val(data.identifier);
+                        selectedEmail = data.email;
+                    }
+                    $input.val(selectedEmail);
+                    $('#AskForPrintSave_Message').val(defaultMessage);
+                }
+            } else {
+                var selectedCustomEmail = $input.val().trim();
+                if (!bm.isEmailAddress(selectedCustomEmail)) {
+                    $input.val('');
+                } else {
+                    $('#AskForPrintSave_Type').val(@Convert.ToInt32(ExternalRequestType.CustomEmail));
+                    $('#AskForPrintSave_Email').val(selectedCustomEmail);
+                    $('#AskForPrintSave_Identifier').val(new Date().getTime());
+                    $input.val(selectedCustomEmail);
+                    $('#AskForPrintSave_Message').val(defaultMessage);
+                }
+            }
+        });
+
+        loadContacts();
+    });
+
+    function loadContacts() {
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "@(Url.RouteUrl("AskForPrintList"))",
+            success: function (items) {
+                if (items == null) return;
+
+                for (var i = 0; i < items.length; i++) {
+                    addTypeaheadSource(items[i]);
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert('Failed to retrieve contacts.');
+            }
+        });
+    }
+
+    function loadContactsInUserPhone(json) {
+        try {
+            bm.saveDebug('loadContactsInUserPhone', json);
+            json = json.replace(/\r?\n/gi, '');
+            json = json.replace(/&#xA;/gi, ''); // new line -> empty
+            json = json.replace(/&quot;/gi, '"');
+            if (json) {
+                var phoneContacts = $.parseJSON(json).filter(function(item) {
+                    return item.name && item.name.trim() && item.email;
+                });
+
+                for (var i = 0; i < phoneContacts.length; i++) {
+                    var item = phoneContacts[i];
+                    item.ToCustomerId = phoneContacts[i].identifier;
+                    item.ToCustomerName = phoneContacts[i].name;
+                    item.Type = @Convert.ToInt32(ExternalRequestType.PhoneUserEmail);
+                    addTypeaheadSource(item);
+                }
+            }
+            
+        } catch (e) {
+            bm.saveDebug('loadContactsInUserPhone-Error', e.stack);
+        }
+    }
+
+    function addTypeaheadSource(item) {
+        typeaheadSource.push({
+            id: item.ToCustomerId,
+            name: item.ToCustomerName + '<br/>' + item.email,
+            data: item
+        });
+    }
+</script>

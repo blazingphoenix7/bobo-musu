@@ -1,0 +1,144 @@
+﻿
+@{
+  Layout = "~/Themes/Poppy/Views/Shared/_BMRoot.cshtml";
+  Html.AppendPageCssClassParts("html-welcome");
+}
+<style>
+  div.controls-container{
+    position:fixed;
+    left:0;bottom:0;right:0; 
+    padding:10px;
+    background:rgba(255, 255, 255, 0.8);
+    box-shadow:0px 0px 0px 10px rgba(0, 0, 0, 0.15)
+  }
+  div.slider-container{
+    position:fixed;
+    height:100%;
+    width:100%;
+    left:0;
+    top:0;
+    bottom:0;
+    right:0;
+    overflow:hidden;
+    background-size:cover;
+    background-repeat:no-repeat;
+    background-position:center;
+    transition:.3s ease-in-out;
+  }
+  .inputs a{
+    display:block;line-height:unset;
+    color: #FFF !important; 
+    padding: 15px;
+    font-size:medium;
+    font-weight:300 !important;
+    text-align:center;
+  }
+</style>
+<div class="slider-container"></div>
+<div class="controls-container">
+  <div class="inputs">
+    <div style="float:left;width:49%">
+      <a href="/login" class="btn btn-primary-custom">LOG IN</a>
+    </div>
+    <div style="float:right;width:49%">
+      <a href="/register" class="btn btn-primary-custom" style="background:#d09b2c !important">REGISTER</a>
+    </div>
+  </div>
+  <div style="float:none;clear:both"></div>
+  <div style="text-align:center;margin-top:10px;">
+    @Html.ActionLink("SKIP TO HOME", "Index", "Home", new { allowHome = true }, new { style = "display:block;padding:10px;color:#2e5372" })
+    @*<a href="/" style="display:block;padding:10px;color:#2e5372">SKIP TO HOME</a>*@
+  </div>
+</div>
+<div class="slide-image-items" style="display:none">
+  <img class="slide-image-item" id="slide-image-item1" src="/Themes/Poppy/Content/img/bm/welcome1_2.jpg?v=2" />
+  <img class="slide-image-item" id="slide-image-item2" src="/Themes/Poppy/Content/img/bm/welcome2_2.jpg?v=2" />
+  <img class="slide-image-item" id="slide-image-item3" src="/Themes/Poppy/Content/img/bm/welcome3_2.jpg?v=2" />
+</div>
+
+<script asp-location="Footer">
+  $(document).ready(function () {
+    checkImageSlideLoaded();
+    //setLogoPosition();
+    //setButtomPosition();
+  });
+
+  function checkImageSlideLoaded() {
+    var els = $(".slide-image-item");
+    var complete = true;
+    for (var i = 0; i < els.length; i++) {
+      var el = document.getElementById(els[i].id);
+      if (!el.complete) {
+        complete = false;
+        break;
+      };
+    }
+
+    if (!complete) {
+      setTimeout(function () {
+        checkImageSlideLoaded();
+      },
+        100);
+    } else {
+      setImageSlide();
+    }
+  }
+
+  function setImageSlide() {
+    var images = [];
+    var els = $(".slide-image-item");
+    for (var i = 0; i < els.length; i++) {
+      images.push(els[i].src);
+    }
+
+    var index = 0;
+    var imageUrl = 'url("' + images[index] + '")';
+    //$('.html-welcome').css('background-repeat', 'no-repeat');
+    //$('.html-welcome').css('background-position', 'center');
+    //$('.html-welcome').css('background-size', 'cover');
+    //$('.html-welcome').css('background-image', imageUrl);
+    $('.slider-container').css('background-image', imageUrl);
+    //$('.html-welcome').css('background-size', $(window).width() + 'px' + ' ' + $(window).height() + 'px');
+    setInterval(function () {
+      index++;
+      if (index >= images.length)
+        index = 0;
+      imageUrl = 'url("' + images[index] + '")';
+      $('.slider-container').css('background-image', imageUrl);
+    },
+      3000);
+  }
+
+  //function setTextSlide() {
+  //    var texts = [
+  //        'text 1',
+  //        'text 2',
+  //        'text 3',
+  //        'text 4'
+  //    ];
+  //    var index = 0;
+  //    var text = texts[index];
+  //    $('.slide-text-content').html(text);
+  //    $('.slide-text').css('margin-top', (($(window).height() / 2) - ($('.slide-text').height() / 2) - 100) + 'px');
+  //    setInterval(function() {
+  //            index++;
+  //            if (index >= texts.length)
+  //                index = 0;
+  //            text = texts[index];
+  //            $('.slide-text-content').html(text);
+  //        },
+  //        4000);
+  //}
+
+  function setLogoPosition() {
+    $('.logo-image').css('margin-top', (($(window).height() / 2) - 100) + 'px');
+    $('.logo-image').css('margin-top', '50px');
+    $('.logo-image').removeClass('hide');
+  }
+
+  function setButtomPosition() {
+    var h = (($(window).height() / 2) - ($('.buttoms').height() / 2));
+    $('.buttoms').css('margin-top', (h - 100) + 'px');
+    $('.buttoms').removeClass('hide');
+  }
+</script>

@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black"
+    android:id="@+id/previewlayout"
+    tools:context=".Activity.CameraviewActivity">
+
+    <FrameLayout
+        android:id="@+id/camera_preview"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" >
+    </FrameLayout>
+
+    <ImageView
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/camera_contour"/>
+
+    <RelativeLayout
+        android:id="@+id/menubtnlayout"
+        android:layout_width="50dp"
+        android:layout_height="60dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="35dp"
+        android:background="@drawable/leftmenubtn">
+
+        <ImageView
+            android:id="@+id/menuBtn"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:layout_margin="15dp"
+            android:background="@drawable/right_arrow"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="80dp"
+        android:layout_height="45dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="45dp"
+        android:background="@drawable/indicatorborder">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="1 of 1"
+            android:textSize="18dp"
+            android:textAlignment="center"
+            android:typeface="serif"
+            android:textColor="@android:color/white"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/cancellayout"
+        android:layout_width="70dp"
+        android:layout_height="60dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="35dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/cancelcam">
+
+        <TextView
+            android:id="@+id/cancelBtn"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="X"
+            android:textSize="30dp"
+            android:textStyle="bold"
+            android:textAlignment="center"
+            android:typeface="sans"
+            android:textColor="@android:color/white"/>
+
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/seperator1"
+        android:layout_width="40dp"
+        android:layout_height="2dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="150dp"
+        android:background="@android:color/white" />
+
+    <TextView
+        android:id="@+id/indicator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/seperator1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:text="Center your fingerprint in the\nwindow and tap Take Photo."
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textSize="18dp"
+        android:typeface="serif" />
+
+    <View
+        android:id="@+id/seperator2"
+        android:layout_width="40dp"
+        android:layout_height="2dp"
+        android:layout_alignBottom="@+id/indicator"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="-15dp"
+        android:background="@android:color/white" />
+
+    <View
+        android:id="@+id/seperator3"
+        android:layout_width="40dp"
+        android:layout_height="2dp"
+        android:layout_above="@+id/tips_text"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="15dp"
+        android:background="@android:color/white" />
+
+    <TextView
+        android:id="@+id/tips_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/seperator4"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="15dp"
+        android:textColor="@android:color/white"
+        android:textAlignment="center"
+        android:textSize="18dp"
+        android:typeface="serif"
+        android:text="Try to capture the most\ninteresting aspects of the\nfingerprint."/>
+
+    <View
+        android:id="@+id/seperator4"
+        android:layout_width="40dp"
+        android:layout_height="2dp"
+        android:layout_above="@+id/buttonlayout"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="25dp"
+        android:background="@android:color/white"/>
+
+    <RelativeLayout
+        android:id="@+id/buttonlayout"
+        android:layout_width="230dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="35dp"
+        android:background="@drawable/captureborder">
+
+        <TextView
+            android:id="@+id/captureBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_margin="20dp"
+            android:text="TAKE PHOTO"
+            android:textColor="@android:color/white"
+            android:textSize="24dp"
+            android:typeface="serif" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

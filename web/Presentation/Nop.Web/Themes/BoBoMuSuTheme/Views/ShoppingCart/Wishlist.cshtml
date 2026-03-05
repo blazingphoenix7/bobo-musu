@@ -1,0 +1,183 @@
+﻿@model WishlistModel
+@using Nop.Core
+@using Nop.Core.Domain.Tax
+@inject IWebHelper webHelper
+@inject IWorkContext workContext
+@{
+    Layout = "_ColumnsOne";
+
+    //title
+    Html.AddTitleParts(T("PageTitle.Wishlist").Text);
+    //page class
+    Html.AppendPageCssClassParts("html-wishlist-page");    
+}
+<div class="page wishlist-page from-panel">
+    <div class="page-title panel-heading element-fixed">
+        @if (Context.Request.IsMobileBrowser())
+        {
+            <a href="javascript:void(0);" class="back-prev-page-link"><i class="glyphicon glyphicon-home glyphicon-menu-left back-prev-icon"></i></a>
+        }
+        <h1>
+            @if (Model.IsEditable)
+            {
+                @T("Wishlist")
+            }
+            else
+            {
+                @string.Format(T("Wishlist.WishlistOf").Text, Model.CustomerFullname)
+                ;
+            }
+        </h1>
+    </div>
+    <div class="page-body panel-body element-scroll">
+        <div class="wishlist-content">
+            @if (Model.Items.Count > 0)
+            {
+                if (Model.Warnings.Count > 0)
+                {
+                    <div class="message-error">
+                        <div class="alert alert-danger">
+                            @foreach (var warning in Model.Warnings)
+                            {
+                                <div>@warning</div>
+                            }
+                        </div>
+                    </div>
+                }
+                <form asp-route="Wishlist" method="post">
+                    <div class="panel panel-default">
+                        <table class="cart table table-borderless table-condensed">
+                            <colgroup>
+                                @if (Model.IsEditable)
+                                {
+                                     <col width="1" />
+                                }
+                                <col width="1" />
+                                <col width="1" />
+                                <col width="1" />
+                            </colgroup>
+                            <thead>
+                                <tr class="cart-header-row">
+                                    @if (Model.IsEditable)
+                                    {
+                                     <th></th>
+                                    }
+                                    <th></th>
+                                    <th class="product-picture-mixed">
+                                        @T("ShoppingCart.Product(s)")
+                                    </th>
+                                    <th>
+                                        @T("ShoppingCart.UnitPrice")
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.Items)
+                                {
+                                    <tr class="cart-item-row">
+                                        @if (Model.IsEditable)
+                                        {
+                                            <td class="remove-from-cart">
+                                                <span class="glyphicon glyphicon-remove" aria-hidden="true" onclick="$('#removefromcart@(item.Id)').val(@item.Id); $('.update-wishlist-button').trigger('click');"></span>
+                                                <input type="hidden" name="removefromcart" id="removefromcart@(item.Id)"/>
+                                            </td>
+                                        }
+                                        <td class="add-to-cart">
+                                            <a class="btn btn-primary-custom wishlist-add-to-cart-button" href="@Url.RouteUrl("Product", new { SeName = item.ProductSeName })">@T("ShoppingCart.AddToCart")</a>
+                                        </td>
+                                        <td class="product-picture-mixed">
+                                            <div>
+                                                <img alt="@item.Picture.AlternateText" src="@item.Picture.ImageUrl" title="@item.Picture.Title"/>
+                                            </div>
+                                            <a href="@Url.RouteUrl("Product", new {SeName = item.ProductSeName})">@item.ProductName</a>
+                                            @if (!string.IsNullOrEmpty(item.AttributeInfo))
+                                            {
+                                                <div class="attributes">
+                                                    @Html.Raw(item.AttributeInfo)
+                                                </div>
+                                            }
+                                            @if (!string.IsNullOrEmpty(item.RecurringInfo))
+                                            {
+                                                <div class="recurring-info">
+                                                    @Html.Raw(item.RecurringInfo)
+                                                </div>
+                                            }
+                                            @if (!string.IsNullOrEmpty(item.RentalInfo))
+                                            {
+                                                <div class="rental-info">
+                                                    @Html.Raw(item.RentalInfo)
+                                                </div>
+                                            }
+                                            @if (Model.IsEditable && item.AllowItemEditing)
+                                            {
+                                                var editCartItemUrl = Url.RouteUrl("Product", new {SeName = item.ProductSeName}, webHelper.CurrentRequestProtocol);
+                                                editCartItemUrl = webHelper.ModifyQueryString(editCartItemUrl, "updatecartitemid", item.Id.ToString());
+                                                <div class="edit-item">
+                                                    <a href="@editCartItemUrl">@T("Common.Edit")</a>
+                                                </div>
+                                            }
+                                            @if (item.Warnings.Count > 0)
+                                            {
+                                                <div class="message-error">
+                                                    <ul>
+                                                        @foreach (var warning in item.Warnings)
+                                                        {
+                                                            <li>@warning</li>
+                                                        }
+                                                    </ul>
+                                                </div>
+                                            }
+                                        </td>
+                                        <td class="unit-price nobr">
+                                            <span class="product-unit-price">@item.UnitPrice</span>
+                                            <input type="hidden" name="itemquantity@(item.Id)" value="@(item.Quantity)" />
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    @if (Model.Items.Count > 0 && Model.DisplayTaxShippingInfo)
+                    {
+                        var inclTax = workContext.TaxDisplayType == TaxDisplayType.IncludingTax;
+                        //tax info is already included in the price (incl/excl tax). that's why we display only shipping info here
+                        //of course, you can modify appropriate locales to include VAT info there
+                        <div class="tax-shipping-info">
+                            @T(inclTax ? "Wishlist.TaxShipping.InclTax" : "Wishlist.TaxShipping.ExclTax", Url.RouteUrl("Topic", new { SeName = Html.GetTopicSeName("shippinginfo") }))
+                        </div>
+                   }
+                    <div class="buttons hide">
+                        <div class="common-buttons">
+                            @if (Model.IsEditable)
+                            {
+                                <div class="update-wishlist"><input type="submit" name="updatecart" value="@T("Wishlist.UpdateCart")" class="btn btn-primary-custom update-wishlist-button hide" /></div>
+                            }
+                            @*@if (Model.DisplayAddToCart)
+                            {
+                                <div class="addtocart-btn"><input type="submit" name="addtocartbutton" value="@T("ShoppingCart.AddToCart")" class="btn btn-primary-custom wishlist-add-to-cart-button" /></div>
+                            }
+                            @if (Model.IsEditable && Model.EmailWishlistEnabled)
+                            {
+                                <div class="email-a-friend-btn"><input type="button" value="@T("Wishlist.EmailAFriend")" class="btn btn-primary-custom email-a-friend-wishlist-button" onclick="setLocation('@Url.RouteUrl("EmailWishlist")')" /></div>
+                            }*@
+                        </div>
+                    </div>
+                </form>
+            }
+            else
+            {
+                <div class="no-data">
+                    The wishlist is empty
+                </div>
+            }
+        </div>
+        @*@if (Model.IsEditable && Model.Items.Count > 0)
+        {
+            var wishlistUrl = Url.RouteUrl("Wishlist", new { customerGuid = Model.CustomerGuid }, webHelper.CurrentRequestProtocol);
+            <div class="share-info">
+                <span class="share-label">@T("Wishlist.YourWishlistURL"):</span>
+                <a href="@wishlistUrl" class="share-link">@wishlistUrl</a>
+            </div>
+        }*@
+    </div>
+</div>

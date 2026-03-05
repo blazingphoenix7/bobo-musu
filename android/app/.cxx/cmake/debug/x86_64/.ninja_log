@@ -1,0 +1,23 @@
+# ninja log v5
+0	518	1573734339	CMakeFiles/native-lib.dir/native-lib.cpp.o	db7c10bcd42062a
+520	697	1573734339	/Users/iphtech34/Downloads/crowdbotics/app/build/intermediates/cmake/debug/obj/x86_64/libnative-lib.so	f50e86410dfb4095
+2	482	1573734394	CMakeFiles/native-lib.dir/native-lib.cpp.o	4d9a30f17b224013
+482	635	1573734394	/Users/iphtech34/Downloads/crowdbotics/app/build/intermediates/cmake/debug/obj/x86_64/libnative-lib.so	f50e86410dfb4095
+0	68	1573736733	build.ninja	ce5cac66203ee515
+0	10	0	clean	a176880031f89e07
+0	49	1573737466	build.ninja	ce5cac66203ee515
+0	434	1573737466	CMakeFiles/my-native-lib.dir/native-lib.cpp.o	56b14bce6648bdf5
+434	576	1573737466	/Users/iphtech34/Downloads/crowdbotics/app/build/intermediates/cmake/debug/obj/x86_64/libmy-native-lib.so	d2da65fd675f5d26
+1	90	1573737537	build.ninja	ce5cac66203ee515
+1	966	1573737538	CMakeFiles/my-native-lib.dir/native-lib.cpp.o	7353e7f6eb72e0d4
+966	1137	1573737538	/Users/iphtech34/Downloads/crowdbotics/app/build/intermediates/cmake/debug/obj/x86_64/libmy-native-lib.so	d2da65fd675f5d26
+0	46	1573737694	build.ninja	ce5cac66203ee515
+1	453	1573737694	CMakeFiles/my-native-lib.dir/native-lib.cpp.o	56b14bce6648bdf5
+454	601	1573737694	/Users/iphtech34/Downloads/crowdbotics/app/build/intermediates/cmake/debug/obj/x86_64/libmy-native-lib.so	d2da65fd675f5d26
+0	58	1573737791	build.ninja	ce5cac66203ee515
+1	52	1573737949	build.ninja	ce5cac66203ee515
+1	8	0	clean	a176880031f89e07
+2	1099	1573737977	CMakeFiles/my-native-lib.dir/native-lib.cpp.o	7b491f1b7b634812
+1099	1257	1573737977	/Users/iphtech34/Downloads/crowdbotics/app/build/intermediates/cmake/debug/obj/x86_64/libmy-native-lib.so	d2da65fd675f5d26
+0	69	1573740030	build.ninja	ce5cac66203ee515
+0	9	0	clean	a176880031f89e07

@@ -1,0 +1,19 @@
+{
+  "buildFiles": [
+    "/Users/iphtech34/Library/Android/sdk/ndk/20.0.5594570/build/cmake/android.toolchain.cmake",
+    "/Users/iphtech34/Library/Android/sdk/ndk/20.0.5594570/build/cmake/platforms.cmake",
+    "/Users/iphtech34/Downloads/crowdbotics/app/src/main/cpp/CMakeLists.txt"
+  ],
+  "cleanCommands": [
+    "/Users/iphtech34/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja -C \"/Users/iphtech34/Downloads/crowdbotics/app/.cxx/cmake/debug/x86\" clean"
+  ],
+  "buildTargetsCommand": "/Users/iphtech34/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja -C \"/Users/iphtech34/Downloads/crowdbotics/app/.cxx/cmake/debug/x86\" {LIST_OF_TARGETS_TO_BUILD}",
+  "libraries": {
+    "my-native-lib-Debug-x86": {
+      "artifactName": "my-native-lib",
+      "buildCommand": "/Users/iphtech34/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja -C \"/Users/iphtech34/Downloads/crowdbotics/app/.cxx/cmake/debug/x86\" my-native-lib",
+      "abi": "x86",
+      "output": "/Users/iphtech34/Downloads/crowdbotics/app/build/intermediates/cmake/debug/obj/x86/libmy-native-lib.so"
+    }
+  }
+}

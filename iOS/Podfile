@@ -1,0 +1,18 @@
+source 'https://github.com/CocoaPods/Specs.git'
+
+platform :ios, '9.0'
+use_frameworks!
+
+target 'FingerprintScanner' do
+    pod 'DKCamera'
+    pod 'UIImage-Categories'
+    pod 'SlideMenuControllerSwift'
+    pod 'MBProgressHUD'
+    pod 'NYTPhotoViewer'
+    pod 'JPSVolumeButtonHandler', :git => 'https://github.com/jpsim/JPSVolumeButtonHandler', :commit => '08850cf30a3d823bc29f917685653e0029616bdf'
+    pod 'Zip'
+    pod 'PopupDialog'
+    pod 'Alamofire'
+    pod 'HockeySDK'
+    pod 'SwiftyContacts' , '~> 2.0.7'
+end

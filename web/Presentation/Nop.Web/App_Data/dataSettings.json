@@ -1,0 +1,6 @@
+﻿{
+  "DataProvider": "sqlserver",
+  //"DataConnectionString": "Data Source=INFI0M\\SQLEXPRESS;Initial Catalog=BoboMusu;Integrated Security=False;Persist Security Info=False;User ID=sa;Password=infi@123",
+  "DataConnectionString": "Data Source=bobomusu-mp.cqn0frxbimi3.us-east-2.rds.amazonaws.com;Initial Catalog=BoboMusuMP;Integrated Security=False;Persist Security Info=False;User ID=admin;Password=Crowdbotic1!s#123",
+  "RawDataSettings": {}
+}

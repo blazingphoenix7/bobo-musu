@@ -1,0 +1,1 @@
+ninja: Entering directory `/Users/iphtech34/Downloads/crowdbotics/app/.cxx/cmake/debug/armeabi-v7a'

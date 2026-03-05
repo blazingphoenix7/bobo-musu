@@ -1,0 +1,23 @@
+﻿@model CustomerNavigationModel
+
+<div class="block block-account-navigation">
+    @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.AccountNavigationBefore })
+
+    <select class="mobile-account-nav">
+        @foreach (var item in Model.CustomerNavigationItems)
+        {
+            <option data-href="@Url.RouteUrl(item.RouteName)">@(item.Title)</option>
+        }
+    </select>
+
+    <ul class="list">
+        @foreach (var item in Model.CustomerNavigationItems)
+        {
+            <li class="list-item @item.ItemClass">
+                <a href="@Url.RouteUrl(item.RouteName)" class="list-item-link @(Model.SelectedTab == item.Tab ? "active" : "inactive")">@(item.Title)</a>
+            </li>
+        }
+    </ul>
+
+    @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.AccountNavigationAfter })
+</div>

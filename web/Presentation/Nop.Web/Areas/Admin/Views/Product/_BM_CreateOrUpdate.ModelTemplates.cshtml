@@ -1,0 +1,211 @@
+@using Nop.Core.Domain.BM
+@using Nop.Web.Areas.Admin.Models.BM
+@model ProductModel
+
+<div class="panel-group">
+    @if (Model.Id > 0)
+    {
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div id="productmodeltemplates-grid"></div>
+
+                <script>
+                    $(document).ready(function() {
+                        $("#productmodeltemplates-grid").kendoGrid({
+                            dataSource: {
+                                type: "json",
+                                transport: {
+                                    read: {
+                                        url: "@Html.Raw(Url.Action("ProductModelTemplateList", "Product"))",
+                                        type: "POST",
+                                        dataType: "json",
+                                        data: function() {
+                                            var data = {
+                                                ProductId: '@(Model.Id)'
+                                            };
+                                            addAntiForgeryToken(data);
+                                            return data;
+                                        }
+                                    },
+                                    update: {
+                                        url: "@Html.Raw(Url.Action("ProductModelTemplateUpdate", "Product"))",
+                                        type: "POST",
+                                        dataType: "json",
+                                        data: addAntiForgeryToken
+                                    },
+                                    destroy: {
+                                        url: "@Html.Raw(Url.Action("ProductModelTemplateDelete", "Product"))",
+                                        type: "POST",
+                                        dataType: "json",
+                                        data: addAntiForgeryToken
+                                    }
+                                },
+                                schema: {
+                                    data: "Data",
+                                    total: "Total",
+                                    errors: "Errors",
+                                    model: {
+                                        id: "Id",
+                                        fields: {
+                                            ModelTemplateFileName: { editable: false, type: "string" },
+                                            ModelTemplateUrl: { editable: false, type: "string" },
+                                            ModelTemplateTypeName: { editable: true, type: "string" },
+                                            Active: { editable: true, type: "boolean" }
+                                        }
+                                    }
+                                },
+                                requestEnd: function(e) {
+                                    if (e.type == "update") {
+                                        this.read();
+                                    }
+                                },
+                                error: function(e) {
+                                    display_kendoui_grid_error(e);
+                                    // Cancel the changes
+                                    this.cancelChanges();
+                                },
+                                pageSize: @(Model.ProductModelTemplateSearchModel.PageSize),
+                                serverPaging: true,
+                                serverFiltering: true,
+                                serverSorting: true
+                            },
+                            pageable: {
+                                refresh: true,
+                                pageSizes: [@(Model.ProductModelTemplateSearchModel.AvailablePageSizes)],
+                                @await Html.PartialAsync("_GridPagerMessages")
+                            },
+                            editable: {
+                                confirmation: "@T("Admin.Common.DeleteConfirmation")",
+                                mode: "inline"
+                            },
+                            scrollable: false,
+                            columns: [
+                            {
+                                field: "ModelTemplateFileName",
+                                title: "File Name",
+                                template: '<a href="#=ModelTemplateUrl#" target="_blank">#=ModelTemplateFileName#</a>',
+                                width: 200
+                            }, 
+                            {
+                                field: "ModelTemplateTypeName",
+                                title: "Type",
+                                width: 100
+                            },
+                            {
+                                field: "Active",
+                                title: "Active",
+                                width: 100
+                            }, {
+                                command: [
+                                {
+                                    name: "edit",
+                                    text: {
+                                        edit: "@T("Admin.Common.Edit")",
+                                        update: "@T("Admin.Common.Update")",
+                                        cancel: "@T("Admin.Common.Cancel")"
+                                    }
+                                }, {
+                                    name: "destroy",
+                                    text: "@T("Admin.Common.Delete")"
+                                }
+                                ],
+                                width: 200
+                            }
+                            ]
+                        });
+                    });
+                </script>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Add New Model Template
+            </div>
+            <div class="panel-body">
+                <script>
+                    $(document).ready(function() {
+                        $('#addProductModelTemplate').click(function() {
+                            var modelPath = $("#@Html.IdFor(model => model.AddModelTemplateModel.Upload.UploadPath)").val();
+                            if (!modelPath) {
+                                alert('Upload model template first');
+                                return;
+                            }
+
+                            $('#addProductPicture').attr('disabled', true);
+
+                            var postData = {
+                                ModelTemplatePath: modelPath,
+                                ModelTemplateTypeId: $('.modeltemplatetypes-select').val(),
+                                productId: '@Model.Id'
+                            };
+                            addAntiForgeryToken(postData);
+
+                            $.ajax({
+                                cache: false,
+                                type: "POST",
+                                url: "@(Url.Action("ProductModelTemplateAdd", "Product"))",
+                                data: postData,
+                                success: function (data) {
+                                    $('#addProductModelTemplate').attr('disabled', false);
+                                    if (!data.Result)
+                                        return;
+                                    var grid = $("#productmodeltemplates-grid");
+                                    grid.data('kendoGrid').dataSource.read();
+
+                                    // reset upload
+                                    resetModelTemplateUpload();
+                                },
+                                error: function(xhr, ajaxOptions, thrownError) {
+                                    alert('Failed to add product model template.');
+                                    $('#addProductModelTemplate').attr('disabled', false);
+                                }
+                            });
+                        });
+                    });
+                </script>
+                <div class="form-group">
+                    <div class="col-md-2">
+                        File
+                    </div>
+                    <div class="col-md-10">
+                        <nop-editor asp-for="AddModelTemplateModel.Upload"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-2">
+                        Type
+                    </div>
+                    <div class="col-md-2">
+                        @{var modelTemplateTypes = Enum.GetValues(typeof(ModelTemplateType))
+                              .Cast<ModelTemplateType>()
+                              .Select(t => new
+                              {
+                                  Id = ((int)t),
+                                  Name = t.ToString()
+                              }).Where(m=>m.Id>0);}
+                        <select class="form-control dropdown-toggle modeltemplatetypes-select" >
+                            @foreach (var item in modelTemplateTypes)
+                            {
+                                <option value="@item.Id">@item.Name</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-10 col-md-offset-2">
+                        <button type="button" id="addProductModelTemplate" class="btn btn-primary">Add Model Template</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="panel panel-default">
+            <div class="panel-body">
+                Please save before editing
+            </div>
+        </div>
+    }
+</div>

@@ -1,0 +1,26 @@
+﻿@model ShoppingCartModel
+@{
+    Layout = "_ColumnsOne";
+
+    //title
+    Html.AddTitleParts(T("PageTitle.ShoppingCart").Text);
+    //page class
+    Html.AppendPageCssClassParts("html-shopping-cart-page");
+}
+@if (!Model.OnePageCheckoutEnabled)
+{
+    @await Component.InvokeAsync("CheckoutProgress", new { step = CheckoutProgressStep.Cart })
+}
+<div class="page shopping-cart-page from-panel">
+    <div class="page-title panel-heading element-fixed">
+        @if (Context.Request.IsMobileBrowser())
+        {
+            <a href="javascript:void(0);" class="back-prev-page-link"><i class="glyphicon glyphicon-home glyphicon-menu-left back-prev-icon"></i></a>
+        }
+        <h1>@T("ShoppingCart")</h1>
+    </div>
+    <div class="page-body panel-body element-scroll">
+        @await Component.InvokeAsync("OrderSummary", new { overriddenModel = Model })
+    </div>
+</div>
+

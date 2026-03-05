@@ -1,0 +1,7 @@
+﻿@model List<string>
+@if (Model.Any())
+{
+    <div class="alert alert-info goToTop bm-notifications element-fixed" role="alert">
+        @Html.Raw(string.Join("<br/>", Model))
+    </div>
+}

@@ -1,0 +1,97 @@
+﻿@using Nop.Core
+@using Nop.Core.Infrastructure
+@using Nop.Web.Framework.UI
+@using Nop.Services.Helpers
+
+@inject IUserAgentHelper userAgentHelper
+
+@{
+  var isMobileDevice = userAgentHelper.IsMobileDevice();
+
+  var isIe9 = false;
+  var userAgent = Url.ActionContext.HttpContext.Request.Headers["User-Agent"];
+  if (!String.IsNullOrEmpty(userAgent) && userAgent.ToString().ToLower().IndexOf("MSIE 9.0", StringComparison.InvariantCultureIgnoreCase) > 0)
+  {
+    isIe9 = true;
+  }
+
+  var isIe10or11 = false;
+  if (!String.IsNullOrEmpty(userAgent) &&
+      (userAgent.ToString().ToLower().IndexOf("MSIE 10", StringComparison.InvariantCultureIgnoreCase) > 0 || userAgent.ToString().ToLower().IndexOf("MSIE 11", StringComparison.InvariantCultureIgnoreCase) > 0))
+  {
+    isIe10or11 = true;
+  }
+
+  var supportRtl = EngineContext.Current.Resolve<IWorkContext>().WorkingLanguage.Rtl;
+
+  Html.AppendCssFileParts("~/Plugins/SevenSpikes.Core/Styles/perfect-scrollbar.min.css");
+  Html.AppendCssFileParts($"~/Themes/Poppy/Content/css/bm.css?pr={@DateTime.Now.Ticks}");
+
+  if (supportRtl) // only RTL
+  {
+    if (isIe9)
+    {
+      Html.AppendCssFileParts("~/Themes/Poppy/Content/CSS/ie9.rtl.css");
+    }
+
+    if (isIe10or11)
+    {
+      Html.AppendCssFileParts("~/Themes/Poppy/Content/CSS/ie10-11.rtl.css");
+    }
+
+    if (!isMobileDevice)
+    {
+      Html.AppendCssFileParts("~/Themes/Poppy/Content/CSS/1280.rtl.css");
+      Html.AppendCssFileParts("~/Themes/Poppy/Content/CSS/1000.rtl.css");
+      Html.AppendCssFileParts("~/Themes/Poppy/Content/CSS/jquery.selectbox.rtl.css");
+    }
+
+    Html.AppendCssFileParts("~/Themes/Poppy/Content/CSS/768.rtl.css");
+    Html.AppendCssFileParts("~/Themes/Poppy/Content/CSS/480.rtl.css");
+    Html.AppendCssFileParts("~/Themes/Poppy/Content/CSS/mobile-only.rtl.css");
+    Html.AppendCssFileParts("~/Themes/Poppy/Content/CSS/tables.rtl.css");
+    Html.AppendCssFileParts("~/Themes/Poppy/Content/CSS/styles.rtl.css");
+  }
+  else // only LTR
+  {
+
+    if (isIe9)
+    {
+      Html.AppendCssFileParts("~/Themes/Poppy/Content/CSS/ie9.css");
+    }
+
+    if (isIe10or11)
+    {
+      Html.AppendCssFileParts("~/Themes/Poppy/Content/CSS/ie10-11.css");
+    }
+
+    if (!isMobileDevice)
+    {
+      Html.AppendCssFileParts("~/Themes/Poppy/Content/CSS/1280.css");
+      Html.AppendCssFileParts("~/Themes/Poppy/Content/CSS/1000.css");
+      Html.AppendCssFileParts("~/Themes/Poppy/Content/CSS/jquery.selectbox.css");
+    }
+
+    Html.AppendCssFileParts("~/Themes/Poppy/Content/CSS/768.css");
+    Html.AppendCssFileParts("~/Themes/Poppy/Content/CSS/480.css");
+    Html.AppendCssFileParts("~/Themes/Poppy/Content/CSS/mobile-only.css");
+    Html.AppendCssFileParts("~/Themes/Poppy/Content/CSS/tables.css");
+    Html.AppendCssFileParts("~/Themes/Poppy/Content/CSS/styles.css");
+  }
+
+  // main and common resources for both directions
+
+  Html.AddScriptParts(ResourceLocation.Footer, "~/Plugins/SevenSpikes.Core/Scripts/footable.min.js");
+  Html.AddScriptParts(ResourceLocation.Footer, "~/Plugins/SevenSpikes.Core/Scripts/perfect-scrollbar.min.js");
+  Html.AddScriptParts(ResourceLocation.Footer, "~/Plugins/SevenSpikes.Core/Scripts/sevenspikes.core.min.js");
+  Html.AddScriptParts(ResourceLocation.Footer, "~/Plugins/SevenSpikes.Core/Scripts/sevenspikes.theme.ex.min.js");
+  Html.AddScriptParts(ResourceLocation.Footer, "https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js");
+
+  if (!isMobileDevice)
+  {
+    Html.AddScriptParts(ResourceLocation.Footer, "~/Themes/Poppy/Content/scripts/jquery.selectbox-0.2.min.js");
+    Html.AddScriptParts(ResourceLocation.Footer, "~/Themes/Poppy/Content/scripts/masonry.pkgd.min.js");
+  }
+
+  Html.AddScriptParts(ResourceLocation.Footer, "~/Themes/Poppy/Content/scripts/poppy.js");
+}

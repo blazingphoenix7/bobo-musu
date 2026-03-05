@@ -1,0 +1,343 @@
+{% load staticfiles %}
+<html>
+<head>
+    <title>
+        viewer v210527 x joserpagil@gmail.com
+    </title>
+</head>
+<body>
+<style>
+
+    .tool_table {
+        height: 4vmax;
+        width: 100%;
+    }
+
+    td {
+        vertical-align: center;
+    }
+
+
+    .w25 {
+        width: 25%;
+    }
+
+    .w50 {
+        width: 50%;
+    }
+
+    .w100 {
+        width: 100%;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial;
+        font-size: 2vmax;
+    }
+
+    .toolbar {
+        height: 32px;
+        line-height: 16px;
+        text-align: center;
+        display: table-cell;
+        vertical-align: middle;
+    }
+
+    .toolbar_img {
+        background-color: transparent;
+    }
+
+    .toolbar_img:hover {
+        background-color: #36c;
+    }
+
+    label {
+        font-family: Arial;
+        font-size: 2vmax;
+        color: white;
+    }
+
+    button {
+        height: 2.5vmax;
+    }
+
+    select {
+        font-size: 2vmax;
+        padding: 6px;
+        display: inline-block;
+        border: 1px solid #000;
+        box-sizing: border-box;
+        background-color: white;
+        color: black;
+        width: 100%;
+    }
+
+    input {
+        font-size: 2vmax;
+        padding: 6px;
+        display: inline-block;
+        border: 1px solid #000;
+        box-sizing: border-box;
+        background-color: white;
+        color: black;
+        width: 100%;
+    }
+
+    .width_100 {
+        width: 100%;
+    }
+
+    .command_button {
+        height: 6vmax;
+        padding: .3vmax;
+        font-size: 2vmax;
+        color: white;
+        background-color: transparent;
+        border: 2px solid white;
+        z-index: 9;
+        border-radius: 10%;
+    }
+
+
+    .command_button:hover {
+        color: black;
+        background-color: white;
+        border: 2px solid black;
+    }
+
+
+    .command_button.disabled {
+        color: white;
+        background-color: gray;
+    }
+
+    .close_button {
+        position: absolute;
+        top: 0.5vmax;
+        right: 1vmax;
+        cursor: pointer;
+        color: white;
+    }
+
+    .window {
+        resize: both;
+        display: block;
+        overflow: hidden;
+        position: absolute;
+        left: 1vh;
+        top: 1vh;
+        width: 50vh;
+        margin: auto;
+        z-index: 1;
+        background-color: #888;
+        border: 2px solid black;
+        padding: 0;
+    }
+
+    .window_title {
+        font-family: Arial;
+        font-size: 3vh;
+        padding: 0.5vmax;
+        cursor: move;
+        z-index: 10;
+        background-color: black;
+        color: white;
+        resize: both;
+        height: 4vh;
+    }
+
+    .window_content {
+        padding: 1vmax;
+    }
+
+    .animate {
+        -webkit-animation: animatezoom 0.6s;
+        animation: animatezoom 0.6s;
+    }
+
+    @-webkit-keyframes animatezoom {
+        from {
+            -webkit-transform: scale(0)
+        }
+        to {
+            -webkit-transform: scale(1)
+        }
+    }
+
+    @keyframes animatezoom {
+        from {
+            transform: scale(0)
+        }
+        to {
+            transform: scale(1)
+        }
+    }
+
+    .switch {
+        vertical-align: bottom;
+        background-color: transparent;
+        position: relative;
+        display: inline-block;
+        width: 4vw;
+        height: 2vw;
+    }
+
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 2vw;
+        width: 2vw;
+        left: 0vw;
+        top: 0vw;
+        bottom: 1vw;
+        background-color: white;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+    input:checked + .slider {
+        background-color: green;
+    }
+
+    input:focus + .slider {
+        box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked + .slider:before {
+        -webkit-transform: translateX(2vw);
+        -ms-transform: translateX(2vw);
+        transform: translateX(2vw);
+    }
+
+    .slider.round {
+        border-radius: 5vw;
+    }
+
+    .slider.round:before {
+        border-radius: 50%;
+    }
+
+    .info_window {
+        position: absolute;
+        color: black;
+        background-color: white;
+        left: 10vmin;
+        width: 80vmin;
+        top: 10vmin;
+        height: 80vmin;
+        z-index: 3;
+        border: 2px solid black;
+        padding: 1vh;
+        overflow: scroll;
+        text-align: center;
+    }
+
+</style>
+
+
+<div id='info_window' class='info_window'>
+    <H1>Jewel viewer v210527</H1>
+    <br>
+    <button onclick='info_window . style . display = "none"'>Got it !</button>
+    <br>
+    <h3>
+        - Subtitutes normal mapping with bump mapping.<br>
+        - Implements decal textures with diffuse & bump mapping.<br>
+        - Background shader & animated lights.<br>
+        - Multiple materials.<br>
+        - Standalone version with desktop interface.<br>
+        - Multiple models each with multitexturing.<br>
+        - Keyboard commands :<br>
+        i = displays this window.<br>
+        t = displays the tools window.<br>
+        - Mouse buttons :<br>
+        left & middle = rotates camera.<br>
+        right = pans camera.<br>
+        <br>
+    </h3>
+    <button onclick='info_window . style . display = "none"'>Got it !</button>
+    <br>
+</div>
+
+
+<div id="tools_window" class="window animate" style="z-index :  2 ;">
+    <div id="tools_window_title" class="window_title" onmousedown="Drag_element ( this )">viewer v210527
+        <a class="close_button" onclick="tools_window.style.display = 'none'">&times;</a>
+    </div>
+    <div class='window_content'>
+        <label>model</label>
+
+        <table class='tool_table'>
+            <tr>
+                <td class='w100'>
+                    <select id='model_select' onchange='Model_select_change()'></select>
+                </td>
+                <td>
+                    <img class='toolbar_img' onmousedown='Open_file()' data-src="{{ file_base64 }}" src="" alt=""/>
+                </td>
+            </tr>
+        </table>
+
+        <table class='tool_table'>
+            <tr>
+                <td>
+                    <label>background shader</label>
+                </td>
+            </tr>
+        </table>
+        <table>
+            <tr>
+                <select id="shader_select" onchange='Shader_select_change()'>
+                    <option>white</option>
+                    <option>sun beams</option>
+                    <option>black</option>
+                    <option>grey</option>
+                    <option>blue</option>
+                    <option>smoke</option>
+                    <option>water</option>
+                    <option>hypno</option>
+                </select>
+            </tr>
+        </table>
+
+    </div>
+</div>
+<div style="display: none" id="fingerprint_base64">
+    {{ file_base64 }}
+</div>
+
+<script src="{% static 'threejs_files/libs/three.min.js' %}"></script>
+<script src="{% static 'threejs_files/libs/orbit_controls.js' %}"></script>
+<script src="{% static 'threejs_files/libs/gltf_loader.js' %}"></script>
+<script src="{% static 'threejs_files/libs/copy_shader.js' %}"></script>
+<script src="{% static 'threejs_files/libs/effect_composer.js' %}"></script>
+<script src="{% static 'threejs_files/libs/render_pass.js' %}"></script>
+<script src="{% static 'threejs_files/libs/shader_pass.js' %}"></script>
+
+
+<script src="{% static 'threejs_files/viewer.js' %}"></script>
+{#<script src="{% static 'threejs_files/jewel.js' %}"></script>#}
+
+
+</body>
+</html>

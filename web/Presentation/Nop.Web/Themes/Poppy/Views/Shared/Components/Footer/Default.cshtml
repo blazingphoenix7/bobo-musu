@@ -1,0 +1,106 @@
+﻿@model FooterModel
+
+@using Nop.Core
+@using Nop.Core.Domain.Tax
+@using Nop.Services.Configuration
+@using Nop.Web.Models.Common
+
+@inject IWorkContext workContext
+@inject IStoreContext storeContext
+@inject ISettingService settingService
+
+@{
+    var storeId = storeContext.CurrentStore.Id;
+
+    var removeCopyright = settingService.GetSettingByKey("poppythemesettings.removecopyright", false, storeId, true);
+    var removeDesignedBy = settingService.GetSettingByKey("poppythemesettings.removedesignedby", false, storeId, true);
+
+    var facebookFeedWidget = await Component.InvokeAsync("Widget", new { widgetZone = "facebook_default" });
+    var googleFeedWidget = await Component.InvokeAsync("Widget", new { widgetZone = "google_plus_default" });
+    var pinterestFeedWidget = await Component.InvokeAsync("Widget", new { widgetZone = "pinterest_default" });
+
+    var controllerName = Url.ActionContext.RouteData.Values["controller"].ToString();
+    var isHomePage = controllerName.Equals("home", StringComparison.InvariantCultureIgnoreCase);
+}
+
+<div class="footer">
+    @if (isHomePage) {
+
+        if (!String.IsNullOrEmpty(facebookFeedWidget.ToHtmlString()) || !String.IsNullOrEmpty(googleFeedWidget.ToHtmlString()) || !String.IsNullOrEmpty(pinterestFeedWidget.ToHtmlString()))
+        {
+            <div class="footer-fgp-feeds-wrap @if(!String.IsNullOrEmpty(facebookFeedWidget.ToHtmlString())){<text>with-facebook</text>} @if(String.IsNullOrEmpty(pinterestFeedWidget.ToHtmlString())){<text>no-pinterest</text>}">
+                @googleFeedWidget
+                @pinterestFeedWidget
+                @facebookFeedWidget
+            </div>
+        }
+
+    }
+    <div class="footer-upper">
+        @if (isHomePage) {
+            await Component.InvokeAsync("Widget", new { widgetZone = "instagram_default" });
+            await Component.InvokeAsync("Widget", new { widgetZone = "twitter_default" });
+        }
+        @await Component.InvokeAsync("NewsletterBox")
+    </div>
+    <div class="footer-lower">
+
+        <div class="footer-block footer-links">
+            <ul class="list">
+                <li>
+                    <a href="@Url.RouteUrl("CustomerOrders")">@T("Account.CustomerOrders")</a>
+                </li>
+                <li>
+                    <a href="@Url.RouteUrl("CustomerAddresses")" class="">@T("Account.CustomerAddresses")</a>
+                </li>
+                @if (Model.ShoppingCartEnabled && Model.DisplayShoppingCartFooterItem)
+                {
+                    <li>
+                        <a href="@Url.RouteUrl("ShoppingCart")" class="ico-cart">@T("ShoppingCart")</a>
+                    </li>
+                }
+                @if (Model.WishlistEnabled && Model.DisplayWishlistFooterItem)
+                {
+                    <li>
+                        <a href="@Url.RouteUrl("Wishlist")" class="ico-wishlist">@T("Wishlist")</a>
+                    </li>
+                }
+		@if (Model.AllowCustomersToCheckGiftCardBalance)
+                {
+                    <li><a href="@Url.RouteUrl("CheckGiftCardBalance")">@T("CheckGiftCardBalance")</a></li>
+                }
+            </ul>
+        </div>
+
+	    @await Component.InvokeAsync("SocialButtons")
+
+        @if (!removeCopyright)
+        {
+            <div class="footer-powered-by">
+                Powered by <a href="http://www.nopcommerce.com/">nopCommerce</a>
+                @*Would you like to remove the "Powered by nopCommerce" link in the bottom of the footer?
+                    Please find more info here http://www.nopcommerce.com/copyrightremoval.aspx*@
+            </div>
+        }
+        @if (!removeDesignedBy)
+        {
+            <div class="footer-designed-by">
+                Designed by <a href="http://www.nop-templates.com/" target="_blank">Nop-Templates.com</a>
+            </div>
+        }
+        <div class="footer-disclaimer">
+            @T("Content.CopyrightNotice", DateTime.Now.Year, Model.StoreName)
+        </div>
+        @if (Model.DisplayTaxShippingInfoFooter)
+        {
+            var inclTax = workContext.TaxDisplayType == TaxDisplayType.IncludingTax;
+            <div class="footer-tax-shipping">
+                @T(inclTax ? "Footer.TaxShipping.InclTax" : "Footer.TaxShipping.ExclTax", Url.RouteUrl("Topic", new { SeName = Html.GetTopicSeName("shippinginfo") }))
+            </div>
+        }
+
+        @await Component.InvokeAsync("StoreThemeSelector")
+
+    </div>
+    @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.Footer })
+</div>

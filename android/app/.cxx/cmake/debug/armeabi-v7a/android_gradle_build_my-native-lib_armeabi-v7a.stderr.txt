@@ -1,0 +1,1 @@
+ninja: error: 'Libraries/libopennurbs_public.a', needed by '/Users/iphtech34/Downloads/crowdbotics/app/build/intermediates/cmake/debug/obj/armeabi-v7a/libmy-native-lib.so', missing and no known rule to make it

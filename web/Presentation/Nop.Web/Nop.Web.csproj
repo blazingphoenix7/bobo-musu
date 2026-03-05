@@ -1,0 +1,282 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <Copyright>Copyright © Nop Solutions, Ltd</Copyright>
+    <Company>Nop Solutions, Ltd</Company>
+    <Authors>Nop Solutions, Ltd</Authors>
+    <Version>4.1.0.0</Version>
+    <Description>Nop.Web is also an MVC web application project, a presentation layer for public store and admin area.</Description>
+    <PackageLicenseUrl>http://www.nopcommerce.com/licensev3.aspx</PackageLicenseUrl>
+    <PackageProjectUrl>http://www.nopcommerce.com/</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/nopSolutions/nopCommerce</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Libraries\Nop.Core\Nop.Core.csproj" />
+    <ProjectReference Include="..\..\Libraries\Nop.Data\Nop.Data.csproj" />
+    <ProjectReference Include="..\..\Libraries\Nop.Services\Nop.Services.csproj" />
+    <ProjectReference Include="..\Nop.Web.Framework\Nop.Web.Framework.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- We copy the entire \App_Data directory. But we ignore JSON files and data protection keys  -->
+    <Content Include="App_Data\**" CopyToPublishDirectory="PreserveNewest" Exclude="App_Data\*.json" />
+    <Content Update="App_Data\*.json" CopyToPublishDirectory="Never" />
+    <Content Update="App_Data\DataProtectionKeys\*.xml" CopyToPublishDirectory="Never" />
+    <Compile Remove="Logs\**" />
+
+    <Compile Remove="Plugins\**" />
+
+    <Compile Remove="wwwroot\PrintFiles\**" />
+
+    <Content Remove="Logs\**" />
+
+    <Content Remove="Plugins\**" />
+
+    <Content Remove="wwwroot\PrintFiles\**" />
+
+    <EmbeddedResource Remove="Logs\**" />
+    <EmbeddedResource Remove="Plugins\**" />
+    <EmbeddedResource Remove="wwwroot\PrintFiles\**" />
+    <None Remove="Logs\**" />
+    <None Remove="Plugins\**" />
+    <None Remove="wwwroot\PrintFiles\**" />
+
+    <!-- We copy the entire \Plugins and \Themes directories.
+	    But we ignore cshtml and JSON files to avoid "Duplicate 'Content' items were included" error during publishing.
+	    We also can use "CheckForDuplicateItemsContinueOnError" as per https://github.com/dotnet/sdk/blob/master/src/Tasks/Microsoft.NET.Build.Tasks/build/Microsoft.NET.Sdk.DefaultItems.targets -->
+    <Content Include="Themes\**" CopyToPublishDirectory="PreserveNewest" Exclude="Themes\**\*.config;Themes\**\*.cshtml;Themes\**\*.json" />
+
+    <!-- We copy the \Logs directory -->
+    <None Remove="Themes\BoBoMuSuTheme\Content\css\bm.css" />
+    <None Remove="Themes\BoBoMuSuTheme\Content\images\bm\askforprint1.png" />
+    <None Remove="Themes\BoBoMuSuTheme\Content\images\bm\askforprint2.png" />
+    <None Remove="Themes\BoBoMuSuTheme\Content\images\bm\icons\.DS_Store" />
+    <None Remove="Themes\BoBoMuSuTheme\Content\images\bm\icons\1xArtboard 1 copy 10.png" />
+    <None Remove="Themes\BoBoMuSuTheme\Content\images\bm\icons\1xArtboard 1 copy 10@2x.png" />
+    <None Remove="Themes\BoBoMuSuTheme\Content\images\bm\icons\1xArtboard 1 copy 10@3x.png" />
+    <None Remove="Themes\BoBoMuSuTheme\Content\images\bm\icons\1xArtboard 1 copy 11B.png" />
+    <None Remove="Themes\BoBoMuSuTheme\Content\images\bm\icons\1xArtboard 1 copy 11B@2x.png" />
+    <None Remove="Themes\BoBoMuSuTheme\Content\images\bm\icons\1xArtboard 1 copy 11B@3x.png" />
+    <None Remove="Themes\BoBoMuSuTheme\Content\images\bm\icons\1xArtboard 1 copy 12B.png" />
+    <None Remove="Themes\BoBoMuSuTheme\Content\images\bm\icons\1xArtboard 1 copy 12B@2x.png" />
+    <None Remove="Themes\BoBoMuSuTheme\Content\images\bm\icons\1xArtboard 1 copy 12B@3x.png" />
+    <None Remove="Themes\BoBoMuSuTheme\Content\images\bm\icons\1xArtboard 1 copy 13.png" />
+    <None Remove="Themes\BoBoMuSuTheme\Content\images\bm\icons\1xArtboard 1 copy 13@2x.png" />
+    <None Remove="Themes\BoBoMuSuTheme\Content\images\bm\icons\1xArtboard 1 copy 13@3x.png" />
+    <None Remove="Themes\BoBoMuSuTheme\Content\images\bm\icons\1xArtboard 1 copy 2.png" />
+    <None Remove="Themes\BoBoMuSuTheme\Content\images\bm\icons\1xArtboard 1 copy 3.png" />
+    <None Remove="Themes\BoBoMuSuTheme\Content\images\bm\icons\1xArtboard 1 copy 4.png" />
+    <None Remove="Themes\BoBoMuSuTheme\Content\images\bm\icons\1xArtboard 1 copy 5.png" />
+    <None Remove="Themes\BoBoMuSuTheme\Content\images\bm\icons\1xArtboard 1 copy 5@2x.png" />
+    <None Remove="Themes\BoBoMuSuTheme\Content\images\bm\icons\1xArtboard 1 copy 5@3x.png" />
+    <None Remove="Themes\BoBoMuSuTheme\Content\images\bm\icons\1xArtboard 1 copy 6.png" />
+    <None Remove="Themes\BoBoMuSuTheme\Content\images\bm\icons\1xArtboard 1 copy 6@2x.png" />
+    <None Remove="Themes\BoBoMuSuTheme\Content\images\bm\icons\1xArtboard 1 copy 6@3x.png" />
+    <None Remove="Themes\BoBoMuSuTheme\Content\images\bm\icons\1xArtboard 1 copy 7.png" />
+    <None Remove="Themes\BoBoMuSuTheme\Content\images\bm\icons\1xArtboard 1 copy 7@2x.png" />
+    <None Remove="Themes\BoBoMuSuTheme\Content\images\bm\icons\1xArtboard 1 copy 7@3x.png" />
+    <None Remove="Themes\BoBoMuSuTheme\Content\images\bm\icons\1xArtboard 1 copy 8.png" />
+    <None Remove="Themes\BoBoMuSuTheme\Content\images\bm\icons\1xArtboard 1 copy 8@2x.png" />
+    <None Remove="Themes\BoBoMuSuTheme\Content\images\bm\icons\1xArtboard 1 copy 8@3x.png" />
+    <None Remove="Themes\BoBoMuSuTheme\Content\images\bm\icons\1xArtboard 1 copy 9B.png" />
+    <None Remove="Themes\BoBoMuSuTheme\Content\images\bm\icons\1xArtboard 1 copy 9B@2x.png" />
+    <None Remove="Themes\BoBoMuSuTheme\Content\images\bm\icons\1xArtboard 1 copy 9B@3x.png" />
+    <None Remove="Themes\BoBoMuSuTheme\Content\images\bm\icons\1xArtboard 1 copy.png" />
+    <None Remove="Themes\BoBoMuSuTheme\Content\images\bm\icons\1xArtboard 1.png" />
+    <None Remove="Themes\BoBoMuSuTheme\Content\images\bm\icons\1xArtboard 3B.png" />
+    <None Remove="Themes\BoBoMuSuTheme\Content\images\bm\icons\1xArtboard 3B@2x.png" />
+    <None Remove="Themes\BoBoMuSuTheme\Content\images\bm\icons\1xArtboard 3B@3x.png" />
+    <None Remove="Themes\BoBoMuSuTheme\Content\images\bm\logo.png" />
+    <None Remove="Themes\BoBoMuSuTheme\Content\images\bm\myprint.png" />
+    <None Remove="Themes\BoBoMuSuTheme\Content\js\bm.js" />
+    <None Remove="Themes\BoBoMuSuTheme\Content\js\bootstrap3-typeahead.min.js" />
+    <None Remove="Themes\Poppy\Content\css\bm.css" />
+    <None Remove="Themes\Poppy\Content\css\tonicons.css" />
+    <None Remove="Themes\Poppy\Content\fonts\Tonicons.eot" />
+    <None Remove="Themes\Poppy\Content\fonts\Tonicons.svg" />
+    <None Remove="Themes\Poppy\Content\fonts\Tonicons.ttf" />
+    <None Remove="Themes\Poppy\Content\fonts\Tonicons.woff" />
+    <None Remove="Themes\Poppy\Content\img\hamburger.svg" />
+    <None Remove="Themes\Poppy\Content\img\logo-inline.jpg" />
+    <None Remove="Themes\Poppy\Content\img\logo-inline.png" />
+    <None Remove="Themes\Poppy\Content\scripts\bm.js" />
+    <None Remove="Themes\Poppy\Content\scripts\bootstrap.min.js" />
+    <None Remove="Themes\Poppy\Content\scripts\bootstrap3-typeahead.min.js" />
+    <None Remove="Themes\Poppy\Content\scripts\head.min.js" />
+
+    <None Update="Areas\Admin\sitemap.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Themes\BoBoMuSuTheme\Content\Temps\" />
+    <Folder Include="Themes\BoBoMuSuTheme\Content\ProductTemplates\" />
+    <Folder Include="Themes\BoBoMuSuTheme\Content\Prints\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.1.0-preview1-final" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Areas\Admin\Views\Product\_BM_CreateOrUpdate.ModelTemplates.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Admin\Views\Shared\EditorTemplates\BMModelTemplateUpload.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Themes\BoBoMuSuTheme\Views\BMPrint\PendingRequestAccept.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Themes\BoBoMuSuTheme\Views\BMPrint\SharedPrints.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Themes\BoBoMuSuTheme\Views\BMPrint\MyPrints.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Themes\BoBoMuSuTheme\Views\BMPrint\AskForPrint.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Themes\BoBoMuSuTheme\Views\BMPrint\Messages.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Themes\BoBoMuSuTheme\Views\BMPrint\PendingRequests.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Themes\BoBoMuSuTheme\Views\Product\BMProductTemplate.AddPrints.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Themes\BoBoMuSuTheme\Views\Product\ProductTemplate.Simple_bk.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Themes\BoBoMuSuTheme\Views\Product\_BMAddPrintToCart.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Themes\BoBoMuSuTheme\Views\Shared\Components\BMNotification\BMMNotification.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Themes\BoBoMuSuTheme\Views\Shared\Components\BMNotification\Default.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Themes\BoBoMuSuTheme\Views\Shared\Components\BMPrintVaultNavigation\BMMPrintVaultNavigation.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Themes\BoBoMuSuTheme\Views\Shared\Components\BMPrintVaultNavigation\Default.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Themes\BoBoMuSuTheme\Views\Shared\Components\CustomerNavigation\BMMCustomerNavigation.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Themes\BoBoMuSuTheme\Views\Shared\Components\HeaderLinks\BMMHeaderLinks.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Themes\BoBoMuSuTheme\Views\Shared\Components\TopMenu\BMMTopMenu.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Themes\BoBoMuSuTheme\Views\Shared\_BMFooter.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Themes\BoBoMuSuTheme\Views\Shared\_BMHead.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Themes\BoBoMuSuTheme\Views\Shared\_BMHeader.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Themes\BoBoMuSuTheme\Views\Shared\_BMRoot.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Themes\BoBoMuSuTheme\Views\Shared\_BMRoot.Head.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Themes\Poppy\Views\Shared\_BMHead.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Themes\Poppy\Views\Shared\_BMRoot.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Themes\Poppy\Views\Shared\_BMRoot.Head.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Themes\Poppy\Views\Shared\_BMHeader.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Themes\BoBoMuSuTheme\Views\Shared\_Hero.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Themes\Poppy\Views\Product\BMProductTemplate.AddPrints.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Themes\Poppy\Views\Product\_BMAddPrintToCart.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Themes\Poppy\Views\Shared\Components\BMNotification\BMMNotification.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Themes\Poppy\Views\Shared\Components\BMNotification\Default.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Themes\Poppy\Views\Shared\Components\BMPrintVaultNavigation\BMMPrintVaultNavigation.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Themes\Poppy\Views\Shared\Components\BMPrintVaultNavigation\Default.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+  </ItemGroup>
+
+  <!-- This target execute after "Build" target.
+    We use it to clean up folder with plugins from unnecessary and obsolete libraries. -->
+  <Target Name="NopTarget" AfterTargets="Build">
+    <ItemGroup>
+      <!-- Get plugin description files to get plugin paths -->
+      <PluginsDescription Include="$(MSBuildProjectDirectory)\Plugins\**\plugin.json;" />      
+      <!-- Get paths for all plugins -->
+      <PluginsFolders Include="@(PluginsDescription->'%(relativedir)')" />
+
+      <!-- Get all the libraries from the shadow copy folder to remove them,
+        because depending on the settings, this may not happen when the application is starting,
+        but this can lead to unpredictable results during debugging of the project. -->
+      <ShadowCopiesLibraries Include="$(MSBuildProjectDirectory)\Plugins\bin\*.*" Exclude="$(MSBuildProjectDirectory)\Plugins\bin\placeholder.txt" />
+    </ItemGroup>
+    <PropertyGroup>
+      <PluginsFolders>@(PluginsFolders)</PluginsFolders>
+    </PropertyGroup>
+    <!-- Delete libraries from the shadow copy folder -->
+    <Delete Files="@(ShadowCopiesLibraries)" />
+    <!-- When .NET Core builds a project, it copies all referenced libraries to the output folder.
+      For plugins it creates too many unnecessary files that just take up space.
+      At the moment you can't disable this behavior. That's why we have to manually delete all unnecessary libraries from plugin output directories. -->
+    <MSBuild Projects="$(MSBuildProjectDirectory)\..\..\Build\ClearPluginAssemblies.proj" Properties="PluginPath=$(PluginsFolders)" Targets="NopClear" />
+  </Target>
+  
+  <PropertyGroup> 
+    <!--The common language runtime (CLR) supports two types of garbage collection:
+      workstation garbage collection, which is available on all systems, and server garbage collection,
+      which is available on multiprocessor systems.
+      
+      For single-processor computers, the default workstation garbage collection should be the fastest option.
+      Either workstation or server can be used for two-processor computers.
+      Server garbage collection should be the fastest option for more than two processors.
+      
+      More details about GC you can see here: https://docs.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals-->
+    <ServerGarbageCollection>false</ServerGarbageCollection>
+    <!--In workstation or server garbage collection, you can enable concurrent garbage collection,
+      which enables threads to run concurrently with a dedicated thread that performs the garbage
+      collection for most of the duration of the collection.
+      
+      Concurrent garbage collection enables interactive applications to be more responsive by
+      minimizing pauses for a collection. Managed threads can continue to run most of the time while
+      the concurrent garbage collection thread is running. This results in shorter pauses while
+      a garbage collection is occurring.
+      
+      To improve performance when several processes are running, disable concurrent garbage collection.
+      
+      More details here: https://docs.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#concurrent-garbage-collection-->
+    <ConcurrentGarbageCollection>false</ConcurrentGarbageCollection>
+  </PropertyGroup>
+
+</Project>

@@ -1,0 +1,11 @@
+.registration-page input[type=checkbox] + label:before,
+.registration-page input[type=checkbox] ~ label:before {
+  margin-top: -8px !important;
+}
+.registration-page input[type=checkbox] + label:after,
+.registration-page input[type=checkbox] ~ label:after {
+  margin-top: -3px !important;
+}
+.desktop .header-selectors-wrapper .sbSelector:after {
+  margin-top: -2px !important;
+}

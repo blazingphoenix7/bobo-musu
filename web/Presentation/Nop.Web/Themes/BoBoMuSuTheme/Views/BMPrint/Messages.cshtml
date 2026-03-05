@@ -1,0 +1,149 @@
+﻿@using System.Text.Encodings.Web
+@using Nop.Core
+@using Nop.Core.Domain.BM
+@using Nop.Web.Models.BM
+@model MessageListModel
+@inject Nop.Core.IWebHelper webHelper
+@{
+    Layout = "_ColumnsTwo";
+    //title
+    Html.AddTitleParts(T("PageTitle.Account").Text);
+    Html.AppendPageCssClassParts("print-vault");
+}
+@section left
+{
+    @await Component.InvokeAsync("BMPrintVaultNavigation", new { selectedTabId = PrintVaultNavigationEnum.Messages })
+}
+
+<div class="page account-page message-panel from-panel">
+    <div class="page-body panel-body element-scroll">
+        @if (!Model.Messages.Any())
+        {
+            <div class="no-data">
+                No data
+            </div>
+        }
+        @foreach (var item in Model.Messages)
+        {
+            if (item.RequestStatusId == (int) RequestStatus.Pending)
+            {
+                <div class="pending-request-item">
+                    <div class="row">
+                        <a class="col-sm-9 col-md-9 col-xs-12" data-toggle="collapse" data-target="#pending-request-item-@item.RequestId" href="#pending-request-item-@item.RequestId">
+                            <div class="request-sender">From: @item.FromCustomerName</div>
+                            <div class="request-sender">Request for: @item.Title<i>'s print</i></div>
+                        </a>
+                        <div class="col-sm-3 col-md-3 col-xs-12">
+                            <div class="pull-right">
+                                <button type="button"
+                                        class="btn btn-sm btn-default btn-delete-pending-request"
+                                        data-request-id="@item.RequestId">
+                                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                </button>
+                                <a href="/print/pendinglist/accept/@item.RequestId/@item.CustomerId"
+                                   class="btn btn-sm btn-primary-custom btn-accept-pending-request">
+                                    ACCEPT
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row collapse custom-collapse" id="pending-request-item-@item.RequestId">
+                        @Html.Raw(item.Message.Replace("\n","<br/>"))
+                    </div>
+                </div>
+            }
+            else if (item.RequestStatusId == (int) RequestStatus.Accept)
+            {
+                <div class="message-item">
+                    <div class="row">
+                        <a class="col-sm-9 col-md-9 col-xs-10" data-toggle="collapse" data-target="#pending-request-item-@item.RequestId" href="#pending-request-item-@item.RequestId">
+                            <div class="message-sender">From: @item.FromCustomerName</div>
+                            <div>@item.Title</div>
+                        </a>
+                        <div class="col-sm-3 col-md-3 col-xs-2">
+                            <div class="pull-right">
+                                <button type="button"
+                                        class="btn btn-sm btn-primary-custom btn-delete-message"
+                                        data-request-id="@item.RequestId">
+                                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="collapse custom-collapse" id="pending-request-item-@item.RequestId">
+                        @Html.Raw(item.Message.Replace("\n", "<br/>"))
+                        @if (item.AcceptedPrint != null)
+                        {
+                            <div class="row">
+                                <div class="col-xs-12 col-md-12 col-sm-12">
+                                    <div class="thumbnail">
+                                        <img src="@item.AcceptedPrint.ThumbnailPath" class="my-print-icon"/>
+                                        <div class="caption text-center">
+                                            <h5>@item.AcceptedPrint.Name</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+<form asp-route="BMPendingRequests_Delete" class="form-horizontal" method="post">
+    <div id="delete-pending-request-modal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Confirmation</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure delete this item?</p>
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" id="deletePendingRequestId" name="requestId" />
+                    <button type="submit" class="btn btn-primary-custom">YES</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">NO</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form asp-route="BMMessage_Delete" class="form-horizontal" method="post">
+    <div id="delete-message-modal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Confirmation</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure delete this item?</p>
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" id="deleteMessageRequestId" name="requestId" />
+                    <button type="submit" class="btn btn-primary-custom">YES</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">NO</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script asp-location="Footer">
+    $('.btn-delete-pending-request').click(function () {
+        var requestId = $(this).data('request-id');
+        $('#deletePendingRequestId').val(requestId);
+        $('#delete-pending-request-modal').modal();
+    });
+
+    $('.btn-delete-message').click(function () {
+        var requestId = $(this).data('request-id');
+        $('#deleteMessageRequestId').val(requestId);
+        $('#delete-message-modal').modal();
+    });
+</script>

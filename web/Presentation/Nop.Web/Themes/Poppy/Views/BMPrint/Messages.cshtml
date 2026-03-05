@@ -1,0 +1,213 @@
+﻿@using System.Text.Encodings.Web
+@using Nop.Core
+@using Nop.Core.Domain.BM
+@using Nop.Web.Models.BM
+@model MessageListModel
+@inject Nop.Core.IWebHelper webHelper
+@{
+  Layout = "_CustomColumns";
+
+  //title
+  Html.AddTitleParts(T("PageTitle.Account").Text);
+  Html.AppendPageCssClassParts("print-vault");
+}
+@*section left
+  {
+      @await Component.InvokeAsync("BMPrintVaultNavigation", new { selectedTabId = PrintVaultNavigationEnum.Messages })
+  }*@
+
+<div class="page account-page account-info">
+  <div class="page-title">
+    <h1>Messages</h1>
+  </div>
+  <div class="page-body" style="padding:20px;">
+    @if (!Model.Messages.Any())
+    {
+      <div class="no-data">
+        No data
+      </div>
+    }
+    else
+    {
+      var pending = Model.Messages.Where(m => m.RequestStatusId == (int)RequestStatus.Pending);
+      var accept = Model.Messages.Where(m => m.RequestStatusId == (int)RequestStatus.Accept);
+
+      <div id="messageTabs">
+        <div>
+          <ul>
+            <li>
+              <a href="#pendingQueue">PENDING</a>
+            </li>
+            <li>
+              <a href="#acceptedQueue">Accepted</a>
+            </li>
+          </ul>
+        </div>
+        <div class="messageTabs-body">
+          <div id="pendingQueue">
+            @if (!pending.Any())
+            {
+              <div class="no-data" style="text-align:center !important">
+                No pending requests found!
+              </div>
+            }
+            else
+            {
+              <div id="accordion1">
+                @foreach (var item in pending)
+                {
+                  <h3>
+                    <div><strong>@item.FromCustomerName</strong></div>
+                    <div style="font-size:12px;text-transform:none"><i>@item.Title's print</i></div>
+                  </h3>
+                  <div class="product-details" style="margin:10px !important">
+                    <div class="pull-right">
+                      <button type="button" title="Remove this message"
+                              class="close-button btn-delete-pending-request"
+                              data-request-id="@item.RequestId">
+                      </button>&nbsp;&nbsp;
+                      <a href="/print/pendinglist/accept/@item.RequestId/@item.CustomerId"
+                         class="btn-accept-pending-request">
+                        ACCEPT
+                      </a>
+                    </div>
+                    <div style="text-align:left;" id="pending-request-item-@item.RequestId">
+                      <p style="padding-top:20px;">
+                        @Html.Raw(item.Message.Replace("\n", "<br/>"))
+                      </p>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+          <div id="acceptedQueue">
+            @if (!accept.Any())
+            {
+              <div class="no-data" style="text-align:center !important">
+                No accepted requests found!
+              </div>
+            }
+            else
+            {
+              <div id="accordion2">
+                @foreach (var item in accept)
+                {
+                  <h3>
+                    <div><strong>@item.FromCustomerName</strong></div>
+                    <div style="font-size:12px;text-transform:none"><i>@item.Title's print</i></div>
+                  </h3>
+                  <div class="product-details" style="margin:10px !important">
+                    <div class="pull-right">
+                      <button type="button" title="Remove this message"
+                              class="close-button btn-delete-message"
+                              data-request-id="@item.RequestId">
+                      </button>
+                    </div>
+                    <div id="pending-request-item-@item.RequestId" style="text-align:left;">
+                      <p>
+                        @if (item.AcceptedPrint != null)
+                        {
+                          <div class="thumbnail pull-left" style="margin-right:5px;">
+                            <img src="@item.AcceptedPrint.ThumbnailPath" class="my-print-icon" />
+                            <div class="caption text-center">
+                              <h5 style="margin:0 !important">@item.AcceptedPrint.Name</h5>
+                            </div>
+                          </div>
+                        }
+                      <p style="padding-top:20px;">
+                        @Html.Raw(item.Message.Replace("\n", "<br/>"))
+                      </p>
+                      </p>
+                      <div class="clearfix"></div>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+      @*@if (Model.Messages.Any(m => m.RequestStatusId == (int)RequestStatus.Pending))
+        {
+          <div style="text-align:right;margin-bottom:5px;margin-top:-20px;">
+            <span style="display:inline-block;margin-bottom:-5px; border-radius:50%;height:20px;width:20px;background:#f3ecd7"></span>
+            <span> Pending Acceptance</span>
+          </div>
+        }*@
+
+    }
+  </div>
+</div>
+
+<form asp-route="BMPendingRequests_Delete" class="form-horizontal" method="post">
+  <div id="delete-pending-request-modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">Confirmation</h4>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure delete this message?</p>
+        </div>
+        <div class="modal-footer">
+          <input type="hidden" id="deletePendingRequestId" name="requestId" />
+          <button type="submit" class="btn btn-primary-custom btn-sm">YES</button>
+          <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">NO</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+<form asp-route="BMMessage_Delete" class="form-horizontal" method="post">
+  <div id="delete-message-modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">Confirmation</h4>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure delete this message?</p>
+        </div>
+        <div class="modal-footer">
+          <input type="hidden" id="deleteMessageRequestId" name="requestId" />
+          <button type="submit" class="btn btn-primary-custom btn-sm">YES</button>
+          <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">NO</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+<script asp-location="Footer">
+
+  $(document).ready(function () {
+    $("#accordion1, #accordion2").accordion({
+      icons: { header: "ui-icon-circle-arrow-e", activeHeader: "ui-icon-circle-arrow-s" },
+      heightStyle: 'content',
+      collapsible: true,
+      //Set the active accodtion tab to none
+      active: 'none'
+    });
+
+    $("#messageTabs").tabs({
+      active: 0
+    });
+
+  });
+
+  $('.btn-delete-pending-request').click(function () {
+    var requestId = $(this).data('request-id');
+    $('#deletePendingRequestId').val(requestId);
+    $('#delete-pending-request-modal').modal();
+  });
+
+  $('.btn-delete-message').click(function () {
+    var requestId = $(this).data('request-id');
+    $('#deleteMessageRequestId').val(requestId);
+    $('#delete-message-modal').modal();
+  });
+</script>

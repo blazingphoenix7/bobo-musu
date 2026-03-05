@@ -1,0 +1,38 @@
+[[source]]
+verify_ssl = true
+url = "https://pypi.org/simple"
+name = "pypi"
+
+[dev-packages]
+ipdb = "*"
+werkzeug = "*"
+pyopenssl = "*"
+
+[requires]
+python_version = "3.7"
+
+[packages]
+django = "==2.2.16"
+django-environ = "==0.4.4"
+psycopg2 = "==2.8.5"
+waitress = "==1.0.2"
+whitenoise = "==3.3.0"
+djangorestframework = "*"
+django-bootstrap4 = "*"
+django-allauth = "*"
+cookiecutter = "*"
+django-extensions = "*"
+django-debug-toolbar = "*"
+django-cors-headers = "*"
+drf-yasg = "*"
+django-storages = "*"
+django-cleanup = "*"
+boto3 = "*"
+django-imagekit = "*"
+pillow = "*"
+shopifyapi = "*"
+fcm-django = "*"
+cryptography = "*"
+graphqlclient = "*"
+django-taggit = "*"
+django-taggit-serializer = "*"

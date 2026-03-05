@@ -1,0 +1,9 @@
+﻿@model CustomerNavigationModel
+<ul class="nav navbar-nav">
+    @foreach (var item in Model.CustomerNavigationItems)
+    {
+        <li class="@item.ItemClass">
+            <a href="@Url.RouteUrl(item.RouteName)" class="@(Model.SelectedTab == item.Tab ? "active" : "inactive")">@(item.Title)</a>
+        </li>
+    }
+</ul>

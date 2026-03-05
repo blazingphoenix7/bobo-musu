@@ -1,0 +1,30 @@
+﻿@using Nop.Web.Models.BM
+@model PrintVaultNavigationModel
+<div class="btn-group btn-group-justified element-fixed" role="group" aria-label="...">
+    @{
+        var items = Model.PrintVaultNavigationItems.Where(m=>m.Tab == PrintVaultNavigationEnum.MyPrints ||
+                                                             m.Tab == PrintVaultNavigationEnum.SharedPrints ||
+                                                             m.Tab == PrintVaultNavigationEnum.Messages ||
+                                                             m.Tab == PrintVaultNavigationEnum.AskForPrint).ToList();
+        if (Model.SelectedTab == PrintVaultNavigationEnum.SharedPrints)
+        {
+            items = items.Where(m => m.Tab != PrintVaultNavigationEnum.MyPrints).ToList();
+        }
+        else
+        {
+            items = items.Where(m => m.Tab != PrintVaultNavigationEnum.SharedPrints).ToList();
+        }
+    }
+    @foreach (var item in items)
+    {
+        var selectedItem = false;
+        {
+            selectedItem = Model.SelectedTab == item.Tab;
+        }
+        <div class="btn-print-vault-nav@(item!=items.Last() ? " sep" : "")">
+            <a href="@Url.RouteUrl(item.RouteName)"
+               class="@(selectedItem ? "active" : "inactive")")>@(item.Title)
+            </a>
+        </div>
+    }
+</div>

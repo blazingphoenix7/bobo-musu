@@ -1,0 +1,20 @@
+﻿@using Nop.Web.Models.BM
+@model PrintVaultNavigationModel
+@{
+    var items = Model.PrintVaultNavigationItems.OrderBy(m => (int) m.Tab).ToList();
+}   
+<div class="block block-account-navigation well">
+    <div class="title">
+        <strong>Print Vault</strong>
+    </div>
+    <div class="listbox">
+        <ul class="nav nav-list">
+            @foreach (var item in items)
+            {
+                <li class="@item.ItemClass">
+                    <a href="@Url.RouteUrl(item.RouteName)" class="@(Model.SelectedTab == item.Tab ? "active" : "inactive")">@(item.Title)</a>
+                </li>
+            }
+        </ul>
+    </div>
+</div>

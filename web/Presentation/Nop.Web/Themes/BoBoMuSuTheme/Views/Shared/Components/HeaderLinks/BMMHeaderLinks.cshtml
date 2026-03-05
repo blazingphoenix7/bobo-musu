@@ -1,0 +1,44 @@
+﻿@model HeaderLinksModel
+<div class="navbar-brand navbar-brand-custom hide">
+    <a href="@Url.RouteUrl("HomePage")"><i class="glyphicon glyphicon-home main-menu-item-icon main-menu-item-icon-home"></i></a>
+    @*<a href="/shop" class="glyphicon glyphicon-search main-menu-item-icon main-menu-item-icon-shop"></a>*@
+    <a href="@Url.RouteUrl("BMMyPrints")" class="glyphicon glyphicon-camera main-menu-item-icon main-menu-item-icon-myprints"></a>
+    @if (Model.ShoppingCartEnabled && Model.IsAuthenticated)
+    {
+        <a href="@Url.RouteUrl("ShoppingCart")">
+            <span class="glyphicon glyphicon-shopping-cart main-menu-item-icon main-menu-item-icon-cart"></span>
+            <span class="main-menu-item-icon-text">@T("ShoppingCart.HeaderQuantity", Model.ShoppingCartItems)</span>
+        </a>
+    }
+    @if (Model.WishlistEnabled)
+    {
+        <a href="@Url.RouteUrl("Wishlist")">
+            <span class="glyphicon glyphicon-heart main-menu-item-icon main-menu-item-icon-wishlist"></span>
+            <span class="main-menu-item-icon-text">@T("Wishlist.HeaderQuantity", Model.WishlistItems)</span>
+        </a>
+    }
+</div>
+
+<script asp-location="Footer">
+    $(document).ready(function () {
+        // Menu icons need to be same distance from each over
+        var numberItems = $('.navbar-brand-custom a').length;
+        switch (numberItems) {
+            case 3:
+                $('.navbar-brand-custom a').addClass('navbar-brand-custom-a-33');
+            break;
+            case 4:
+                $('.navbar-brand-custom a').addClass('navbar-brand-custom-a-25');
+                break;
+            case 5:
+                $('.navbar-brand-custom a').addClass('navbar-brand-custom-a-20');
+                break;
+            case 6:
+                $('.navbar-brand-custom a').addClass('navbar-brand-custom-a-16');
+                break;
+            default:
+        }
+        $('.navbar-brand-custom').removeClass('hide');
+        bm.activeMainMenuItem();
+    });
+</script>

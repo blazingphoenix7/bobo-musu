@@ -1,0 +1,33 @@
+﻿@model ProductDetailsModel
+@using Microsoft.AspNetCore.Http.Extensions
+@using Nop.Core.Domain.Orders
+@using Nop.Core.Domain.Seo;
+@inject Nop.Core.IWebHelper webHelper
+@inject SeoSettings seoSettings
+@{
+    Layout = "_ColumnsOne";
+
+    //title
+    Html.AddTitleParts(!string.IsNullOrEmpty(Model.MetaTitle) ? Model.MetaTitle : Model.Name);
+}
+
+<div class="page product-details-page">
+    @if (Context.Request.IsMobileBrowser())
+    {
+        <div class="page-title panel-heading element-fixed">
+            <a href="javascript:void(0);" class="back-prev-page-link"><i class="glyphicon glyphicon-home glyphicon-menu-left back-prev-icon"></i></a>
+        </div>
+    }
+    <div class="page-body">
+        <form asp-route="Product" asp-route-sename="@Model.SeName" method="post" id="product-details-form">
+            <div itemscope itemtype="http://schema.org/Product" data-productid="@Model.Id">
+                <div class="product-essential from-panel">
+                    <div class="panel-body">
+                        <!--product pictures-->
+                        @await Html.PartialAsync("_BMAddPrintToCart", Model)
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

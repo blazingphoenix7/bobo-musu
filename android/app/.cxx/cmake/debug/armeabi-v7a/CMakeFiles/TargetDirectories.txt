@@ -1,0 +1,3 @@
+/Users/iphtech34/Downloads/crowdbotics/app/.cxx/cmake/debug/armeabi-v7a/CMakeFiles/rebuild_cache.dir
+/Users/iphtech34/Downloads/crowdbotics/app/.cxx/cmake/debug/armeabi-v7a/CMakeFiles/edit_cache.dir
+/Users/iphtech34/Downloads/crowdbotics/app/.cxx/cmake/debug/armeabi-v7a/CMakeFiles/my-native-lib.dir

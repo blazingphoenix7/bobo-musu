@@ -1,0 +1,43 @@
+{% extends 'dashboard/base.html' %}
+{% block page_title %}Shopify Products{% endblock %}
+
+{% block content %}
+    {% load extra %}
+    <div class="card">
+        <div class="card-header border-0">
+            <h3 class="mb-0">Shopify Products</h3>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-sm align-items-center table-flush">
+                    <thead class="thead-light">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Title</th>
+                        <th scope="col">Product Type</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody class="list">
+                    {% for product in products %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ product.title }}</td>
+                            <td>{{ product.product_type }}</td>
+                            <td>{{ product.status }}</td>
+                            <td>
+                                <a class="btn btn-primary btn-sm" target="_blank"
+                                   href="{% shopify_product_link product.handle %}">View</a>
+                                <a class="btn btn-primary btn-sm" target="_blank"
+                                   href="{% url 'dashboard:fingerprint_3d_viewer' product.handle %}">3D
+                                    View</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

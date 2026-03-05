@@ -1,0 +1,60 @@
+﻿@using Nop.Core
+@using Nop.Core.Infrastructure
+@using Nop.Services.Configuration
+@using Nop.Services.Localization
+@using Microsoft.AspNetCore.Mvc;
+@using Nop.Web.Extensions;
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor httpAccesor
+@inject IStoreContext storeContext
+@inject ISettingService settingService
+
+@{
+  var storeId = storeContext.CurrentStore.Id;
+  var workingLanguageId = EngineContext.Current.Resolve<IWorkContext>().WorkingLanguage.Id;
+  bool isMobile = httpAccesor.HttpContext.Request.IsMobileBrowser();
+
+  var removeCopyright = settingService.GetSettingByKey("poppythemesettings.removecopyright", false, storeId, true);
+  var removeDesignedBy = settingService.GetSettingByKey("poppythemesettings.removedesignedby", false, storeId, true);
+
+}
+@if (!isMobile)
+{
+  <div class="header">
+    @await Component.InvokeAsync("Widget", new { widgetZone = "header" })
+    <div class="header-top">
+      @if (!isMobile)
+      {
+        <div class="header-logo">
+          @await Component.InvokeAsync("Logo")
+        </div>
+      }
+      <div class="desktop-filters-button">
+        <span>@T("SevenSpikes.Themes.Poppy.Common.Filters")</span>
+      </div>
+
+      <div class="desktop-blog-options-button">
+        <span>@T("SevenSpikes.Themes.Poppy.Common.BlogOptions")</span>
+      </div>
+    </div>
+
+
+    <div class="header-footer">
+
+      @await Component.InvokeAsync("SocialButtons")
+
+      @if (!removeCopyright)
+      {
+        <div class="footer-powered-by">
+          Powered by <a href="http://www.nopcommerce.com/">nopCommerce</a>
+        </div>
+      }
+      @if (!removeDesignedBy)
+      {
+        <div class="footer-designed-by">
+          Designed by <a href="http://www.nop-templates.com/" target="_blank">Nop-Templates.com</a>
+        </div>
+      }
+    </div>
+  </div>
+}

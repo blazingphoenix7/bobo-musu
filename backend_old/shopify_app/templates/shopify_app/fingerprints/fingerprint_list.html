@@ -1,0 +1,27 @@
+{% extends 'shopify_app/app_base.html' %}
+{% block content %}
+    <div class="container">
+    <table class="table table-sm">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Customer ID</th>
+            <th scope="col">Title</th>
+            <th scope="col">Created</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for fingerprint in fingerpritns %}
+            <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{ fingerprint.customer_id }}</td>
+                <td>{{ fingerprint.fingerprint_title }}</td>
+                <td>{{ fingerprint.created }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+
+
+{% endblock %}

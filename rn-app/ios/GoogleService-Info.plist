@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>694474874839-f62nq2c8sj6ie4ha0ut3va89fq08747q.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.694474874839-f62nq2c8sj6ie4ha0ut3va89fq08747q</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCm1gicywpUp-lhc_JsQqJ_I4J-bdFpIMY</string>
+	<key>GCM_SENDER_ID</key>
+	<string>694474874839</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.crowdbotics.bolomusu</string>
+	<key>PROJECT_ID</key>
+	<string>bobo-musu-3479</string>
+	<key>STORAGE_BUCKET</key>
+	<string>bobo-musu-3479.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:694474874839:ios:3a92776b6343c2adbc7592</string>
+	<key>DATABASE_URL</key>
+	<string>https://bobo-musu-3479.firebaseio.com</string>
+</dict>
+</plist>

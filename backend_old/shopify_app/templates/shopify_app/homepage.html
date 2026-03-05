@@ -1,0 +1,10 @@
+{% extends 'shopify_app/app_base.html' %}
+{% block title %}Homepage{% endblock %}
+
+{% block content %}
+    Homepage
+    {% if current_shop %}
+        {{ current_shop }}
+    {% endif %}
+    <a class="button btn" href="{% url 'app_fingerprint_list' %}">Fingerprints</a>
+{% endblock %}

@@ -1,0 +1,11 @@
+﻿@model EditForumTopicModel
+@{    
+    Layout = "_ColumnsOne";
+
+    Html.AddTitleParts(T("Forum.PageTitle.TopicNew").Text);
+}
+@await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.BoardsTopicCreateBefore, additionalData = Model })
+
+@await Html.PartialAsync("_CreateUpdateTopic", Model)
+
+@await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.BoardsTopicCreateAfter, additionalData = Model })

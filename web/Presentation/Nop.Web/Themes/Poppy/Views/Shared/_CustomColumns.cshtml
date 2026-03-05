@@ -1,0 +1,52 @@
+﻿@{
+  Layout = "_Root";
+}
+@if (IsSectionDefined("Breadcrumb"))
+{
+  @section Breadcrumb {
+    @RenderSection("Breadcrumb")
+  }
+}
+
+@if (IsSectionDefined("blogNavigation"))
+{
+  @section blogNavigationSection {
+    @RenderSection("blogNavigation")
+  }
+}
+@section AboveCss{
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+}
+<style>
+  a {
+    color: #a3a3a3;
+  }
+
+    .top-menu a:focus, a:hover {
+      color: #dab1b5;
+      text-decoration: unset;
+    }
+
+    a.with-subcategories:focus, a.with-subcategories:hover {
+      color: #a3a3a3;
+    }
+
+  #delete-print-modal {
+    background: rgba(34, 34, 34, 0.4);
+    z-index: 2;
+  }
+
+  .modal-backdrop.in {
+    display: none;
+    background: transparent;
+  }
+
+  .modal-dialog {
+    margin-top: 120px;
+  }
+</style>
+<div class="center-1">
+  @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.MainColumnBefore })
+  @RenderBody()
+  @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.MainColumnAfter })
+</div>

@@ -1,0 +1,18 @@
+{
+  "designs": [
+    {
+      "id": "PDG040",
+      "filename": "PDG040.3dm",
+      "display_name": "Pendant \u2014 5 Zone",
+      "description": "Pendant with 5 fingerprint zones",
+      "has_gems": false
+    },
+    {
+      "id": "P246",
+      "filename": "P246442LY.3dm",
+      "display_name": "Pendant \u2014 2 Zone",
+      "description": "Pendant with 2 fingerprint zones",
+      "has_gems": true
+    }
+  ]
+}

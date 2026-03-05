@@ -1,0 +1,81 @@
+﻿@using System.Text.Encodings.Web
+@using Nop.Core
+@using Nop.Web.Models.BM
+@model RequestModel
+@inject Nop.Core.IWebHelper webHelper
+@{
+  Layout = "_CustomColumns";
+
+  //title
+  Html.AddTitleParts(T("PageTitle.Account").Text);
+}
+@*section left
+  {
+      @await Component.InvokeAsync("BMPrintVaultNavigation", new { selectedTabId = PrintVaultNavigationEnum.PendingRequests })
+  }*@
+
+<div class="page account-page customer-info-page">
+  <div class="page-title">
+    <h1>Accept Print Request</h1>
+  </div>
+  <div class="page-body">
+    <form asp-route="BMPendingRequests_Accept" class="form-horizontal" method="post">
+      <div>
+        <div class="inputs is-required">
+          <label asp-for="Title">To <span><nop-required /></span></label>
+          <input type="text" asp-for="Title" placeholder="@Html.DisplayNameFor(m=>m.Title)" class="form-control" autocomplete="off" />
+        </div>
+        <div class="inputs is-required">
+          <label class="pull-left" asp-for="Message">Message <nop-required /></label>
+          <textarea rows="5" class="form-control" style="border-radius:0px !important" placeholder="@Html.DisplayNameFor(m=>m.Message)" asp-for="Message"></textarea>
+        </div>
+        <div class="inputs is-required">
+          <select class="form-control dropdown-toggle select-print-share" asp-for="SharedPrintId">
+            <option selected="selected" value="">SELECT PRINT</option>
+            @foreach (var item in Model.MyPrints)
+            {
+              <option value="@item.Id" data-thumbnail-path="@item.ThumbnailPath">@item.Name</option>
+            }
+
+          </select>
+
+        </div>
+        <div class="inputs pull-text-center">
+          <label style="margin:0 auto;text-align:center;">OR</label>
+        </div>
+        <div class="inputs is-required">
+          <button type="button" class="button-1 save-customer-info-button" style="background:#73ba24">Take a Print</button>
+        </div>
+      </div>
+      <hr/>
+      <div class="row inputs">
+        <div class="row">
+          <div class="col-xs-12 col-md-6 col-sm-6" style="margin-top:10px;">
+
+          <button type="submit" class="button-1 save-customer-info-button" style="background:#2e5372">SUBMIT</button>
+          </div>
+          <div class="col-xs-12 col-md-6 col-sm-6" style="margin-top:10px;">
+          <a href="/print/messagelist" class="button-1 save-customer-info-button" style="display:block;line-height:48px;">CANCEL</a>
+
+          </div>
+          <input type="hidden" id="requestId" asp-for="RequestId" value="@Model.RequestId" />
+          <input type="hidden" id="toCustomerId" asp-for="ToCustomerId" value="@Model.ToCustomerId" />
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<script asp-location="Footer">
+  $('.select-print-share').change(function () {
+    var thumbPath = $(".select-print-share option:selected").data('thumbnail-path');
+    if (thumbPath) {
+      $('.my-print-icon').attr('src', thumbPath);
+      $('.view-select-print-share').removeClass('hide');
+    } else {
+      $('.view-select-print-share').addClass('hide');
+    }
+  });
+  $('.btn-add-new-print').click(function () {
+    bm.addNewPrint();
+  });
+</script>

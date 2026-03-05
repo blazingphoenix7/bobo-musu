@@ -1,0 +1,1911 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		405459E744100D33FCD67186 /* Pods_FingerprintScanner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B53FCB27642DFC813169114 /* Pods_FingerprintScanner.framework */; };
+		B702186C20F88FFF008A89C9 /* oval.3dm in Resources */ = {isa = PBXBuildFile; fileRef = B702186A20F88FFF008A89C9 /* oval.3dm */; };
+		B702186D20F88FFF008A89C9 /* pear.3dm in Resources */ = {isa = PBXBuildFile; fileRef = B702186B20F88FFF008A89C9 /* pear.3dm */; };
+		B70672FD20B2E0F800A1DDDF /* Model3DManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = B70672FC20B2E0F800A1DDDF /* Model3DManager.mm */; };
+		B711A14C20E0F8BC00412425 /* Export3dConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = B711A14B20E0F8BC00412425 /* Export3dConfiguration.m */; };
+		B711A14F20E0FBB200412425 /* ConfigObject.m in Sources */ = {isa = PBXBuildFile; fileRef = B711A14E20E0FBB200412425 /* ConfigObject.m */; };
+		B711A15220E0FD5A00412425 /* Transform.m in Sources */ = {isa = PBXBuildFile; fileRef = B711A15120E0FD5A00412425 /* Transform.m */; };
+		B728FF57221AC5AE00E729C0 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B728FF56221AC5AE00E729C0 /* NetworkManager.swift */; };
+		B728FF5C221ACC2800E729C0 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = B728FF5B221ACC2800E729C0 /* Session.swift */; };
+		B737679F221BEBD70003BB88 /* UIViewController+Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = B737679E221BEBD70003BB88 /* UIViewController+Alert.swift */; };
+		B7591B7C21CB874500374FC3 /* Preview3DModelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7591B7B21CB874500374FC3 /* Preview3DModelViewController.swift */; };
+		B7591B7E21CB893500374FC3 /* Vertex.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7591B7D21CB893500374FC3 /* Vertex.swift */; };
+		B75C06B521D36A3D003F45D9 /* CoordColor.m in Sources */ = {isa = PBXBuildFile; fileRef = B75C06B421D36A3D003F45D9 /* CoordColor.m */; };
+		B75C06B721D36DD6003F45D9 /* Texture.swift in Sources */ = {isa = PBXBuildFile; fileRef = B75C06B621D36DD6003F45D9 /* Texture.swift */; };
+		B75C06BD21D3700F003F45D9 /* Coord2D.m in Sources */ = {isa = PBXBuildFile; fileRef = B75C06BC21D3700F003F45D9 /* Coord2D.m */; };
+		B75D6D5B21CD189C00879D02 /* Coord3D.m in Sources */ = {isa = PBXBuildFile; fileRef = B75D6D5A21CD189C00879D02 /* Coord3D.m */; };
+		B75D6D5E21CD191B00879D02 /* RenderContent.m in Sources */ = {isa = PBXBuildFile; fileRef = B75D6D5D21CD191B00879D02 /* RenderContent.m */; };
+		B7620A502244F54900385572 /* UIImage+Rotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7620A4F2244F54900385572 /* UIImage+Rotation.swift */; };
+		B763BA571EC9C19F007F7B9D /* 3.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B763BA561EC9C19F007F7B9D /* 3.jpg */; };
+		B763BA5A1EC9C9AD007F7B9D /* SendMailInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B763BA591EC9C9AD007F7B9D /* SendMailInfo.swift */; };
+		B764D787225DE578005B5F06 /* UIView+AL.swift in Sources */ = {isa = PBXBuildFile; fileRef = B764D786225DE578005B5F06 /* UIView+AL.swift */; };
+		B764D78A225DE7F1005B5F06 /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = B764D789225DE7F1005B5F06 /* logo.png */; };
+		B765CA5B1EB890EF001E5698 /* CheckResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B765CA5A1EB890EF001E5698 /* CheckResultViewController.swift */; };
+		B765D31A222E9C53009B4F8B /* gold_tex.png in Resources */ = {isa = PBXBuildFile; fileRef = B765D319222E9C53009B4F8B /* gold_tex.png */; };
+		B771AD1B21F9A81C004528F6 /* Transformations.swift in Sources */ = {isa = PBXBuildFile; fileRef = B771AD1A21F9A81C004528F6 /* Transformations.swift */; };
+		B773DD561ED2C446001895C0 /* SamplePhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = B773DD551ED2C446001895C0 /* SamplePhoto.swift */; };
+		B773DD581ED2C88D001895C0 /* PreviewPhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B773DD571ED2C88D001895C0 /* PreviewPhotoViewController.swift */; };
+		B7784D9E210898AE00CFD4E5 /* oval.png in Resources */ = {isa = PBXBuildFile; fileRef = B7784D9D210898AE00CFD4E5 /* oval.png */; };
+		B7784DA0210898B300CFD4E5 /* pear.png in Resources */ = {isa = PBXBuildFile; fileRef = B7784D9F210898B300CFD4E5 /* pear.png */; };
+		B78A08A81EC5EFB800E1F92B /* 2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B78A08A71EC5EFB800E1F92B /* 2.jpg */; };
+		B79F3B881EBC954F00EAD970 /* ContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B79F3B871EBC954F00EAD970 /* ContainerViewController.swift */; };
+		B79F3B8C1EBCA23C00EAD970 /* FingersManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B79F3B8B1EBCA23C00EAD970 /* FingersManager.swift */; };
+		B79F3B901EBCB21D00EAD970 /* PrefsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B79F3B8F1EBCB21D00EAD970 /* PrefsManager.swift */; };
+		B7A2B0451EB7124500752E2A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7A2B0441EB7124500752E2A /* AppDelegate.swift */; };
+		B7A2B0471EB7124500752E2A /* InstructionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7A2B0461EB7124500752E2A /* InstructionsViewController.swift */; };
+		B7A2B04A1EB7124500752E2A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B7A2B0481EB7124500752E2A /* Main.storyboard */; };
+		B7A2B04C1EB7124500752E2A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B7A2B04B1EB7124500752E2A /* Assets.xcassets */; };
+		B7A2B04F1EB7124500752E2A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B7A2B04D1EB7124500752E2A /* LaunchScreen.storyboard */; };
+		B7A2B05A1EB7124500752E2A /* FingerprintScannerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7A2B0591EB7124500752E2A /* FingerprintScannerTests.swift */; };
+		B7A2B0651EB7124500752E2A /* FingerprintScannerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7A2B0641EB7124500752E2A /* FingerprintScannerUITests.swift */; };
+		B7A2B0731EB71B3D00752E2A /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7A2B0721EB71B3D00752E2A /* CameraViewController.swift */; };
+		B7A558441EC469540037E262 /* DottedCircleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7A558431EC469540037E262 /* DottedCircleView.swift */; };
+		B7A558471EC47C580037E262 /* UIViewController+HideKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7A558461EC47C580037E262 /* UIViewController+HideKeyboard.swift */; };
+		B7A5584B1EC47D0E0037E262 /* SubmissionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7A5584A1EC47D0E0037E262 /* SubmissionViewController.swift */; };
+		B7A5584D1EC48C300037E262 /* String+Validation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7A5584C1EC48C300037E262 /* String+Validation.swift */; };
+		B7AECAD41ECDA691004BE2FF /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7AECAD31ECDA691004BE2FF /* Utils.swift */; };
+		B7B3CEB81EC58BC400497AC3 /* ConfirmationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7B3CEB71EC58BC400497AC3 /* ConfirmationViewController.swift */; };
+		B7B3CEBA1EC595A900497AC3 /* sample.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B7B3CEB91EC595A900497AC3 /* sample.jpg */; };
+		B7B71D751EC3295A0093A6A1 /* RectangularTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7B71D741EC3295A0093A6A1 /* RectangularTextField.swift */; };
+		B7B71D771EC32C490093A6A1 /* cambriai.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B7B71D761EC32C490093A6A1 /* cambriai.ttf */; };
+		B7C3614720FCBD2D001907C2 /* ring.3dm in Resources */ = {isa = PBXBuildFile; fileRef = B7C3614620FCBD2D001907C2 /* ring.3dm */; };
+		B7C3615220FCCAC5001907C2 /* pear.plist in Resources */ = {isa = PBXBuildFile; fileRef = B7C3614A20FCCAC5001907C2 /* pear.plist */; };
+		B7C3615420FCCAC5001907C2 /* ring.plist in Resources */ = {isa = PBXBuildFile; fileRef = B7C3614D20FCCAC5001907C2 /* ring.plist */; };
+		B7C3615620FCCAC5001907C2 /* oval.plist in Resources */ = {isa = PBXBuildFile; fileRef = B7C3615020FCCAC5001907C2 /* oval.plist */; };
+		B7CB073620F4F7A600F9A49C /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B7CB073520F4F7A600F9A49C /* OpenGLES.framework */; };
+		B7D7B70C20FF2F760049B1B1 /* BaseModelCreator.mm in Sources */ = {isa = PBXBuildFile; fileRef = B7D7B70B20FF2F760049B1B1 /* BaseModelCreator.mm */; };
+		B7D7B70F20FF341F0049B1B1 /* MaskModelCreator.mm in Sources */ = {isa = PBXBuildFile; fileRef = B7D7B70E20FF341F0049B1B1 /* MaskModelCreator.mm */; };
+		B7D7B71520FF48980049B1B1 /* RingModelCreator.mm in Sources */ = {isa = PBXBuildFile; fileRef = B7D7B71420FF48980049B1B1 /* RingModelCreator.mm */; };
+		B7EA19262282F20F00E733E7 /* ContactsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7EA19252282F20F00E733E7 /* ContactsManager.swift */; };
+		B7F18CAB1EC074A90045C8B3 /* RoundedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7F18CAA1EC074A90045C8B3 /* RoundedButton.swift */; };
+		B7F18CAF1EC07D150045C8B3 /* HTOWERT.TTF in Resources */ = {isa = PBXBuildFile; fileRef = B7F18CAD1EC07D150045C8B3 /* HTOWERT.TTF */; };
+		B7F18CB01EC07D150045C8B3 /* HTOWERTI.TTF in Resources */ = {isa = PBXBuildFile; fileRef = B7F18CAE1EC07D150045C8B3 /* HTOWERTI.TTF */; };
+		B7F18CB21EC07F650045C8B3 /* cambria.ttc in Resources */ = {isa = PBXBuildFile; fileRef = B7F18CB11EC07F650045C8B3 /* cambria.ttc */; };
+		B7FBE5741EBA03720053ABAD /* ImageMagicWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = B7FBE5731EBA03720053ABAD /* ImageMagicWrapper.m */; };
+		B7FBE5761EBA05EC0053ABAD /* libxml2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = B7FBE5751EBA05EC0053ABAD /* libxml2.tbd */; };
+		B7FBE57A1EBA07C60053ABAD /* 1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B7FBE5781EBA07C60053ABAD /* 1.jpg */; };
+		DD059C3C2214724900CDA91D /* WebViewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD059C3B2214724900CDA91D /* WebViewViewController.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		B7A2B0561EB7124500752E2A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B7A2B0391EB7124500752E2A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B7A2B0401EB7124500752E2A;
+			remoteInfo = FingerprintScanner;
+		};
+		B7A2B0611EB7124500752E2A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B7A2B0391EB7124500752E2A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B7A2B0401EB7124500752E2A;
+			remoteInfo = FingerprintScanner;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		16BCDED215D53F9EF991F4A5 /* Pods-FingerprintScanner.release bobo.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FingerprintScanner.release bobo.xcconfig"; path = "Pods/Target Support Files/Pods-FingerprintScanner/Pods-FingerprintScanner.release bobo.xcconfig"; sourceTree = "<group>"; };
+		572440008248D7314BE433FC /* Pods-FingerprintScanner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FingerprintScanner.release.xcconfig"; path = "Pods/Target Support Files/Pods-FingerprintScanner/Pods-FingerprintScanner.release.xcconfig"; sourceTree = "<group>"; };
+		5B53FCB27642DFC813169114 /* Pods_FingerprintScanner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FingerprintScanner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		7A1D851613BD7EB2F889439F /* Pods-FingerprintScanner.debug bobo.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FingerprintScanner.debug bobo.xcconfig"; path = "Pods/Target Support Files/Pods-FingerprintScanner/Pods-FingerprintScanner.debug bobo.xcconfig"; sourceTree = "<group>"; };
+		86BF3A5147511788F13E1124 /* Pods-FingerprintScanner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FingerprintScanner.debug.xcconfig"; path = "Pods/Target Support Files/Pods-FingerprintScanner/Pods-FingerprintScanner.debug.xcconfig"; sourceTree = "<group>"; };
+		B702186A20F88FFF008A89C9 /* oval.3dm */ = {isa = PBXFileReference; lastKnownFileType = file; path = oval.3dm; sourceTree = "<group>"; };
+		B702186B20F88FFF008A89C9 /* pear.3dm */ = {isa = PBXFileReference; lastKnownFileType = file; path = pear.3dm; sourceTree = "<group>"; };
+		B706725720B2D7EC00A1DDDF /* opennurbs_private_wrap_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_private_wrap_defs.h; sourceTree = "<group>"; };
+		B706725820B2D7ED00A1DDDF /* opennurbs_defines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_defines.h; sourceTree = "<group>"; };
+		B706725920B2D7ED00A1DDDF /* opennurbs_hatch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_hatch.h; sourceTree = "<group>"; };
+		B706725A20B2D7ED00A1DDDF /* opennurbs_font.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_font.h; sourceTree = "<group>"; };
+		B706725B20B2D7ED00A1DDDF /* opennurbs_subd_data.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_subd_data.h; sourceTree = "<group>"; };
+		B706725C20B2D7ED00A1DDDF /* opennurbs_curveproxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_curveproxy.h; sourceTree = "<group>"; };
+		B706725D20B2D7ED00A1DDDF /* opennurbs_linestyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_linestyle.h; sourceTree = "<group>"; };
+		B706725E20B2D7ED00A1DDDF /* opennurbs_linecurve.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_linecurve.h; sourceTree = "<group>"; };
+		B706725F20B2D7ED00A1DDDF /* opennurbs_math.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_math.h; sourceTree = "<group>"; };
+		B706726020B2D7ED00A1DDDF /* opennurbs_point.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_point.h; sourceTree = "<group>"; };
+		B706726120B2D7ED00A1DDDF /* opennurbs_progress_reporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_progress_reporter.h; sourceTree = "<group>"; };
+		B706726220B2D7ED00A1DDDF /* opennurbs_system_runtime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_system_runtime.h; sourceTree = "<group>"; };
+		B706726320B2D7EE00A1DDDF /* opennurbs_texture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_texture.h; sourceTree = "<group>"; };
+		B706726420B2D7EE00A1DDDF /* opennurbs_arc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_arc.h; sourceTree = "<group>"; };
+		B706726520B2D7EE00A1DDDF /* opennurbs_textlog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_textlog.h; sourceTree = "<group>"; };
+		B706726620B2D7EE00A1DDDF /* opennurbs_md5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_md5.h; sourceTree = "<group>"; };
+		B706726720B2D7EE00A1DDDF /* opennurbs_instance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_instance.h; sourceTree = "<group>"; };
+		B706726820B2D7EE00A1DDDF /* opennurbs_lock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_lock.h; sourceTree = "<group>"; };
+		B706726920B2D7EE00A1DDDF /* opennurbs_nurbscurve.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_nurbscurve.h; sourceTree = "<group>"; };
+		B706726A20B2D7EE00A1DDDF /* opennurbs_bezier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_bezier.h; sourceTree = "<group>"; };
+		B706726B20B2D7EE00A1DDDF /* opennurbs_private_wrap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_private_wrap.h; sourceTree = "<group>"; };
+		B706726C20B2D7EF00A1DDDF /* opennurbs_quaternion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_quaternion.h; sourceTree = "<group>"; };
+		B706726D20B2D7EF00A1DDDF /* opennurbs_workspace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_workspace.h; sourceTree = "<group>"; };
+		B706726E20B2D7EF00A1DDDF /* opennurbs_sha1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_sha1.h; sourceTree = "<group>"; };
+		B706726F20B2D7EF00A1DDDF /* opennurbs_extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_extensions.h; sourceTree = "<group>"; };
+		B706727020B2D7EF00A1DDDF /* opennurbs_archive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_archive.h; sourceTree = "<group>"; };
+		B706727120B2D7EF00A1DDDF /* opennurbs_fsp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_fsp.h; sourceTree = "<group>"; };
+		B706727220B2D7EF00A1DDDF /* opennurbs_error.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_error.h; sourceTree = "<group>"; };
+		B706727320B2D7EF00A1DDDF /* opennurbs_layer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_layer.h; sourceTree = "<group>"; };
+		B706727420B2D7F000A1DDDF /* opennurbs_pluginlist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_pluginlist.h; sourceTree = "<group>"; };
+		B706727520B2D7F000A1DDDF /* opennurbs_pointgrid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_pointgrid.h; sourceTree = "<group>"; };
+		B706727620B2D7F000A1DDDF /* opennurbs_dimensionstyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_dimensionstyle.h; sourceTree = "<group>"; };
+		B706727720B2D7F000A1DDDF /* opennurbs_text_style.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_text_style.h; sourceTree = "<group>"; };
+		B706727820B2D7F000A1DDDF /* opennurbs_input_libsdir.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_input_libsdir.h; sourceTree = "<group>"; };
+		B706727920B2D7F000A1DDDF /* opennurbs_3dm_properties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_3dm_properties.h; sourceTree = "<group>"; };
+		B706727A20B2D7F000A1DDDF /* opennurbs_polycurve.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_polycurve.h; sourceTree = "<group>"; };
+		B706727B20B2D7F000A1DDDF /* opennurbs_topology.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_topology.h; sourceTree = "<group>"; };
+		B706727C20B2D7F000A1DDDF /* opennurbs_uuid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_uuid.h; sourceTree = "<group>"; };
+		B706727D20B2D7F000A1DDDF /* opennurbs_viewport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_viewport.h; sourceTree = "<group>"; };
+		B706727E20B2D7F000A1DDDF /* opennurbs_windows_targetver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_windows_targetver.h; sourceTree = "<group>"; };
+		B706727F20B2D7F000A1DDDF /* opennurbs_memory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_memory.h; sourceTree = "<group>"; };
+		B706728020B2D7F000A1DDDF /* opennurbs_revsurface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_revsurface.h; sourceTree = "<group>"; };
+		B706728120B2D7F000A1DDDF /* opennurbs_file_utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_file_utilities.h; sourceTree = "<group>"; };
+		B706728220B2D7F000A1DDDF /* opennurbs_textdraw.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_textdraw.h; sourceTree = "<group>"; };
+		B706728320B2D7F000A1DDDF /* opennurbs_textobject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_textobject.h; sourceTree = "<group>"; };
+		B706728420B2D7F000A1DDDF /* opennurbs_arccurve.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_arccurve.h; sourceTree = "<group>"; };
+		B706728520B2D7F000A1DDDF /* opennurbs_std_string.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_std_string.h; sourceTree = "<group>"; };
+		B706728620B2D7F000A1DDDF /* opennurbs_xform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_xform.h; sourceTree = "<group>"; };
+		B706728720B2D7F000A1DDDF /* opennurbs_terminator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_terminator.h; sourceTree = "<group>"; };
+		B706728820B2D7F000A1DDDF /* opennurbs_textcontext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_textcontext.h; sourceTree = "<group>"; };
+		B706728920B2D7F000A1DDDF /* opennurbs_annotationbase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_annotationbase.h; sourceTree = "<group>"; };
+		B706728A20B2D7F000A1DDDF /* opennurbs_base32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_base32.h; sourceTree = "<group>"; };
+		B706728B20B2D7F000A1DDDF /* opennurbs_ipoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_ipoint.h; sourceTree = "<group>"; };
+		B706728C20B2D7F000A1DDDF /* opennurbs_pointcloud.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_pointcloud.h; sourceTree = "<group>"; };
+		B706728D20B2D7F100A1DDDF /* opennurbs_group.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_group.h; sourceTree = "<group>"; };
+		B706728E20B2D7F100A1DDDF /* opennurbs_lookup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_lookup.h; sourceTree = "<group>"; };
+		B706728F20B2D7F100A1DDDF /* opennurbs_material.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_material.h; sourceTree = "<group>"; };
+		B706729020B2D7F100A1DDDF /* opennurbs_freetype_include.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_freetype_include.h; sourceTree = "<group>"; };
+		B706729120B2D7F200A1DDDF /* opennurbs_subd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_subd.h; sourceTree = "<group>"; };
+		B706729220B2D7F200A1DDDF /* opennurbs_knot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_knot.h; sourceTree = "<group>"; };
+		B706729320B2D7F200A1DDDF /* opennurbs_internal_unicode_cp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_internal_unicode_cp.h; sourceTree = "<group>"; };
+		B706729420B2D7F200A1DDDF /* opennurbs_internal_V5_annotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_internal_V5_annotation.h; sourceTree = "<group>"; };
+		B706729520B2D7F200A1DDDF /* opennurbs_textiterator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_textiterator.h; sourceTree = "<group>"; };
+		B706729620B2D7F300A1DDDF /* opennurbs_wip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_wip.h; sourceTree = "<group>"; };
+		B706729720B2D7F300A1DDDF /* opennurbs_light.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_light.h; sourceTree = "<group>"; };
+		B706729820B2D7F300A1DDDF /* opennurbs_detail.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_detail.h; sourceTree = "<group>"; };
+		B706729920B2D7F300A1DDDF /* opennurbs_unicode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_unicode.h; sourceTree = "<group>"; };
+		B706729A20B2D7F300A1DDDF /* opennurbs_nurbssurface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_nurbssurface.h; sourceTree = "<group>"; };
+		B706729B20B2D7F300A1DDDF /* opennurbs_object_history.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_object_history.h; sourceTree = "<group>"; };
+		B706729C20B2D7F300A1DDDF /* opennurbs_locale.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_locale.h; sourceTree = "<group>"; };
+		B706729D20B2D7F300A1DDDF /* opennurbs_brep.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_brep.h; sourceTree = "<group>"; };
+		B706729E20B2D7F400A1DDDF /* opennurbs_circle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_circle.h; sourceTree = "<group>"; };
+		B706729F20B2D7F400A1DDDF /* opennurbs_dll_resource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_dll_resource.h; sourceTree = "<group>"; };
+		B70672A020B2D7F400A1DDDF /* opennurbs_hash_table.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_hash_table.h; sourceTree = "<group>"; };
+		B70672A120B2D7F400A1DDDF /* opennurbs_surfaceproxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_surfaceproxy.h; sourceTree = "<group>"; };
+		B70672A220B2D7F400A1DDDF /* opennurbs_fpoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_fpoint.h; sourceTree = "<group>"; };
+		B70672A320B2D7F500A1DDDF /* opennurbs_texture_mapping.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_texture_mapping.h; sourceTree = "<group>"; };
+		B70672A420B2D7F500A1DDDF /* opennurbs_string_value.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_string_value.h; sourceTree = "<group>"; };
+		B70672A520B2D7F500A1DDDF /* opennurbs_base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_base64.h; sourceTree = "<group>"; };
+		B70672A620B2D7F500A1DDDF /* opennurbs_zlib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_zlib.h; sourceTree = "<group>"; };
+		B70672A720B2D7F500A1DDDF /* opennurbs_rtree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_rtree.h; sourceTree = "<group>"; };
+		B70672A820B2D7F500A1DDDF /* opennurbs_internal_V5_dimstyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_internal_V5_dimstyle.h; sourceTree = "<group>"; };
+		B70672A920B2D7F600A1DDDF /* examples.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = examples.h; sourceTree = "<group>"; };
+		B70672AA20B2D7F600A1DDDF /* opennurbs_objref.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_objref.h; sourceTree = "<group>"; };
+		B70672AB20B2D7F600A1DDDF /* opennurbs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs.h; sourceTree = "<group>"; };
+		B70672AC20B2D7F600A1DDDF /* opennurbs_line.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_line.h; sourceTree = "<group>"; };
+		B70672AD20B2D7F600A1DDDF /* opennurbs_polyedgecurve.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_polyedgecurve.h; sourceTree = "<group>"; };
+		B70672AE20B2D7F700A1DDDF /* openurbs_public.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = openurbs_public.h; sourceTree = "<group>"; };
+		B70672AF20B2D7F700A1DDDF /* opennurbs_textglyph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_textglyph.h; sourceTree = "<group>"; };
+		B70672B020B2D7F700A1DDDF /* opennurbs_string.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_string.h; sourceTree = "<group>"; };
+		B70672B120B2D7F700A1DDDF /* opennurbs_leader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_leader.h; sourceTree = "<group>"; };
+		B70672B220B2D7F700A1DDDF /* opennurbs_mesh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_mesh.h; sourceTree = "<group>"; };
+		B70672B320B2D7F800A1DDDF /* opennurbs_model_component.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_model_component.h; sourceTree = "<group>"; };
+		B70672B420B2D7F800A1DDDF /* opennurbs_photogrammetry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_photogrammetry.h; sourceTree = "<group>"; };
+		B70672B520B2D7F800A1DDDF /* opennurbs_qsort_template.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_qsort_template.h; sourceTree = "<group>"; };
+		B70672B620B2D7F800A1DDDF /* opennurbs_mapchan.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_mapchan.h; sourceTree = "<group>"; };
+		B70672B720B2D7F800A1DDDF /* opennurbs_curve.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_curve.h; sourceTree = "<group>"; };
+		B70672B820B2D7F800A1DDDF /* opennurbs_surface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_surface.h; sourceTree = "<group>"; };
+		B70672B920B2D7F900A1DDDF /* opennurbs_version_number.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_version_number.h; sourceTree = "<group>"; };
+		B70672BA20B2D7F900A1DDDF /* opennurbs_3dm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_3dm.h; sourceTree = "<group>"; };
+		B70672BB20B2D7F900A1DDDF /* opennurbs_intersect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_intersect.h; sourceTree = "<group>"; };
+		B70672BC20B2D7F900A1DDDF /* opennurbs_rendering.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_rendering.h; sourceTree = "<group>"; };
+		B70672BD20B2D7F900A1DDDF /* opennurbs_internal_defines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_internal_defines.h; sourceTree = "<group>"; };
+		B70672BE20B2D7F900A1DDDF /* opennurbs_parse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_parse.h; sourceTree = "<group>"; };
+		B70672BF20B2D7FA00A1DDDF /* opennurbs_function_list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_function_list.h; sourceTree = "<group>"; };
+		B70672C020B2D7FA00A1DDDF /* opennurbs_userdata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_userdata.h; sourceTree = "<group>"; };
+		B70672C120B2D7FA00A1DDDF /* opennurbs_3dm_settings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_3dm_settings.h; sourceTree = "<group>"; };
+		B70672C220B2D7FA00A1DDDF /* opennurbs_bitmap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_bitmap.h; sourceTree = "<group>"; };
+		B70672C320B2D7FA00A1DDDF /* opennurbs_plane.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_plane.h; sourceTree = "<group>"; };
+		B70672C420B2D7FB00A1DDDF /* opennurbs_optimize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_optimize.h; sourceTree = "<group>"; };
+		B70672C520B2D7FB00A1DDDF /* opennurbs_freetype.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_freetype.h; sourceTree = "<group>"; };
+		B70672C620B2D7FB00A1DDDF /* opennurbs_curveonsurface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_curveonsurface.h; sourceTree = "<group>"; };
+		B70672C720B2D7FB00A1DDDF /* opennurbs_sphere.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_sphere.h; sourceTree = "<group>"; };
+		B70672C820B2D7FB00A1DDDF /* opennurbs_version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_version.h; sourceTree = "<group>"; };
+		B70672C920B2D7FB00A1DDDF /* opennurbs_crc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_crc.h; sourceTree = "<group>"; };
+		B70672CA20B2D7FB00A1DDDF /* opennurbs_evaluate_nurbs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_evaluate_nurbs.h; sourceTree = "<group>"; };
+		B70672CB20B2D7FC00A1DDDF /* opennurbs_offsetsurface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_offsetsurface.h; sourceTree = "<group>"; };
+		B70672CC20B2D7FC00A1DDDF /* opennurbs_3dm_attributes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_3dm_attributes.h; sourceTree = "<group>"; };
+		B70672CD20B2D7FC00A1DDDF /* opennurbs_color.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_color.h; sourceTree = "<group>"; };
+		B70672CE20B2D7FC00A1DDDF /* opennurbs_dimension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_dimension.h; sourceTree = "<group>"; };
+		B70672CF20B2D7FC00A1DDDF /* opennurbs_matrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_matrix.h; sourceTree = "<group>"; };
+		B70672D020B2D7FC00A1DDDF /* opennurbs_box.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_box.h; sourceTree = "<group>"; };
+		B70672D120B2D7FD00A1DDDF /* opennurbs_pointgeometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_pointgeometry.h; sourceTree = "<group>"; };
+		B70672D220B2D7FD00A1DDDF /* opennurbs_cylinder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_cylinder.h; sourceTree = "<group>"; };
+		B70672D320B2D7FD00A1DDDF /* opennurbs_system.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_system.h; sourceTree = "<group>"; };
+		B70672D420B2D7FD00A1DDDF /* opennurbs_polylinecurve.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_polylinecurve.h; sourceTree = "<group>"; };
+		B70672D520B2D7FD00A1DDDF /* opennurbs_compress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_compress.h; sourceTree = "<group>"; };
+		B70672D620B2D7FD00A1DDDF /* opennurbs_object.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_object.h; sourceTree = "<group>"; };
+		B70672D720B2D7FE00A1DDDF /* opennurbs_system_compiler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_system_compiler.h; sourceTree = "<group>"; };
+		B70672D820B2D7FE00A1DDDF /* opennurbs_cone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_cone.h; sourceTree = "<group>"; };
+		B70672D920B2D7FE00A1DDDF /* opennurbs_public_examples.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_public_examples.h; sourceTree = "<group>"; };
+		B70672DA20B2D7FE00A1DDDF /* examples_linking_pragmas.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = examples_linking_pragmas.h; sourceTree = "<group>"; };
+		B70672DB20B2D7FE00A1DDDF /* opennurbs_textrun.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_textrun.h; sourceTree = "<group>"; };
+		B70672DC20B2D7FE00A1DDDF /* opennurbs_cpp_base.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_cpp_base.h; sourceTree = "<group>"; };
+		B70672DD20B2D7FE00A1DDDF /* opennurbs_bounding_box.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_bounding_box.h; sourceTree = "<group>"; };
+		B70672DE20B2D7FF00A1DDDF /* opennurbs_geometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_geometry.h; sourceTree = "<group>"; };
+		B70672DF20B2D7FF00A1DDDF /* opennurbs_quacksort_template.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_quacksort_template.h; sourceTree = "<group>"; };
+		B70672E020B2D7FF00A1DDDF /* opennurbs_sumsurface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_sumsurface.h; sourceTree = "<group>"; };
+		B70672E120B2D7FF00A1DDDF /* opennurbs_text.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_text.h; sourceTree = "<group>"; };
+		B70672E220B2D7FF00A1DDDF /* opennurbs_beam.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_beam.h; sourceTree = "<group>"; };
+		B70672E320B2D7FF00A1DDDF /* opennurbs_torus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_torus.h; sourceTree = "<group>"; };
+		B70672E420B2D80000A1DDDF /* opennurbs_model_geometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_model_geometry.h; sourceTree = "<group>"; };
+		B70672E520B2D80000A1DDDF /* opennurbs_public_version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_public_version.h; sourceTree = "<group>"; };
+		B70672E620B2D80000A1DDDF /* opennurbs_dimensionformat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_dimensionformat.h; sourceTree = "<group>"; };
+		B70672E720B2D80000A1DDDF /* opennurbs_fsp_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_fsp_defs.h; sourceTree = "<group>"; };
+		B70672E820B2D80000A1DDDF /* opennurbs_hsort_template.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_hsort_template.h; sourceTree = "<group>"; };
+		B70672E920B2D80000A1DDDF /* opennurbs_array_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_array_defs.h; sourceTree = "<group>"; };
+		B70672EA20B2D80000A1DDDF /* opennurbs_public.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_public.h; sourceTree = "<group>"; };
+		B70672EB20B2D80100A1DDDF /* opennurbs_ellipse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_ellipse.h; sourceTree = "<group>"; };
+		B70672EC20B2D80100A1DDDF /* opennurbs_rand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_rand.h; sourceTree = "<group>"; };
+		B70672ED20B2D80100A1DDDF /* opennurbs_array.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_array.h; sourceTree = "<group>"; };
+		B70672EE20B2D80100A1DDDF /* opennurbs_gl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_gl.h; sourceTree = "<group>"; };
+		B70672EF20B2D80100A1DDDF /* opennurbs_internal_V2_annotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_internal_V2_annotation.h; sourceTree = "<group>"; };
+		B70672F020B2D80100A1DDDF /* opennurbs_linetype.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_linetype.h; sourceTree = "<group>"; };
+		B70672F120B2D80200A1DDDF /* opennurbs_polyline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_polyline.h; sourceTree = "<group>"; };
+		B70672F220B2D80200A1DDDF /* opennurbs_internal_glyph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_internal_glyph.h; sourceTree = "<group>"; };
+		B70672F320B2D80200A1DDDF /* opennurbs_date.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_date.h; sourceTree = "<group>"; };
+		B70672F420B2D80200A1DDDF /* opennurbs_compstat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_compstat.h; sourceTree = "<group>"; };
+		B70672F520B2D80200A1DDDF /* opennurbs_planesurface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opennurbs_planesurface.h; sourceTree = "<group>"; };
+		B70672FB20B2E0F800A1DDDF /* Model3DManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Model3DManager.h; sourceTree = "<group>"; };
+		B70672FC20B2E0F800A1DDDF /* Model3DManager.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = Model3DManager.mm; sourceTree = "<group>"; };
+		B711A14A20E0F8BC00412425 /* Export3dConfiguration.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Export3dConfiguration.h; path = Config/Export3dConfiguration.h; sourceTree = "<group>"; };
+		B711A14B20E0F8BC00412425 /* Export3dConfiguration.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Export3dConfiguration.m; path = Config/Export3dConfiguration.m; sourceTree = "<group>"; };
+		B711A14D20E0FBB200412425 /* ConfigObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ConfigObject.h; path = Config/ConfigObject.h; sourceTree = "<group>"; };
+		B711A14E20E0FBB200412425 /* ConfigObject.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ConfigObject.m; path = Config/ConfigObject.m; sourceTree = "<group>"; };
+		B711A15020E0FD5A00412425 /* Transform.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Transform.h; path = Config/Transform.h; sourceTree = "<group>"; };
+		B711A15120E0FD5A00412425 /* Transform.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Transform.m; path = Config/Transform.m; sourceTree = "<group>"; };
+		B728FF56221AC5AE00E729C0 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NetworkManager.swift; path = Networking/NetworkManager.swift; sourceTree = "<group>"; };
+		B728FF5B221ACC2800E729C0 /* Session.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Session.swift; path = Networking/Session.swift; sourceTree = "<group>"; };
+		B737679E221BEBD70003BB88 /* UIViewController+Alert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "UIViewController+Alert.swift"; path = "Extensions/UIViewController+Alert.swift"; sourceTree = "<group>"; };
+		B7591B7B21CB874500374FC3 /* Preview3DModelViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preview3DModelViewController.swift; sourceTree = "<group>"; };
+		B7591B7D21CB893500374FC3 /* Vertex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Vertex.swift; path = Model/Vertex.swift; sourceTree = "<group>"; };
+		B75C06B321D36A3D003F45D9 /* CoordColor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CoordColor.h; path = Model/CoordColor.h; sourceTree = "<group>"; };
+		B75C06B421D36A3D003F45D9 /* CoordColor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CoordColor.m; path = Model/CoordColor.m; sourceTree = "<group>"; };
+		B75C06B621D36DD6003F45D9 /* Texture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Texture.swift; sourceTree = "<group>"; };
+		B75C06BB21D3700F003F45D9 /* Coord2D.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Coord2D.h; path = Model/Coord2D.h; sourceTree = "<group>"; };
+		B75C06BC21D3700F003F45D9 /* Coord2D.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Coord2D.m; path = Model/Coord2D.m; sourceTree = "<group>"; };
+		B75D6D5921CD189C00879D02 /* Coord3D.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Coord3D.h; path = Model/Coord3D.h; sourceTree = "<group>"; };
+		B75D6D5A21CD189C00879D02 /* Coord3D.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Coord3D.m; path = Model/Coord3D.m; sourceTree = "<group>"; };
+		B75D6D5C21CD191B00879D02 /* RenderContent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RenderContent.h; path = Model/RenderContent.h; sourceTree = "<group>"; };
+		B75D6D5D21CD191B00879D02 /* RenderContent.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = RenderContent.m; path = Model/RenderContent.m; sourceTree = "<group>"; };
+		B7620A4F2244F54900385572 /* UIImage+Rotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "UIImage+Rotation.swift"; path = "Extensions/UIImage+Rotation.swift"; sourceTree = "<group>"; };
+		B763BA561EC9C19F007F7B9D /* 3.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 3.jpg; sourceTree = "<group>"; };
+		B763BA591EC9C9AD007F7B9D /* SendMailInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendMailInfo.swift; sourceTree = "<group>"; };
+		B764D786225DE578005B5F06 /* UIView+AL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "UIView+AL.swift"; path = "Extensions/UIView+AL.swift"; sourceTree = "<group>"; };
+		B764D789225DE7F1005B5F06 /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logo.png; path = Resources/logo.png; sourceTree = "<group>"; };
+		B765CA5A1EB890EF001E5698 /* CheckResultViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CheckResultViewController.swift; sourceTree = "<group>"; };
+		B765CA5D1EB89BA2001E5698 /* FingerprintScanner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FingerprintScanner-Bridging-Header.h"; sourceTree = "<group>"; };
+		B765D319222E9C53009B4F8B /* gold_tex.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = gold_tex.png; sourceTree = "<group>"; };
+		B771AD1A21F9A81C004528F6 /* Transformations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Transformations.swift; path = Model/Transformations.swift; sourceTree = "<group>"; };
+		B773DD551ED2C446001895C0 /* SamplePhoto.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SamplePhoto.swift; sourceTree = "<group>"; };
+		B773DD571ED2C88D001895C0 /* PreviewPhotoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreviewPhotoViewController.swift; sourceTree = "<group>"; };
+		B7784D9D210898AE00CFD4E5 /* oval.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = oval.png; sourceTree = "<group>"; };
+		B7784D9F210898B300CFD4E5 /* pear.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pear.png; sourceTree = "<group>"; };
+		B78A08A71EC5EFB800E1F92B /* 2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 2.jpg; sourceTree = "<group>"; };
+		B79F3B871EBC954F00EAD970 /* ContainerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContainerViewController.swift; sourceTree = "<group>"; };
+		B79F3B8B1EBCA23C00EAD970 /* FingersManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FingersManager.swift; sourceTree = "<group>"; };
+		B79F3B8F1EBCB21D00EAD970 /* PrefsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrefsManager.swift; sourceTree = "<group>"; };
+		B7A2B0411EB7124500752E2A /* FingerprintScanner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FingerprintScanner.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B7A2B0441EB7124500752E2A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		B7A2B0461EB7124500752E2A /* InstructionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionsViewController.swift; sourceTree = "<group>"; };
+		B7A2B0491EB7124500752E2A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		B7A2B04B1EB7124500752E2A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		B7A2B04E1EB7124500752E2A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		B7A2B0501EB7124500752E2A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B7A2B0551EB7124500752E2A /* FingerprintScannerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FingerprintScannerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B7A2B0591EB7124500752E2A /* FingerprintScannerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FingerprintScannerTests.swift; sourceTree = "<group>"; };
+		B7A2B05B1EB7124500752E2A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B7A2B0601EB7124500752E2A /* FingerprintScannerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FingerprintScannerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B7A2B0641EB7124500752E2A /* FingerprintScannerUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FingerprintScannerUITests.swift; sourceTree = "<group>"; };
+		B7A2B0661EB7124500752E2A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B7A2B0721EB71B3D00752E2A /* CameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
+		B7A558431EC469540037E262 /* DottedCircleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DottedCircleView.swift; sourceTree = "<group>"; };
+		B7A558461EC47C580037E262 /* UIViewController+HideKeyboard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+HideKeyboard.swift"; sourceTree = "<group>"; };
+		B7A5584A1EC47D0E0037E262 /* SubmissionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubmissionViewController.swift; sourceTree = "<group>"; };
+		B7A5584C1EC48C300037E262 /* String+Validation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Validation.swift"; sourceTree = "<group>"; };
+		B7AECAD31ECDA691004BE2FF /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		B7B3CEB71EC58BC400497AC3 /* ConfirmationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfirmationViewController.swift; sourceTree = "<group>"; };
+		B7B3CEB91EC595A900497AC3 /* sample.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = sample.jpg; sourceTree = "<group>"; };
+		B7B71D741EC3295A0093A6A1 /* RectangularTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RectangularTextField.swift; sourceTree = "<group>"; };
+		B7B71D761EC32C490093A6A1 /* cambriai.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = cambriai.ttf; path = Fonts/cambriai.ttf; sourceTree = "<group>"; };
+		B7C3614620FCBD2D001907C2 /* ring.3dm */ = {isa = PBXFileReference; lastKnownFileType = file; path = ring.3dm; sourceTree = "<group>"; };
+		B7C3614A20FCCAC5001907C2 /* pear.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = pear.plist; sourceTree = "<group>"; };
+		B7C3614D20FCCAC5001907C2 /* ring.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ring.plist; sourceTree = "<group>"; };
+		B7C3615020FCCAC5001907C2 /* oval.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = oval.plist; sourceTree = "<group>"; };
+		B7CB073520F4F7A600F9A49C /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		B7D7B70A20FF2F760049B1B1 /* BaseModelCreator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BaseModelCreator.h; path = Config/BaseModelCreator.h; sourceTree = "<group>"; };
+		B7D7B70B20FF2F760049B1B1 /* BaseModelCreator.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = BaseModelCreator.mm; path = Config/BaseModelCreator.mm; sourceTree = "<group>"; };
+		B7D7B70D20FF341F0049B1B1 /* MaskModelCreator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MaskModelCreator.h; path = Config/MaskModelCreator.h; sourceTree = "<group>"; };
+		B7D7B70E20FF341F0049B1B1 /* MaskModelCreator.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = MaskModelCreator.mm; path = Config/MaskModelCreator.mm; sourceTree = "<group>"; };
+		B7D7B71320FF48980049B1B1 /* RingModelCreator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RingModelCreator.h; path = Config/RingModelCreator.h; sourceTree = "<group>"; };
+		B7D7B71420FF48980049B1B1 /* RingModelCreator.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = RingModelCreator.mm; path = Config/RingModelCreator.mm; sourceTree = "<group>"; };
+		B7EA19252282F20F00E733E7 /* ContactsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsManager.swift; sourceTree = "<group>"; };
+		B7F18CAA1EC074A90045C8B3 /* RoundedButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoundedButton.swift; sourceTree = "<group>"; };
+		B7F18CAD1EC07D150045C8B3 /* HTOWERT.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; name = HTOWERT.TTF; path = Fonts/HTOWERT.TTF; sourceTree = "<group>"; };
+		B7F18CAE1EC07D150045C8B3 /* HTOWERTI.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; name = HTOWERTI.TTF; path = Fonts/HTOWERTI.TTF; sourceTree = "<group>"; };
+		B7F18CB11EC07F650045C8B3 /* cambria.ttc */ = {isa = PBXFileReference; lastKnownFileType = file; name = cambria.ttc; path = Fonts/cambria.ttc; sourceTree = "<group>"; };
+		B7FBE5721EBA03720053ABAD /* ImageMagicWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageMagicWrapper.h; sourceTree = "<group>"; };
+		B7FBE5731EBA03720053ABAD /* ImageMagicWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageMagicWrapper.m; sourceTree = "<group>"; };
+		B7FBE5751EBA05EC0053ABAD /* libxml2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libxml2.tbd; path = usr/lib/libxml2.tbd; sourceTree = SDKROOT; };
+		B7FBE5781EBA07C60053ABAD /* 1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 1.jpg; sourceTree = "<group>"; };
+		DD059C3B2214724900CDA91D /* WebViewViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewViewController.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		B7A2B03E1EB7124500752E2A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B7CB073620F4F7A600F9A49C /* OpenGLES.framework in Frameworks */,
+				B7FBE5761EBA05EC0053ABAD /* libxml2.tbd in Frameworks */,
+				405459E744100D33FCD67186 /* Pods_FingerprintScanner.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B7A2B0521EB7124500752E2A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B7A2B05D1EB7124500752E2A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		19A3A35523115C530055237F /* lib */ = {
+			isa = PBXGroup;
+			children = (
+				19A3A35623115C670055237F /* device */,
+			);
+			path = lib;
+			sourceTree = "<group>";
+		};
+		19A3A35623115C670055237F /* device */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = device;
+			sourceTree = "<group>";
+		};
+		591910A299D89862372C4F34 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				B7CB073520F4F7A600F9A49C /* OpenGLES.framework */,
+				B7FBE5751EBA05EC0053ABAD /* libxml2.tbd */,
+				5B53FCB27642DFC813169114 /* Pods_FingerprintScanner.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		B706724F20B2D78400A1DDDF /* opennurbs */ = {
+			isa = PBXGroup;
+			children = (
+				19A3A35523115C530055237F /* lib */,
+				B70672DA20B2D7FE00A1DDDF /* examples_linking_pragmas.h */,
+				B70672A920B2D7F600A1DDDF /* examples.h */,
+				B70672CC20B2D7FC00A1DDDF /* opennurbs_3dm_attributes.h */,
+				B706727920B2D7F000A1DDDF /* opennurbs_3dm_properties.h */,
+				B70672C120B2D7FA00A1DDDF /* opennurbs_3dm_settings.h */,
+				B70672BA20B2D7F900A1DDDF /* opennurbs_3dm.h */,
+				B706728920B2D7F000A1DDDF /* opennurbs_annotationbase.h */,
+				B706726420B2D7EE00A1DDDF /* opennurbs_arc.h */,
+				B706728420B2D7F000A1DDDF /* opennurbs_arccurve.h */,
+				B706727020B2D7EF00A1DDDF /* opennurbs_archive.h */,
+				B70672E920B2D80000A1DDDF /* opennurbs_array_defs.h */,
+				B70672ED20B2D80100A1DDDF /* opennurbs_array.h */,
+				B706728A20B2D7F000A1DDDF /* opennurbs_base32.h */,
+				B70672A520B2D7F500A1DDDF /* opennurbs_base64.h */,
+				B70672E220B2D7FF00A1DDDF /* opennurbs_beam.h */,
+				B706726A20B2D7EE00A1DDDF /* opennurbs_bezier.h */,
+				B70672C220B2D7FA00A1DDDF /* opennurbs_bitmap.h */,
+				B70672DD20B2D7FE00A1DDDF /* opennurbs_bounding_box.h */,
+				B70672D020B2D7FC00A1DDDF /* opennurbs_box.h */,
+				B706729D20B2D7F300A1DDDF /* opennurbs_brep.h */,
+				B706729E20B2D7F400A1DDDF /* opennurbs_circle.h */,
+				B70672CD20B2D7FC00A1DDDF /* opennurbs_color.h */,
+				B70672D520B2D7FD00A1DDDF /* opennurbs_compress.h */,
+				B70672F420B2D80200A1DDDF /* opennurbs_compstat.h */,
+				B70672D820B2D7FE00A1DDDF /* opennurbs_cone.h */,
+				B70672DC20B2D7FE00A1DDDF /* opennurbs_cpp_base.h */,
+				B70672C920B2D7FB00A1DDDF /* opennurbs_crc.h */,
+				B70672B720B2D7F800A1DDDF /* opennurbs_curve.h */,
+				B70672C620B2D7FB00A1DDDF /* opennurbs_curveonsurface.h */,
+				B706725C20B2D7ED00A1DDDF /* opennurbs_curveproxy.h */,
+				B70672D220B2D7FD00A1DDDF /* opennurbs_cylinder.h */,
+				B70672F320B2D80200A1DDDF /* opennurbs_date.h */,
+				B706725820B2D7ED00A1DDDF /* opennurbs_defines.h */,
+				B706729820B2D7F300A1DDDF /* opennurbs_detail.h */,
+				B70672CE20B2D7FC00A1DDDF /* opennurbs_dimension.h */,
+				B70672E620B2D80000A1DDDF /* opennurbs_dimensionformat.h */,
+				B706727620B2D7F000A1DDDF /* opennurbs_dimensionstyle.h */,
+				B706729F20B2D7F400A1DDDF /* opennurbs_dll_resource.h */,
+				B70672EB20B2D80100A1DDDF /* opennurbs_ellipse.h */,
+				B706727220B2D7EF00A1DDDF /* opennurbs_error.h */,
+				B70672CA20B2D7FB00A1DDDF /* opennurbs_evaluate_nurbs.h */,
+				B706726F20B2D7EF00A1DDDF /* opennurbs_extensions.h */,
+				B706728120B2D7F000A1DDDF /* opennurbs_file_utilities.h */,
+				B706725A20B2D7ED00A1DDDF /* opennurbs_font.h */,
+				B70672A220B2D7F400A1DDDF /* opennurbs_fpoint.h */,
+				B706729020B2D7F100A1DDDF /* opennurbs_freetype_include.h */,
+				B70672C520B2D7FB00A1DDDF /* opennurbs_freetype.h */,
+				B70672E720B2D80000A1DDDF /* opennurbs_fsp_defs.h */,
+				B706727120B2D7EF00A1DDDF /* opennurbs_fsp.h */,
+				B70672BF20B2D7FA00A1DDDF /* opennurbs_function_list.h */,
+				B70672DE20B2D7FF00A1DDDF /* opennurbs_geometry.h */,
+				B70672EE20B2D80100A1DDDF /* opennurbs_gl.h */,
+				B706728D20B2D7F100A1DDDF /* opennurbs_group.h */,
+				B70672A020B2D7F400A1DDDF /* opennurbs_hash_table.h */,
+				B706725920B2D7ED00A1DDDF /* opennurbs_hatch.h */,
+				B70672E820B2D80000A1DDDF /* opennurbs_hsort_template.h */,
+				B706727820B2D7F000A1DDDF /* opennurbs_input_libsdir.h */,
+				B706726720B2D7EE00A1DDDF /* opennurbs_instance.h */,
+				B70672BD20B2D7F900A1DDDF /* opennurbs_internal_defines.h */,
+				B70672F220B2D80200A1DDDF /* opennurbs_internal_glyph.h */,
+				B706729320B2D7F200A1DDDF /* opennurbs_internal_unicode_cp.h */,
+				B70672EF20B2D80100A1DDDF /* opennurbs_internal_V2_annotation.h */,
+				B706729420B2D7F200A1DDDF /* opennurbs_internal_V5_annotation.h */,
+				B70672A820B2D7F500A1DDDF /* opennurbs_internal_V5_dimstyle.h */,
+				B70672BB20B2D7F900A1DDDF /* opennurbs_intersect.h */,
+				B706728B20B2D7F000A1DDDF /* opennurbs_ipoint.h */,
+				B706729220B2D7F200A1DDDF /* opennurbs_knot.h */,
+				B706727320B2D7EF00A1DDDF /* opennurbs_layer.h */,
+				B70672B120B2D7F700A1DDDF /* opennurbs_leader.h */,
+				B706729720B2D7F300A1DDDF /* opennurbs_light.h */,
+				B70672AC20B2D7F600A1DDDF /* opennurbs_line.h */,
+				B706725E20B2D7ED00A1DDDF /* opennurbs_linecurve.h */,
+				B706725D20B2D7ED00A1DDDF /* opennurbs_linestyle.h */,
+				B70672F020B2D80100A1DDDF /* opennurbs_linetype.h */,
+				B706729C20B2D7F300A1DDDF /* opennurbs_locale.h */,
+				B706726820B2D7EE00A1DDDF /* opennurbs_lock.h */,
+				B706728E20B2D7F100A1DDDF /* opennurbs_lookup.h */,
+				B70672B620B2D7F800A1DDDF /* opennurbs_mapchan.h */,
+				B706728F20B2D7F100A1DDDF /* opennurbs_material.h */,
+				B706725F20B2D7ED00A1DDDF /* opennurbs_math.h */,
+				B70672CF20B2D7FC00A1DDDF /* opennurbs_matrix.h */,
+				B706726620B2D7EE00A1DDDF /* opennurbs_md5.h */,
+				B706727F20B2D7F000A1DDDF /* opennurbs_memory.h */,
+				B70672B220B2D7F700A1DDDF /* opennurbs_mesh.h */,
+				B70672B320B2D7F800A1DDDF /* opennurbs_model_component.h */,
+				B70672E420B2D80000A1DDDF /* opennurbs_model_geometry.h */,
+				B706726920B2D7EE00A1DDDF /* opennurbs_nurbscurve.h */,
+				B706729A20B2D7F300A1DDDF /* opennurbs_nurbssurface.h */,
+				B706729B20B2D7F300A1DDDF /* opennurbs_object_history.h */,
+				B70672D620B2D7FD00A1DDDF /* opennurbs_object.h */,
+				B70672AA20B2D7F600A1DDDF /* opennurbs_objref.h */,
+				B70672CB20B2D7FC00A1DDDF /* opennurbs_offsetsurface.h */,
+				B70672C420B2D7FB00A1DDDF /* opennurbs_optimize.h */,
+				B70672BE20B2D7F900A1DDDF /* opennurbs_parse.h */,
+				B70672B420B2D7F800A1DDDF /* opennurbs_photogrammetry.h */,
+				B70672C320B2D7FA00A1DDDF /* opennurbs_plane.h */,
+				B70672F520B2D80200A1DDDF /* opennurbs_planesurface.h */,
+				B706727420B2D7F000A1DDDF /* opennurbs_pluginlist.h */,
+				B706726020B2D7ED00A1DDDF /* opennurbs_point.h */,
+				B706728C20B2D7F000A1DDDF /* opennurbs_pointcloud.h */,
+				B70672D120B2D7FD00A1DDDF /* opennurbs_pointgeometry.h */,
+				B706727520B2D7F000A1DDDF /* opennurbs_pointgrid.h */,
+				B706727A20B2D7F000A1DDDF /* opennurbs_polycurve.h */,
+				B70672AD20B2D7F600A1DDDF /* opennurbs_polyedgecurve.h */,
+				B70672F120B2D80200A1DDDF /* opennurbs_polyline.h */,
+				B70672D420B2D7FD00A1DDDF /* opennurbs_polylinecurve.h */,
+				B706725720B2D7EC00A1DDDF /* opennurbs_private_wrap_defs.h */,
+				B706726B20B2D7EE00A1DDDF /* opennurbs_private_wrap.h */,
+				B706726120B2D7ED00A1DDDF /* opennurbs_progress_reporter.h */,
+				B70672D920B2D7FE00A1DDDF /* opennurbs_public_examples.h */,
+				B70672E520B2D80000A1DDDF /* opennurbs_public_version.h */,
+				B70672EA20B2D80000A1DDDF /* opennurbs_public.h */,
+				B70672B520B2D7F800A1DDDF /* opennurbs_qsort_template.h */,
+				B70672DF20B2D7FF00A1DDDF /* opennurbs_quacksort_template.h */,
+				B706726C20B2D7EF00A1DDDF /* opennurbs_quaternion.h */,
+				B70672EC20B2D80100A1DDDF /* opennurbs_rand.h */,
+				B70672BC20B2D7F900A1DDDF /* opennurbs_rendering.h */,
+				B706728020B2D7F000A1DDDF /* opennurbs_revsurface.h */,
+				B70672A720B2D7F500A1DDDF /* opennurbs_rtree.h */,
+				B706726E20B2D7EF00A1DDDF /* opennurbs_sha1.h */,
+				B70672C720B2D7FB00A1DDDF /* opennurbs_sphere.h */,
+				B706728520B2D7F000A1DDDF /* opennurbs_std_string.h */,
+				B70672A420B2D7F500A1DDDF /* opennurbs_string_value.h */,
+				B70672B020B2D7F700A1DDDF /* opennurbs_string.h */,
+				B706725B20B2D7ED00A1DDDF /* opennurbs_subd_data.h */,
+				B706729120B2D7F200A1DDDF /* opennurbs_subd.h */,
+				B70672E020B2D7FF00A1DDDF /* opennurbs_sumsurface.h */,
+				B70672B820B2D7F800A1DDDF /* opennurbs_surface.h */,
+				B70672A120B2D7F400A1DDDF /* opennurbs_surfaceproxy.h */,
+				B70672D720B2D7FE00A1DDDF /* opennurbs_system_compiler.h */,
+				B706726220B2D7ED00A1DDDF /* opennurbs_system_runtime.h */,
+				B70672D320B2D7FD00A1DDDF /* opennurbs_system.h */,
+				B706728720B2D7F000A1DDDF /* opennurbs_terminator.h */,
+				B706727720B2D7F000A1DDDF /* opennurbs_text_style.h */,
+				B70672E120B2D7FF00A1DDDF /* opennurbs_text.h */,
+				B706728820B2D7F000A1DDDF /* opennurbs_textcontext.h */,
+				B706728220B2D7F000A1DDDF /* opennurbs_textdraw.h */,
+				B70672AF20B2D7F700A1DDDF /* opennurbs_textglyph.h */,
+				B706729520B2D7F200A1DDDF /* opennurbs_textiterator.h */,
+				B706726520B2D7EE00A1DDDF /* opennurbs_textlog.h */,
+				B706728320B2D7F000A1DDDF /* opennurbs_textobject.h */,
+				B70672DB20B2D7FE00A1DDDF /* opennurbs_textrun.h */,
+				B70672A320B2D7F500A1DDDF /* opennurbs_texture_mapping.h */,
+				B706726320B2D7EE00A1DDDF /* opennurbs_texture.h */,
+				B706727B20B2D7F000A1DDDF /* opennurbs_topology.h */,
+				B70672E320B2D7FF00A1DDDF /* opennurbs_torus.h */,
+				B706729920B2D7F300A1DDDF /* opennurbs_unicode.h */,
+				B70672C020B2D7FA00A1DDDF /* opennurbs_userdata.h */,
+				B706727C20B2D7F000A1DDDF /* opennurbs_uuid.h */,
+				B70672B920B2D7F900A1DDDF /* opennurbs_version_number.h */,
+				B70672C820B2D7FB00A1DDDF /* opennurbs_version.h */,
+				B706727D20B2D7F000A1DDDF /* opennurbs_viewport.h */,
+				B706727E20B2D7F000A1DDDF /* opennurbs_windows_targetver.h */,
+				B706729620B2D7F300A1DDDF /* opennurbs_wip.h */,
+				B706726D20B2D7EF00A1DDDF /* opennurbs_workspace.h */,
+				B706728620B2D7F000A1DDDF /* opennurbs_xform.h */,
+				B70672A620B2D7F500A1DDDF /* opennurbs_zlib.h */,
+				B70672AB20B2D7F600A1DDDF /* opennurbs.h */,
+				B70672AE20B2D7F700A1DDDF /* openurbs_public.h */,
+			);
+			path = opennurbs;
+			sourceTree = "<group>";
+		};
+		B711A14220E0F69600412425 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				B7C3614E20FCCAC5001907C2 /* oval */,
+				B7C3614820FCCAC5001907C2 /* pear */,
+				B7C3614B20FCCAC5001907C2 /* ring */,
+				B711A14A20E0F8BC00412425 /* Export3dConfiguration.h */,
+				B711A14B20E0F8BC00412425 /* Export3dConfiguration.m */,
+				B711A14D20E0FBB200412425 /* ConfigObject.h */,
+				B711A14E20E0FBB200412425 /* ConfigObject.m */,
+				B711A15020E0FD5A00412425 /* Transform.h */,
+				B711A15120E0FD5A00412425 /* Transform.m */,
+				B7D7B70A20FF2F760049B1B1 /* BaseModelCreator.h */,
+				B7D7B70B20FF2F760049B1B1 /* BaseModelCreator.mm */,
+				B7D7B70D20FF341F0049B1B1 /* MaskModelCreator.h */,
+				B7D7B70E20FF341F0049B1B1 /* MaskModelCreator.mm */,
+				B7D7B71320FF48980049B1B1 /* RingModelCreator.h */,
+				B7D7B71420FF48980049B1B1 /* RingModelCreator.mm */,
+			);
+			name = Config;
+			sourceTree = "<group>";
+		};
+		B728FF5A221ACBED00E729C0 /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				B728FF5B221ACC2800E729C0 /* Session.swift */,
+				B728FF56221AC5AE00E729C0 /* NetworkManager.swift */,
+			);
+			name = Networking;
+			sourceTree = "<group>";
+		};
+		B75C06B821D36F39003F45D9 /* Textures */ = {
+			isa = PBXGroup;
+			children = (
+				B765D319222E9C53009B4F8B /* gold_tex.png */,
+			);
+			path = Textures;
+			sourceTree = "<group>";
+		};
+		B763BA581EC9C98F007F7B9D /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				B763BA591EC9C9AD007F7B9D /* SendMailInfo.swift */,
+				B773DD551ED2C446001895C0 /* SamplePhoto.swift */,
+				B7591B7D21CB893500374FC3 /* Vertex.swift */,
+				B75C06BB21D3700F003F45D9 /* Coord2D.h */,
+				B75C06BC21D3700F003F45D9 /* Coord2D.m */,
+				B75D6D5921CD189C00879D02 /* Coord3D.h */,
+				B75D6D5A21CD189C00879D02 /* Coord3D.m */,
+				B75C06B321D36A3D003F45D9 /* CoordColor.h */,
+				B75C06B421D36A3D003F45D9 /* CoordColor.m */,
+				B75D6D5C21CD191B00879D02 /* RenderContent.h */,
+				B75D6D5D21CD191B00879D02 /* RenderContent.m */,
+				B75C06B621D36DD6003F45D9 /* Texture.swift */,
+				B771AD1A21F9A81C004528F6 /* Transformations.swift */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		B764D788225DE7BB005B5F06 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				B764D789225DE7F1005B5F06 /* logo.png */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		B794B4EA20D28FF5008E53B4 /* Model3D */ = {
+			isa = PBXGroup;
+			children = (
+				B7C3614620FCBD2D001907C2 /* ring.3dm */,
+				B702186A20F88FFF008A89C9 /* oval.3dm */,
+				B702186B20F88FFF008A89C9 /* pear.3dm */,
+			);
+			path = Model3D;
+			sourceTree = "<group>";
+		};
+		B79F3B891EBCA1AC00EAD970 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				DD059C3B2214724900CDA91D /* WebViewViewController.swift */,
+				B79F3B871EBC954F00EAD970 /* ContainerViewController.swift */,
+				B7A2B0461EB7124500752E2A /* InstructionsViewController.swift */,
+				B7A2B0721EB71B3D00752E2A /* CameraViewController.swift */,
+				B765CA5A1EB890EF001E5698 /* CheckResultViewController.swift */,
+				B7A5584A1EC47D0E0037E262 /* SubmissionViewController.swift */,
+				B7B3CEB71EC58BC400497AC3 /* ConfirmationViewController.swift */,
+				B773DD571ED2C88D001895C0 /* PreviewPhotoViewController.swift */,
+				B7591B7B21CB874500374FC3 /* Preview3DModelViewController.swift */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		B79F3B8A1EBCA1F800EAD970 /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				B79F3B8B1EBCA23C00EAD970 /* FingersManager.swift */,
+				B79F3B8F1EBCB21D00EAD970 /* PrefsManager.swift */,
+				B70672FB20B2E0F800A1DDDF /* Model3DManager.h */,
+				B70672FC20B2E0F800A1DDDF /* Model3DManager.mm */,
+				B7EA19252282F20F00E733E7 /* ContactsManager.swift */,
+			);
+			name = Managers;
+			sourceTree = "<group>";
+		};
+		B7A2B0381EB7124500752E2A = {
+			isa = PBXGroup;
+			children = (
+				B7A2B0431EB7124500752E2A /* FingerprintScanner */,
+				B7A2B0581EB7124500752E2A /* FingerprintScannerTests */,
+				B7A2B0631EB7124500752E2A /* FingerprintScannerUITests */,
+				B7A2B0421EB7124500752E2A /* Products */,
+				C6F8A93F9AB7DF2147328407 /* Pods */,
+				591910A299D89862372C4F34 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		B7A2B0421EB7124500752E2A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B7A2B0411EB7124500752E2A /* FingerprintScanner.app */,
+				B7A2B0551EB7124500752E2A /* FingerprintScannerTests.xctest */,
+				B7A2B0601EB7124500752E2A /* FingerprintScannerUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		B7A2B0431EB7124500752E2A /* FingerprintScanner */ = {
+			isa = PBXGroup;
+			children = (
+				B764D788225DE7BB005B5F06 /* Resources */,
+				B711A14220E0F69600412425 /* Config */,
+				B7F18CAC1EC07CF00045C8B3 /* Fonts */,
+				B794B4EA20D28FF5008E53B4 /* Model3D */,
+				B75C06B821D36F39003F45D9 /* Textures */,
+				B7FBE5771EBA07C60053ABAD /* Samples */,
+				B706724F20B2D78400A1DDDF /* opennurbs */,
+				B7FBE4BE1EBA03420053ABAD /* ImageMagick */,
+				B7AECAD21ECDA674004BE2FF /* Helpers */,
+				B7A558451EC47BF00037E262 /* Extensions */,
+				B763BA581EC9C98F007F7B9D /* Model */,
+				B728FF5A221ACBED00E729C0 /* Networking */,
+				B79F3B8A1EBCA1F800EAD970 /* Managers */,
+				B79F3B891EBCA1AC00EAD970 /* Controllers */,
+				B7F18CA91EC0748E0045C8B3 /* Views */,
+				B7A2B0441EB7124500752E2A /* AppDelegate.swift */,
+				B7A2B0481EB7124500752E2A /* Main.storyboard */,
+				B7A2B04B1EB7124500752E2A /* Assets.xcassets */,
+				B7A2B04D1EB7124500752E2A /* LaunchScreen.storyboard */,
+				B7A2B0501EB7124500752E2A /* Info.plist */,
+				B765CA5D1EB89BA2001E5698 /* FingerprintScanner-Bridging-Header.h */,
+			);
+			path = FingerprintScanner;
+			sourceTree = "<group>";
+		};
+		B7A2B0581EB7124500752E2A /* FingerprintScannerTests */ = {
+			isa = PBXGroup;
+			children = (
+				B7A2B0591EB7124500752E2A /* FingerprintScannerTests.swift */,
+				B7A2B05B1EB7124500752E2A /* Info.plist */,
+			);
+			path = FingerprintScannerTests;
+			sourceTree = "<group>";
+		};
+		B7A2B0631EB7124500752E2A /* FingerprintScannerUITests */ = {
+			isa = PBXGroup;
+			children = (
+				B7A2B0641EB7124500752E2A /* FingerprintScannerUITests.swift */,
+				B7A2B0661EB7124500752E2A /* Info.plist */,
+			);
+			path = FingerprintScannerUITests;
+			sourceTree = "<group>";
+		};
+		B7A558451EC47BF00037E262 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				B7A558461EC47C580037E262 /* UIViewController+HideKeyboard.swift */,
+				B7A5584C1EC48C300037E262 /* String+Validation.swift */,
+				B737679E221BEBD70003BB88 /* UIViewController+Alert.swift */,
+				B7620A4F2244F54900385572 /* UIImage+Rotation.swift */,
+				B764D786225DE578005B5F06 /* UIView+AL.swift */,
+			);
+			name = Extensions;
+			sourceTree = "<group>";
+		};
+		B7AECAD21ECDA674004BE2FF /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				B7AECAD31ECDA691004BE2FF /* Utils.swift */,
+			);
+			name = Helpers;
+			sourceTree = "<group>";
+		};
+		B7C3614820FCCAC5001907C2 /* pear */ = {
+			isa = PBXGroup;
+			children = (
+				B7784D9F210898B300CFD4E5 /* pear.png */,
+				B7C3614A20FCCAC5001907C2 /* pear.plist */,
+			);
+			name = pear;
+			path = Config/pear;
+			sourceTree = "<group>";
+		};
+		B7C3614B20FCCAC5001907C2 /* ring */ = {
+			isa = PBXGroup;
+			children = (
+				B7C3614D20FCCAC5001907C2 /* ring.plist */,
+			);
+			name = ring;
+			path = Config/ring;
+			sourceTree = "<group>";
+		};
+		B7C3614E20FCCAC5001907C2 /* oval */ = {
+			isa = PBXGroup;
+			children = (
+				B7C3615020FCCAC5001907C2 /* oval.plist */,
+				B7784D9D210898AE00CFD4E5 /* oval.png */,
+			);
+			name = oval;
+			path = Config/oval;
+			sourceTree = "<group>";
+		};
+		B7F18CA91EC0748E0045C8B3 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				B7F18CAA1EC074A90045C8B3 /* RoundedButton.swift */,
+				B7B71D741EC3295A0093A6A1 /* RectangularTextField.swift */,
+				B7A558431EC469540037E262 /* DottedCircleView.swift */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		B7F18CAC1EC07CF00045C8B3 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				B7B71D761EC32C490093A6A1 /* cambriai.ttf */,
+				B7F18CB11EC07F650045C8B3 /* cambria.ttc */,
+				B7F18CAD1EC07D150045C8B3 /* HTOWERT.TTF */,
+				B7F18CAE1EC07D150045C8B3 /* HTOWERTI.TTF */,
+			);
+			name = Fonts;
+			sourceTree = "<group>";
+		};
+		B7FBE4BE1EBA03420053ABAD /* ImageMagick */ = {
+			isa = PBXGroup;
+			children = (
+				B7FBE5721EBA03720053ABAD /* ImageMagicWrapper.h */,
+				B7FBE5731EBA03720053ABAD /* ImageMagicWrapper.m */,
+			);
+			path = ImageMagick;
+			sourceTree = "<group>";
+		};
+		B7FBE5771EBA07C60053ABAD /* Samples */ = {
+			isa = PBXGroup;
+			children = (
+				B7B3CEB91EC595A900497AC3 /* sample.jpg */,
+				B7FBE5781EBA07C60053ABAD /* 1.jpg */,
+				B78A08A71EC5EFB800E1F92B /* 2.jpg */,
+				B763BA561EC9C19F007F7B9D /* 3.jpg */,
+			);
+			path = Samples;
+			sourceTree = "<group>";
+		};
+		C6F8A93F9AB7DF2147328407 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				86BF3A5147511788F13E1124 /* Pods-FingerprintScanner.debug.xcconfig */,
+				572440008248D7314BE433FC /* Pods-FingerprintScanner.release.xcconfig */,
+				7A1D851613BD7EB2F889439F /* Pods-FingerprintScanner.debug bobo.xcconfig */,
+				16BCDED215D53F9EF991F4A5 /* Pods-FingerprintScanner.release bobo.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		B7A2B0401EB7124500752E2A /* FingerprintScanner */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B7A2B0691EB7124500752E2A /* Build configuration list for PBXNativeTarget "FingerprintScanner" */;
+			buildPhases = (
+				0FE10DC46B6784B69745BDA7 /* [CP] Check Pods Manifest.lock */,
+				B7A2B03D1EB7124500752E2A /* Sources */,
+				B7A2B03E1EB7124500752E2A /* Frameworks */,
+				B7A2B03F1EB7124500752E2A /* Resources */,
+				B9B86D13F6BE01DB4C0B189D /* [CP] Embed Pods Frameworks */,
+				6938170E99A72F55FF1AD93F /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FingerprintScanner;
+			productName = FingerprintScanner;
+			productReference = B7A2B0411EB7124500752E2A /* FingerprintScanner.app */;
+			productType = "com.apple.product-type.application";
+		};
+		B7A2B0541EB7124500752E2A /* FingerprintScannerTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B7A2B06C1EB7124500752E2A /* Build configuration list for PBXNativeTarget "FingerprintScannerTests" */;
+			buildPhases = (
+				B7A2B0511EB7124500752E2A /* Sources */,
+				B7A2B0521EB7124500752E2A /* Frameworks */,
+				B7A2B0531EB7124500752E2A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B7A2B0571EB7124500752E2A /* PBXTargetDependency */,
+			);
+			name = FingerprintScannerTests;
+			productName = FingerprintScannerTests;
+			productReference = B7A2B0551EB7124500752E2A /* FingerprintScannerTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		B7A2B05F1EB7124500752E2A /* FingerprintScannerUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B7A2B06F1EB7124500752E2A /* Build configuration list for PBXNativeTarget "FingerprintScannerUITests" */;
+			buildPhases = (
+				B7A2B05C1EB7124500752E2A /* Sources */,
+				B7A2B05D1EB7124500752E2A /* Frameworks */,
+				B7A2B05E1EB7124500752E2A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B7A2B0621EB7124500752E2A /* PBXTargetDependency */,
+			);
+			name = FingerprintScannerUITests;
+			productName = FingerprintScannerUITests;
+			productReference = B7A2B0601EB7124500752E2A /* FingerprintScannerUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		B7A2B0391EB7124500752E2A /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0830;
+				LastUpgradeCheck = 0830;
+				ORGANIZATIONNAME = FSStudio;
+				TargetAttributes = {
+					B7A2B0401EB7124500752E2A = {
+						CreatedOnToolsVersion = 8.3.1;
+						DevelopmentTeam = 6YKR59QXKM;
+						LastSwiftMigration = 0830;
+						ProvisioningStyle = Manual;
+					};
+					B7A2B0541EB7124500752E2A = {
+						CreatedOnToolsVersion = 8.3.1;
+						DevelopmentTeam = 8M3L8Z79P7;
+						ProvisioningStyle = Automatic;
+						TestTargetID = B7A2B0401EB7124500752E2A;
+					};
+					B7A2B05F1EB7124500752E2A = {
+						CreatedOnToolsVersion = 8.3.1;
+						DevelopmentTeam = 8M3L8Z79P7;
+						ProvisioningStyle = Automatic;
+						TestTargetID = B7A2B0401EB7124500752E2A;
+					};
+				};
+			};
+			buildConfigurationList = B7A2B03C1EB7124500752E2A /* Build configuration list for PBXProject "FingerprintScanner" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = B7A2B0381EB7124500752E2A;
+			productRefGroup = B7A2B0421EB7124500752E2A /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				B7A2B0401EB7124500752E2A /* FingerprintScanner */,
+				B7A2B0541EB7124500752E2A /* FingerprintScannerTests */,
+				B7A2B05F1EB7124500752E2A /* FingerprintScannerUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		B7A2B03F1EB7124500752E2A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B763BA571EC9C19F007F7B9D /* 3.jpg in Resources */,
+				B7C3615620FCCAC5001907C2 /* oval.plist in Resources */,
+				B7B71D771EC32C490093A6A1 /* cambriai.ttf in Resources */,
+				B7A2B04F1EB7124500752E2A /* LaunchScreen.storyboard in Resources */,
+				B78A08A81EC5EFB800E1F92B /* 2.jpg in Resources */,
+				B702186C20F88FFF008A89C9 /* oval.3dm in Resources */,
+				B765D31A222E9C53009B4F8B /* gold_tex.png in Resources */,
+				B7C3615420FCCAC5001907C2 /* ring.plist in Resources */,
+				B7FBE57A1EBA07C60053ABAD /* 1.jpg in Resources */,
+				B7F18CB01EC07D150045C8B3 /* HTOWERTI.TTF in Resources */,
+				B7F18CAF1EC07D150045C8B3 /* HTOWERT.TTF in Resources */,
+				B764D78A225DE7F1005B5F06 /* logo.png in Resources */,
+				B7784DA0210898B300CFD4E5 /* pear.png in Resources */,
+				B7C3614720FCBD2D001907C2 /* ring.3dm in Resources */,
+				B7784D9E210898AE00CFD4E5 /* oval.png in Resources */,
+				B7F18CB21EC07F650045C8B3 /* cambria.ttc in Resources */,
+				B7A2B04C1EB7124500752E2A /* Assets.xcassets in Resources */,
+				B7C3615220FCCAC5001907C2 /* pear.plist in Resources */,
+				B7B3CEBA1EC595A900497AC3 /* sample.jpg in Resources */,
+				B7A2B04A1EB7124500752E2A /* Main.storyboard in Resources */,
+				B702186D20F88FFF008A89C9 /* pear.3dm in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B7A2B0531EB7124500752E2A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B7A2B05E1EB7124500752E2A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		0FE10DC46B6784B69745BDA7 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-FingerprintScanner-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		6938170E99A72F55FF1AD93F /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-FingerprintScanner/Pods-FingerprintScanner-resources.sh",
+				"${PODS_CONFIGURATION_BUILD_DIR}/HockeySDK/HockeySDKResources.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/HockeySDKResources.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-FingerprintScanner/Pods-FingerprintScanner-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B9B86D13F6BE01DB4C0B189D /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-FingerprintScanner/Pods-FingerprintScanner-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
+				"${BUILT_PRODUCTS_DIR}/DKCamera/DKCamera.framework",
+				"${BUILT_PRODUCTS_DIR}/DynamicBlurView/DynamicBlurView.framework",
+				"${BUILT_PRODUCTS_DIR}/FLAnimatedImage/FLAnimatedImage.framework",
+				"${BUILT_PRODUCTS_DIR}/JPSVolumeButtonHandler/JPSVolumeButtonHandler.framework",
+				"${BUILT_PRODUCTS_DIR}/MBProgressHUD/MBProgressHUD.framework",
+				"${BUILT_PRODUCTS_DIR}/NYTPhotoViewer/NYTPhotoViewer.framework",
+				"${BUILT_PRODUCTS_DIR}/PopupDialog/PopupDialog.framework",
+				"${BUILT_PRODUCTS_DIR}/SlideMenuControllerSwift/SlideMenuControllerSwift.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftyContacts/SwiftyContacts.framework",
+				"${BUILT_PRODUCTS_DIR}/UIImage-Categories/UIImage_Categories.framework",
+				"${BUILT_PRODUCTS_DIR}/Zip/Zip.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DKCamera.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DynamicBlurView.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FLAnimatedImage.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/JPSVolumeButtonHandler.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MBProgressHUD.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/NYTPhotoViewer.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PopupDialog.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SlideMenuControllerSwift.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyContacts.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/UIImage_Categories.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Zip.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-FingerprintScanner/Pods-FingerprintScanner-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		B7A2B03D1EB7124500752E2A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DD059C3C2214724900CDA91D /* WebViewViewController.swift in Sources */,
+				B7A2B0471EB7124500752E2A /* InstructionsViewController.swift in Sources */,
+				B7FBE5741EBA03720053ABAD /* ImageMagicWrapper.m in Sources */,
+				B79F3B881EBC954F00EAD970 /* ContainerViewController.swift in Sources */,
+				B7A5584B1EC47D0E0037E262 /* SubmissionViewController.swift in Sources */,
+				B7D7B70F20FF341F0049B1B1 /* MaskModelCreator.mm in Sources */,
+				B7591B7E21CB893500374FC3 /* Vertex.swift in Sources */,
+				B711A15220E0FD5A00412425 /* Transform.m in Sources */,
+				B7B71D751EC3295A0093A6A1 /* RectangularTextField.swift in Sources */,
+				B79F3B901EBCB21D00EAD970 /* PrefsManager.swift in Sources */,
+				B70672FD20B2E0F800A1DDDF /* Model3DManager.mm in Sources */,
+				B75C06BD21D3700F003F45D9 /* Coord2D.m in Sources */,
+				B763BA5A1EC9C9AD007F7B9D /* SendMailInfo.swift in Sources */,
+				B7A2B0451EB7124500752E2A /* AppDelegate.swift in Sources */,
+				B7F18CAB1EC074A90045C8B3 /* RoundedButton.swift in Sources */,
+				B7AECAD41ECDA691004BE2FF /* Utils.swift in Sources */,
+				B75D6D5B21CD189C00879D02 /* Coord3D.m in Sources */,
+				B7A558471EC47C580037E262 /* UIViewController+HideKeyboard.swift in Sources */,
+				B7591B7C21CB874500374FC3 /* Preview3DModelViewController.swift in Sources */,
+				B711A14C20E0F8BC00412425 /* Export3dConfiguration.m in Sources */,
+				B7620A502244F54900385572 /* UIImage+Rotation.swift in Sources */,
+				B7B3CEB81EC58BC400497AC3 /* ConfirmationViewController.swift in Sources */,
+				B771AD1B21F9A81C004528F6 /* Transformations.swift in Sources */,
+				B7D7B70C20FF2F760049B1B1 /* BaseModelCreator.mm in Sources */,
+				B765CA5B1EB890EF001E5698 /* CheckResultViewController.swift in Sources */,
+				B75D6D5E21CD191B00879D02 /* RenderContent.m in Sources */,
+				B7EA19262282F20F00E733E7 /* ContactsManager.swift in Sources */,
+				B79F3B8C1EBCA23C00EAD970 /* FingersManager.swift in Sources */,
+				B773DD561ED2C446001895C0 /* SamplePhoto.swift in Sources */,
+				B7A558441EC469540037E262 /* DottedCircleView.swift in Sources */,
+				B728FF5C221ACC2800E729C0 /* Session.swift in Sources */,
+				B75C06B721D36DD6003F45D9 /* Texture.swift in Sources */,
+				B75C06B521D36A3D003F45D9 /* CoordColor.m in Sources */,
+				B773DD581ED2C88D001895C0 /* PreviewPhotoViewController.swift in Sources */,
+				B7A2B0731EB71B3D00752E2A /* CameraViewController.swift in Sources */,
+				B7D7B71520FF48980049B1B1 /* RingModelCreator.mm in Sources */,
+				B764D787225DE578005B5F06 /* UIView+AL.swift in Sources */,
+				B728FF57221AC5AE00E729C0 /* NetworkManager.swift in Sources */,
+				B737679F221BEBD70003BB88 /* UIViewController+Alert.swift in Sources */,
+				B711A14F20E0FBB200412425 /* ConfigObject.m in Sources */,
+				B7A5584D1EC48C300037E262 /* String+Validation.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B7A2B0511EB7124500752E2A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B7A2B05A1EB7124500752E2A /* FingerprintScannerTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B7A2B05C1EB7124500752E2A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B7A2B0651EB7124500752E2A /* FingerprintScannerUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		B7A2B0571EB7124500752E2A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B7A2B0401EB7124500752E2A /* FingerprintScanner */;
+			targetProxy = B7A2B0561EB7124500752E2A /* PBXContainerItemProxy */;
+		};
+		B7A2B0621EB7124500752E2A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B7A2B0401EB7124500752E2A /* FingerprintScanner */;
+			targetProxy = B7A2B0611EB7124500752E2A /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		B7A2B0481EB7124500752E2A /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B7A2B0491EB7124500752E2A /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		B7A2B04D1EB7124500752E2A /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B7A2B04E1EB7124500752E2A /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		B75C7F5821FADEF200A81928 /* Debug Bobo */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_BITCODE = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+					"MAGICKCORE_HDRI_ENABLE=0",
+					"MAGICKCORE_QUANTUM_DEPTH=16",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CFLAGS = "-Dmacintosh=1";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = "Debug Bobo";
+		};
+		B75C7F5921FADEF200A81928 /* Debug Bobo */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7A1D851613BD7EB2F889439F /* Pods-FingerprintScanner.debug bobo.xcconfig */;
+			buildSettings = {
+				APP_DISPLAY_NAME = "Bobo & Musu";
+				ARCHS = "$(ARCHS_STANDARD)";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				BUNDLE_IDENTIFIER = "com.fsstudio.bobo-musu";
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Crowdbotics Corporation (6YKR59QXKM)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Crowdbotics Corporation (6YKR59QXKM)";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = 6YKR59QXKM;
+				ENABLE_BITCODE = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"COCOAPODS=1",
+					"ANIMATED_GIF_SUPPORT=1",
+					OPENGL_VIEWER,
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_ROOT}/Headers/Public\"",
+					"$(SRCROOT)/FingerprintScanner/ImageMagick/**",
+				);
+				INFOPLIST_FILE = FingerprintScanner/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/FingerprintScanner/ImageMagick",
+					"$(PROJECT_DIR)/FingerprintScanner/opennurbs/lib",
+					"$(PROJECT_DIR)/FingerprintScanner/opennurbs",
+				);
+				"LIBRARY_SEARCH_PATHS[sdk=iphoneos*]" = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/FingerprintScanner/ImageMagick",
+					"$(PROJECT_DIR)/FingerprintScanner/opennurbs/lib/device",
+				);
+				"LIBRARY_SEARCH_PATHS[sdk=iphonesimulator*]" = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/FingerprintScanner/ImageMagick",
+					"$(PROJECT_DIR)/FingerprintScanner/opennurbs/lib/simulator",
+				);
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-l\"stdc++\"",
+					"-framework",
+					"\"AVFoundation\"",
+					"-framework",
+					"\"Accelerate\"",
+					"-framework",
+					"\"AssetsLibrary\"",
+					"-framework",
+					"\"CoreGraphics\"",
+					"-framework",
+					"\"CoreImage\"",
+					"-framework",
+					"\"CoreMedia\"",
+					"-framework",
+					"\"CoreVideo\"",
+					"-framework",
+					"\"DKCamera\"",
+					"-framework",
+					"\"Foundation\"",
+					"-framework",
+					"\"QuartzCore\"",
+					"-framework",
+					"\"UIKit\"",
+					"-lMagickCore",
+					"-lMagickWand",
+					"-lz",
+					"-lbz2",
+					"-ljpeg",
+					"-lpng",
+					"-ltiff",
+					"-lopennurbs_public",
+					"-lopennurbs_public_freetype",
+					"-lopennurbs_public_zlib",
+				);
+				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" -DOPENGL_VIEWER";
+				PRODUCT_BUNDLE_IDENTIFIER = com.crowdbotics.bolomusu;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = bobomusu;
+				SWIFT_OBJC_BRIDGING_HEADER = "FingerprintScanner/FingerprintScanner-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.0;
+				VALID_ARCHS = "arm64 arm64e armv7 armv7s";
+			};
+			name = "Debug Bobo";
+		};
+		B75C7F5A21FADEF200A81928 /* Debug Bobo */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = 8M3L8Z79P7;
+				INFOPLIST_FILE = FingerprintScannerTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.fsstudio.FingerprintScannerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FingerprintScanner.app/FingerprintScanner";
+			};
+			name = "Debug Bobo";
+		};
+		B75C7F5B21FADEF200A81928 /* Debug Bobo */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				DEVELOPMENT_TEAM = 8M3L8Z79P7;
+				INFOPLIST_FILE = FingerprintScannerUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.fsstudio.FingerprintScannerUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_TARGET_NAME = FingerprintScanner;
+			};
+			name = "Debug Bobo";
+		};
+		B75C7F5C21FADF0F00A81928 /* Release Bobo */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_BITCODE = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"MAGICKCORE_HDRI_ENABLE=0",
+					"MAGICKCORE_QUANTUM_DEPTH=16",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CFLAGS = "-Dmacintosh=1";
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = "Release Bobo";
+		};
+		B75C7F5D21FADF0F00A81928 /* Release Bobo */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 16BCDED215D53F9EF991F4A5 /* Pods-FingerprintScanner.release bobo.xcconfig */;
+			buildSettings = {
+				APP_DISPLAY_NAME = "Bobo & Musu";
+				ARCHS = "$(ARCHS_STANDARD)";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				BUNDLE_IDENTIFIER = "com.fsstudio.bobo-musu";
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Crowdbotics Corporation (6YKR59QXKM)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Crowdbotics Corporation (6YKR59QXKM)";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = 6YKR59QXKM;
+				ENABLE_BITCODE = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"COCOAPODS=1",
+					"ANIMATED_GIF_SUPPORT=1",
+					OPENGL_VIEWER,
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_ROOT}/Headers/Public\"",
+					"$(SRCROOT)/FingerprintScanner/ImageMagick/**",
+				);
+				INFOPLIST_FILE = FingerprintScanner/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/FingerprintScanner/ImageMagick",
+					"$(PROJECT_DIR)/FingerprintScanner/opennurbs/lib",
+					"$(PROJECT_DIR)/FingerprintScanner/opennurbs",
+				);
+				"LIBRARY_SEARCH_PATHS[sdk=iphoneos*]" = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/FingerprintScanner/ImageMagick",
+					"$(PROJECT_DIR)/FingerprintScanner/opennurbs/lib/device",
+				);
+				"LIBRARY_SEARCH_PATHS[sdk=iphonesimulator*]" = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/FingerprintScanner/ImageMagick",
+					"$(PROJECT_DIR)/FingerprintScanner/opennurbs/lib/simulator",
+				);
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-l\"stdc++\"",
+					"-framework",
+					"\"AVFoundation\"",
+					"-framework",
+					"\"Accelerate\"",
+					"-framework",
+					"\"AssetsLibrary\"",
+					"-framework",
+					"\"CoreGraphics\"",
+					"-framework",
+					"\"CoreImage\"",
+					"-framework",
+					"\"CoreMedia\"",
+					"-framework",
+					"\"CoreVideo\"",
+					"-framework",
+					"\"DKCamera\"",
+					"-framework",
+					"\"Foundation\"",
+					"-framework",
+					"\"QuartzCore\"",
+					"-framework",
+					"\"UIKit\"",
+					"-lMagickCore",
+					"-lMagickWand",
+					"-lz",
+					"-lbz2",
+					"-ljpeg",
+					"-lpng",
+					"-ltiff",
+					"-lopennurbs_public",
+					"-lopennurbs_public_freetype",
+					"-lopennurbs_public_zlib",
+				);
+				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" -DOPENGL_VIEWER";
+				PRODUCT_BUNDLE_IDENTIFIER = com.crowdbotics.bolomusu;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = bobomusu;
+				SWIFT_OBJC_BRIDGING_HEADER = "FingerprintScanner/FingerprintScanner-Bridging-Header.h";
+				SWIFT_VERSION = 4.0;
+				VALID_ARCHS = "arm64 arm64e armv7 armv7s";
+			};
+			name = "Release Bobo";
+		};
+		B75C7F5E21FADF0F00A81928 /* Release Bobo */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = 8M3L8Z79P7;
+				INFOPLIST_FILE = FingerprintScannerTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.fsstudio.FingerprintScannerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FingerprintScanner.app/FingerprintScanner";
+			};
+			name = "Release Bobo";
+		};
+		B75C7F5F21FADF0F00A81928 /* Release Bobo */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				DEVELOPMENT_TEAM = 8M3L8Z79P7;
+				INFOPLIST_FILE = FingerprintScannerUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.fsstudio.FingerprintScannerUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_TARGET_NAME = FingerprintScanner;
+			};
+			name = "Release Bobo";
+		};
+		B7A2B0671EB7124500752E2A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_BITCODE = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+					"MAGICKCORE_HDRI_ENABLE=0",
+					"MAGICKCORE_QUANTUM_DEPTH=16",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CFLAGS = "-Dmacintosh=1";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		B7A2B0681EB7124500752E2A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_BITCODE = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"MAGICKCORE_HDRI_ENABLE=0",
+					"MAGICKCORE_QUANTUM_DEPTH=16",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CFLAGS = "-Dmacintosh=1";
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		B7A2B06A1EB7124500752E2A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 86BF3A5147511788F13E1124 /* Pods-FingerprintScanner.debug.xcconfig */;
+			buildSettings = {
+				APP_DISPLAY_NAME = "Fingerprint Photographer";
+				ARCHS = "$(ARCHS_STANDARD)";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				BUNDLE_IDENTIFIER = "com.fsstudio.fingerprint-scanner";
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Crowdbotics Corporation (6YKR59QXKM)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Crowdbotics Corporation (6YKR59QXKM)";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = 6YKR59QXKM;
+				ENABLE_BITCODE = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_ROOT}/Headers/Public\"",
+					"$(SRCROOT)/FingerprintScanner/ImageMagick/**",
+				);
+				INFOPLIST_FILE = FingerprintScanner/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/FingerprintScanner/ImageMagick",
+					"$(PROJECT_DIR)/FingerprintScanner/opennurbs/lib",
+					"$(PROJECT_DIR)/FingerprintScanner/opennurbs",
+				);
+				"LIBRARY_SEARCH_PATHS[sdk=iphoneos*]" = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/FingerprintScanner/ImageMagick",
+					"$(PROJECT_DIR)/FingerprintScanner/opennurbs/lib/device",
+				);
+				"LIBRARY_SEARCH_PATHS[sdk=iphonesimulator*]" = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/FingerprintScanner/ImageMagick",
+					"$(PROJECT_DIR)/FingerprintScanner/opennurbs/lib/simulator",
+				);
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-l\"stdc++\"",
+					"-framework",
+					"\"AVFoundation\"",
+					"-framework",
+					"\"Accelerate\"",
+					"-framework",
+					"\"AssetsLibrary\"",
+					"-framework",
+					"\"CoreGraphics\"",
+					"-framework",
+					"\"CoreImage\"",
+					"-framework",
+					"\"CoreMedia\"",
+					"-framework",
+					"\"CoreVideo\"",
+					"-framework",
+					"\"DKCamera\"",
+					"-framework",
+					"\"Foundation\"",
+					"-framework",
+					"\"QuartzCore\"",
+					"-framework",
+					"\"UIKit\"",
+					"-lMagickCore",
+					"-lMagickWand",
+					"-lz",
+					"-lbz2",
+					"-ljpeg",
+					"-lpng",
+					"-ltiff",
+					"-lopennurbs_public",
+					"-lopennurbs_public_freetype",
+					"-lopennurbs_public_zlib",
+				);
+				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\"";
+				PRODUCT_BUNDLE_IDENTIFIER = com.crowdbotics.bolomusu;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = bobomusu;
+				SWIFT_OBJC_BRIDGING_HEADER = "FingerprintScanner/FingerprintScanner-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.0;
+				VALID_ARCHS = "arm64 arm64e armv7 armv7s";
+			};
+			name = Debug;
+		};
+		B7A2B06B1EB7124500752E2A /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 572440008248D7314BE433FC /* Pods-FingerprintScanner.release.xcconfig */;
+			buildSettings = {
+				APP_DISPLAY_NAME = "Fingerprint Photographer";
+				ARCHS = "$(ARCHS_STANDARD)";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				BUNDLE_IDENTIFIER = "com.fsstudio.fingerprint-scanner";
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Crowdbotics Corporation (6YKR59QXKM)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Crowdbotics Corporation (6YKR59QXKM)";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = 6YKR59QXKM;
+				ENABLE_BITCODE = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_ROOT}/Headers/Public\"",
+					"$(SRCROOT)/FingerprintScanner/ImageMagick/**",
+				);
+				INFOPLIST_FILE = FingerprintScanner/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/FingerprintScanner/ImageMagick",
+					"$(PROJECT_DIR)/FingerprintScanner/opennurbs/lib",
+					"$(PROJECT_DIR)/FingerprintScanner/opennurbs",
+				);
+				"LIBRARY_SEARCH_PATHS[sdk=iphoneos*]" = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/FingerprintScanner/ImageMagick",
+					"$(PROJECT_DIR)/FingerprintScanner/opennurbs/lib/device",
+				);
+				"LIBRARY_SEARCH_PATHS[sdk=iphonesimulator*]" = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/FingerprintScanner/ImageMagick",
+					"$(PROJECT_DIR)/FingerprintScanner/opennurbs/lib/simulator",
+				);
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-l\"stdc++\"",
+					"-framework",
+					"\"AVFoundation\"",
+					"-framework",
+					"\"Accelerate\"",
+					"-framework",
+					"\"AssetsLibrary\"",
+					"-framework",
+					"\"CoreGraphics\"",
+					"-framework",
+					"\"CoreImage\"",
+					"-framework",
+					"\"CoreMedia\"",
+					"-framework",
+					"\"CoreVideo\"",
+					"-framework",
+					"\"DKCamera\"",
+					"-framework",
+					"\"Foundation\"",
+					"-framework",
+					"\"QuartzCore\"",
+					"-framework",
+					"\"UIKit\"",
+					"-lMagickCore",
+					"-lMagickWand",
+					"-lz",
+					"-lbz2",
+					"-ljpeg",
+					"-lpng",
+					"-ltiff",
+					"-lopennurbs_public",
+					"-lopennurbs_public_freetype",
+					"-lopennurbs_public_zlib",
+				);
+				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\"";
+				PRODUCT_BUNDLE_IDENTIFIER = com.crowdbotics.bolomusu;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = bobomusu;
+				SWIFT_OBJC_BRIDGING_HEADER = "FingerprintScanner/FingerprintScanner-Bridging-Header.h";
+				SWIFT_VERSION = 4.0;
+				VALID_ARCHS = "arm64 arm64e armv7 armv7s";
+			};
+			name = Release;
+		};
+		B7A2B06D1EB7124500752E2A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = 8M3L8Z79P7;
+				INFOPLIST_FILE = FingerprintScannerTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.fsstudio.FingerprintScannerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FingerprintScanner.app/FingerprintScanner";
+			};
+			name = Debug;
+		};
+		B7A2B06E1EB7124500752E2A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = 8M3L8Z79P7;
+				INFOPLIST_FILE = FingerprintScannerTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.fsstudio.FingerprintScannerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FingerprintScanner.app/FingerprintScanner";
+			};
+			name = Release;
+		};
+		B7A2B0701EB7124500752E2A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				DEVELOPMENT_TEAM = 8M3L8Z79P7;
+				INFOPLIST_FILE = FingerprintScannerUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.fsstudio.FingerprintScannerUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_TARGET_NAME = FingerprintScanner;
+			};
+			name = Debug;
+		};
+		B7A2B0711EB7124500752E2A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				DEVELOPMENT_TEAM = 8M3L8Z79P7;
+				INFOPLIST_FILE = FingerprintScannerUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.fsstudio.FingerprintScannerUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_TARGET_NAME = FingerprintScanner;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		B7A2B03C1EB7124500752E2A /* Build configuration list for PBXProject "FingerprintScanner" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B7A2B0671EB7124500752E2A /* Debug */,
+				B75C7F5821FADEF200A81928 /* Debug Bobo */,
+				B7A2B0681EB7124500752E2A /* Release */,
+				B75C7F5C21FADF0F00A81928 /* Release Bobo */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B7A2B0691EB7124500752E2A /* Build configuration list for PBXNativeTarget "FingerprintScanner" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B7A2B06A1EB7124500752E2A /* Debug */,
+				B75C7F5921FADEF200A81928 /* Debug Bobo */,
+				B7A2B06B1EB7124500752E2A /* Release */,
+				B75C7F5D21FADF0F00A81928 /* Release Bobo */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B7A2B06C1EB7124500752E2A /* Build configuration list for PBXNativeTarget "FingerprintScannerTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B7A2B06D1EB7124500752E2A /* Debug */,
+				B75C7F5A21FADEF200A81928 /* Debug Bobo */,
+				B7A2B06E1EB7124500752E2A /* Release */,
+				B75C7F5E21FADF0F00A81928 /* Release Bobo */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B7A2B06F1EB7124500752E2A /* Build configuration list for PBXNativeTarget "FingerprintScannerUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B7A2B0701EB7124500752E2A /* Debug */,
+				B75C7F5B21FADEF200A81928 /* Debug Bobo */,
+				B7A2B0711EB7124500752E2A /* Release */,
+				B75C7F5F21FADF0F00A81928 /* Release Bobo */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = B7A2B0391EB7124500752E2A /* Project object */;
+}

@@ -1,0 +1,115 @@
+﻿
+@{
+    Layout = "~/Themes/BoBoMuSuTheme/Views/Shared/_BMLayout.cshtml";
+    Html.AppendPageCssClassParts("html-welcome");
+}
+<div class="page from-panel">
+    <div class="page-body panel-body">
+        <div class="form-horizontal buttoms text-center">
+            <div class="form-group">
+                <div class="col-xs-6 col-md-6 col-sm-6 login-btn">
+                    <a href="/login" class="btn btn-primary-custom col-xs-12">LOG IN</a>
+                </div>
+                <div class="col-xs-6 col-md-6 col-sm-6 sginup-btn"> 
+                    <a href="/register" class="btn btn-primary-custom col-xs-12">SIGN UP</a>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-xs-12 col-md-12 col-sm-12">
+                    <a href="/" class="btn btn-primary-custom col-xs-12">CONTINUE AS A GUEST</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="slide-image-items hide">
+    <img class="slide-image-item" id="slide-image-item1" src="/Themes/BoBoMuSuTheme/Content/images/bm/welcome1_2.jpg?v=2" />
+    <img class="slide-image-item" id="slide-image-item2" src="/Themes/BoBoMuSuTheme/Content/images/bm/welcome2_2.jpg?v=2" />
+    <img class="slide-image-item" id="slide-image-item3" src="/Themes/BoBoMuSuTheme/Content/images/bm/welcome3_2.jpg?v=2" />
+</div>
+  
+<script asp-location="Footer">
+    $(document).ready(function() {
+        checkImageSlideLoaded();
+        //setLogoPosition();
+        //setButtomPosition();
+    });
+
+    function checkImageSlideLoaded() {
+        var els = $(".slide-image-item");
+        var complete = true;
+        for (var i = 0; i < els.length; i++) {
+            var el = document.getElementById(els[i].id);
+            if (!el.complete) {
+                complete = false;
+                break;
+            };
+        }
+
+        if (!complete) {
+            setTimeout(function() {
+                   checkImageSlideLoaded();
+                },
+                100);
+        } else {
+            setImageSlide();
+        }
+    }
+
+    function setImageSlide() {
+        var images = [];
+        var els = $(".slide-image-item");
+        for (var i = 0; i < els.length; i++) {
+            images.push(els[i].src);
+        }
+
+        var index = 0;
+        var imageUrl = 'url("' + images[index] + '")';
+        $('.html-welcome').css('background-repeat', 'no-repeat');
+        $('.html-welcome').css('background-position', 'center');
+        $('.html-welcome').css('background-size', 'cover');
+        $('.html-welcome').css('background-image', imageUrl);
+        //$('.html-welcome').css('background-size', $(window).width() + 'px' + ' ' + $(window).height() + 'px');
+        setInterval(function() {
+                index++;
+                if (index >= images.length)
+                    index = 0;
+                imageUrl = 'url("' + images[index] + '")';
+                $('.html-welcome').css('background-image', imageUrl);
+            },
+            3000);
+    }
+
+    function setTextSlide() {
+        var texts = [
+            'text 1',
+            'text 2',
+            'text 3',
+            'text 4'
+        ];
+        var index = 0;
+        var text = texts[index];
+        $('.slide-text-content').html(text);
+        $('.slide-text').css('margin-top', (($(window).height() / 2) - ($('.slide-text').height() / 2) - 100) + 'px');
+        setInterval(function() {
+                index++;
+                if (index >= texts.length)
+                    index = 0;
+                text = texts[index];
+                $('.slide-text-content').html(text);
+            },
+            4000);
+    }
+
+    function setLogoPosition() {
+        $('.logo-image').css('margin-top', (($(window).height() / 2) - 100) + 'px');
+        $('.logo-image').css('margin-top', '50px');
+        $('.logo-image').removeClass('hide');
+    }
+
+    function setButtomPosition() {
+        var h = (($(window).height() / 2) - ($('.buttoms').height() / 2));
+        $('.buttoms').css('margin-top', (h - 100) + 'px');
+        $('.buttoms').removeClass('hide');
+    }
+</script>

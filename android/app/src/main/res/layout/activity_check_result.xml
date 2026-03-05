@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    tools:context=".Activity.CheckResultActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_above="@+id/finger_img"
+        android:layout_marginBottom="30dp"
+        android:text="This is your fingerprint"
+        android:textAlignment="center"
+        android:gravity="center"
+        android:textColor="@android:color/black"
+        android:textSize="25dp"
+        android:typeface="serif" />
+
+    <ImageView
+        android:id="@+id/finger_img"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/usephotoBtn"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="60dp" />
+
+    <RelativeLayout
+        android:id="@+id/usephotoBtn"
+        android:layout_width="260dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/retakelayout"
+        android:layout_marginBottom="35dp"
+        android:background="@drawable/retakeborder">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_margin="15dp"
+            android:text="USE THIS PRINT"
+            android:textColor="@android:color/black"
+            android:textSize="24dp"
+            android:typeface="serif" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/retakelayout"
+        android:layout_width="260dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="35dp"
+        android:background="@drawable/retakeborder">
+
+        <TextView
+            android:id="@+id/retakeBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_margin="15dp"
+            android:text="RETAKE PHOTO"
+            android:textColor="@android:color/black"
+            android:textSize="24dp"
+            android:typeface="serif" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

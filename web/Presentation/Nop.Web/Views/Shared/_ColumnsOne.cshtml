@@ -1,0 +1,20 @@
+﻿@{
+  Layout = "_Root";
+}
+@if (IsSectionDefined("Breadcrumb"))
+{
+  @section Breadcrumb {
+    @RenderSection("Breadcrumb")
+  }
+}
+@if (IsSectionDefined("MobileHeader"))
+{
+  @section MobileHeader {
+    @RenderSection("MobileHeader", false)
+  }
+}
+<div class="center-1">
+  @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.MainColumnBefore })
+  @RenderBody()
+  @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.MainColumnAfter })
+</div>

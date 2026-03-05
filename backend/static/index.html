@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bobo &amp; Musu — Fingerprint Preview</title>
+    <link rel="stylesheet" href="/static/style.css?v=13">
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+        }
+    }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Bobo &amp; Musu — Fingerprint Preview</h1>
+    </header>
+    <main>
+        <aside id="controls">
+            <section>
+                <h2>Upload Fingerprint</h2>
+                <div id="drop-zone">
+                    <p>Drop image here<br>or click to select</p>
+                    <input type="file" id="fingerprint-input" accept="image/png,image/jpeg,image/bmp,image/tiff">
+                </div>
+                <div id="fp-preview-container" class="hidden">
+                    <img id="fp-preview" alt="Fingerprint preview">
+                    <button id="fp-clear" type="button">&times;</button>
+                </div>
+            </section>
+
+            <section>
+                <h2>Design</h2>
+                <select id="design-select">
+                    <option value="">Loading designs...</option>
+                </select>
+            </section>
+
+            <section>
+                <h2>Zones</h2>
+                <div id="zones-container"></div>
+            </section>
+
+            <section>
+                <label><input type="checkbox" id="unified-check"> Unified mapping</label>
+            </section>
+
+            <section>
+                <h2>Fingerprint Intensity</h2>
+                <input type="range" id="intensity-slider" min="15" max="55" value="30" step="1">
+                <div class="slider-labels">
+                    <span>Subtle</span>
+                    <span>Bold</span>
+                </div>
+            </section>
+
+            <section>
+                <button id="generate-btn" type="button" disabled>Generate Preview</button>
+            </section>
+
+            <div id="status-bar" class="hidden">
+                <div id="spinner" class="hidden"></div>
+                <span id="status-text"></span>
+            </div>
+
+            <div id="error-bar" class="hidden"></div>
+        </aside>
+
+        <div id="viewer-container">
+            <canvas id="viewer-canvas"></canvas>
+        </div>
+    </main>
+
+    <footer>
+        <span id="stats"></span>
+    </footer>
+
+    <script type="module" src="/static/app.js?v=13"></script>
+</body>
+</html>

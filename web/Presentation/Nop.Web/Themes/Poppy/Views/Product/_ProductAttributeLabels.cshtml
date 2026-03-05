@@ -1,0 +1,38 @@
+﻿@model IList<ProductDetailsModel.ProductAttributeModel>
+@using Nop.Core.Domain.Catalog
+@using Nop.Core.Domain.Media
+@using System.Text
+@using Nop.Services.Media
+@using System.Globalization
+
+@inject IDownloadService downloadService
+@inject CatalogSettings catalogSettings
+
+@if (Model.Count > 0)
+{
+  <div class="attributes">
+    <ul class="attribute-list">
+      @foreach (var attribute in Model)
+      {
+        var controlId = $"span_product_attribute_{attribute.Id}";
+        var textPrompt = !string.IsNullOrEmpty(attribute.TextPrompt) ? attribute.TextPrompt : attribute.Name;
+        <li class="attribute-item">
+          <label class="text-prompt">
+            @textPrompt
+          </label>
+          @switch (attribute.AttributeControlType)
+          {
+            case AttributeControlType.DropdownList:
+            case AttributeControlType.RadioList:
+            case AttributeControlType.TextBox:
+            case AttributeControlType.MultilineTextbox:
+              {
+                <strong><label name="@controlId" id="@controlId"></label></strong>
+              }
+              break;
+          }
+        </li>
+      }
+    </ul>
+  </div>
+}

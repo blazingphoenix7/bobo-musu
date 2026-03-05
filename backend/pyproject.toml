@@ -1,0 +1,32 @@
+[project]
+name = "bobomusu-backend"
+version = "0.1.0"
+requires-python = ">=3.10"
+
+dependencies = [
+    "django>=5.1,<5.2",
+    "djangorestframework>=3.15,<4",
+    "django-cors-headers>=4.3,<5",
+    "rhino3dm>=8.0.0",
+    "numpy>=1.26",
+    "scipy>=1.12",
+    "Pillow>=10.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-django>=4.8",
+    "pytest-xdist>=3.5",
+    "pytest-timeout>=2.2",
+    "pytest-cov>=5.0",
+    "ruff>=0.3",
+]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "bobomusu.settings"
+pythonpath = ["."]
+testpaths = ["preview/tests"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"

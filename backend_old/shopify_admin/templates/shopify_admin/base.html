@@ -1,0 +1,21 @@
+{% load staticfiles %}
+{% load bootstrap4 %}
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    {% bootstrap_css %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
+    <title>{% block title %}{{ title }}{% endblock %}</title>
+    {% bootstrap_jquery %}
+    {% bootstrap_javascript %}
+</head>
+<body>
+{% block content %}
+{% endblock %}
+</body>
+</html>

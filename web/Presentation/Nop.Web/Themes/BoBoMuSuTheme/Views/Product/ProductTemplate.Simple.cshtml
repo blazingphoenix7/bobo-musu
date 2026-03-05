@@ -1,0 +1,202 @@
+﻿@model ProductDetailsModel
+@using Microsoft.AspNetCore.Http.Extensions
+@using Nop.Core.Domain.Orders
+@using Nop.Core.Domain.Seo;
+@inject Nop.Core.IWebHelper webHelper
+@inject SeoSettings seoSettings
+@{
+    Layout = "_ColumnsOne";
+
+    //title
+    Html.AddTitleParts(!string.IsNullOrEmpty(Model.MetaTitle) ? Model.MetaTitle : Model.Name);
+    //meta
+    Html.AddMetaDescriptionParts(Model.MetaDescription);
+    Html.AddMetaKeywordParts(Model.MetaKeywords);
+    //page class
+    Html.AppendPageCssClassParts("html-product-details-page");
+
+    //canonical URL
+    if (seoSettings.CanonicalUrlsEnabled)
+    {
+        var productUrl = Url.RouteUrl("Product", new { SeName = Model.SeName }, webHelper.CurrentRequestProtocol).ToLowerInvariant();
+        Html.AddCanonicalUrlParts(productUrl, seoSettings.QueryStringInCanonicalUrlsEnabled);
+    }
+
+    //open graph META tags
+    if (seoSettings.OpenGraphMetaTags)
+    {
+        Html.AddHeadCustomParts("<meta property=\"og:type\" content=\"product\" />");
+        Html.AddHeadCustomParts("<meta property=\"og:title\" content=\"" + Html.Encode(Model.Name) + "\" />");
+        Html.AddHeadCustomParts("<meta property=\"og:description\" content=\"" + Html.Encode(Nop.Core.Html.HtmlHelper.StripTags(Model.MetaDescription)) + "\" />");
+        Html.AddHeadCustomParts("<meta property=\"og:image\" content=\"" + Model.DefaultPictureModel.ImageUrl + "\" />");
+        Html.AddHeadCustomParts("<meta property=\"og:url\" content=\"" + webHelper.GetThisPageUrl(true) + "\" />");
+        Html.AddHeadCustomParts("<meta property=\"og:site_name\" content=\"" + Html.Encode(Model.CurrentStoreName) + "\" />");
+    }
+
+    //Twitter META tags
+    if (seoSettings.TwitterMetaTags)
+    {
+        Html.AddHeadCustomParts("<meta property=\"twitter:card\" content=\"summary\" />");
+        Html.AddHeadCustomParts("<meta property=\"twitter:site\" content=\"" + Html.Encode(Model.CurrentStoreName) + "\" />");
+        Html.AddHeadCustomParts("<meta property=\"twitter:title\" content=\"" + Html.Encode(Model.Name) + "\" />");
+        Html.AddHeadCustomParts("<meta property=\"twitter:description\" content=\"" + Html.Encode(Nop.Core.Html.HtmlHelper.StripTags(Model.MetaDescription)) + "\" />");
+        Html.AddHeadCustomParts("<meta property=\"twitter:image\" content=\"" + Model.DefaultPictureModel.ImageUrl + "\" />");
+        Html.AddHeadCustomParts("<meta property=\"twitter:url\" content=\"" + webHelper.GetThisPageUrl(true) + "\" />");
+    }
+}
+@{
+    var hasAllowManyPrints = Model.NumberOfPrints > 1;
+    var hasPrints = Model.AddToCart.Prints != null && Model.AddToCart.Prints.Count > 0;
+}
+<div class="page product-details-page">
+    @if (Context.Request.IsMobileBrowser())
+    {
+        <div class="page-title panel-heading element-fixed">
+            <a href="javascript:void(0);" class="back-prev-page-link"><i class="glyphicon glyphicon-home glyphicon-menu-left back-prev-icon"></i></a>
+        </div>
+    }
+    <div class="page-body element-scroll">
+        <form asp-route="Product" asp-route-sename="@Model.SeName" method="post" id="product-details-form">
+            <div itemscope itemtype="http://schema.org/Product" data-productid="@Model.Id">
+                <div class="product-essential from-panel">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <!--product pictures-->
+                                @await Html.PartialAsync("_ProductDetailsPictures", Model)
+                                @await Component.InvokeAsync("Widget", new {widgetZone = PublicWidgetZones.ProductDetailsAfterPictures, additionalData = Model})
+                            </div>
+                            <div class="col-md-6">
+                                <div class="overview">
+                                    @if (!string.IsNullOrEmpty(Model.ShortDescription))
+                                    {
+                                        <div class="short-description">
+                                            @Html.Raw(Model.ShortDescription)
+                                        </div>
+                                    }
+                                    <div class="prices">
+                                        <div class="product-price">
+                                            <span itemprop="price" content="@Model.ProductPrice.PriceValue.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)" class="price-value-@(Model.ProductPrice.ProductId)">
+                                                @Html.Raw(Model.ProductPrice.Price)
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <!--attributes-->
+                                    @{
+                                        var dataDictAttributes = new ViewDataDictionary(ViewData);
+                                        dataDictAttributes.TemplateInfo.HtmlFieldPrefix = $"attributes_{Model.Id}";
+                                        @await Html.PartialAsync("_ProductAttributes", Model.ProductAttributes, dataDictAttributes)
+                                    }
+                                    @if (!hasAllowManyPrints && hasPrints)
+                                    {
+                                        <div class="form-horizontal">
+                                            <div class="form-group">
+                                                <label for="add-print-to-cart-select" class="col-md-3 col-xs-12 control-label">Choose Print:</label>
+                                                <div class="col-md-9 col-xs-12">
+                                                    <select id="add-print-to-cart-select" name="add-print-to-cart-select" class="form-control dropdown-toggle">
+                                                        @foreach (var item in Model.AddToCart.Prints)
+                                                        {
+                                                            <option value="@(item.Id + "_0")">@item.Name</option>
+                                                        }
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                    @if (Model.IsAuthenticated)
+                                    {
+                                        <div class="button-group">
+                                            <div class="list-group">
+                                                <a href="javascript:void(0);" class="list-group-item btn-add-new-print">
+                                                    <span class="glyphicon glyphicon-camera icon-left"></span>Take a print<span class="glyphicon glyphicon-menu-right icon-right"></span>
+                                                </a>
+                                                <a href="@Url.RouteUrl("BMAskForPrint")?from=@Model.SeName" class="list-group-item">
+                                                    <span class="glyphicon glyphicon-camera icon-left"></span>Request a print<span class="glyphicon glyphicon-menu-right icon-right"></span>
+                                                </a>
+                                                <a href="javascript:void(0);" id="add-to-cart-button-@Model.AddToCart.ProductId" class="list-group-item" data-productid="@Model.AddToCart.ProductId" onclick="($('#add-print-to-cart-select').val() ? AjaxCart.addproducttocart_details('@Url.RouteUrl("AddProductToCart-Details", new {productId = Model.AddToCart.ProductId, shoppingCartTypeId = (int) ShoppingCartType.ShoppingCart})', '#product-details-form') : $('#no-prints-modal').modal()); return false;">
+                                                    <span class="glyphicon glyphicon-shopping-cart icon-left"></span>Add to cart<span class="glyphicon glyphicon-menu-right icon-right"></span>
+                                                </a>
+                                                <a href="javascript:void(0);" id="add-to-wishlist-button-@Model.AddToCart.ProductId" class="list-group-item" data-productid="@Model.AddToCart.ProductId" onclick="AjaxCart.addproducttocart_details('@Url.RouteUrl("AddProductToCart-Details", new {productId = Model.AddToCart.ProductId, shoppingCartTypeId = (int) ShoppingCartType.Wishlist})', '#product-details-form');return false;">
+                                                    <span class="glyphicon glyphicon-heart icon-left"></span>Add to wishlist<span class="glyphicon glyphicon-menu-right icon-right"></span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="button-group">
+                                            <div class="list-group">
+                                                <a href="@Url.RouteUrl("Login")?ReturnUrl=/@Model.SeName" class="list-group-item">
+                                                    <span class="glyphicon glyphicon-camera icon-left"></span>Take a print<span class="glyphicon glyphicon-menu-right icon-right"></span>
+                                                </a>
+                                                <a href="@Url.RouteUrl("Login")?ReturnUrl=@Url.RouteUrl("BMAskForPrint")" class="list-group-item">
+                                                    <span class="glyphicon glyphicon-camera icon-left"></span>Request a print<span class="glyphicon glyphicon-menu-right icon-right"></span>
+                                                </a>
+                                                <a href="@Url.RouteUrl("Login")?ReturnUrl=/@Model.SeName" id="add-to-cart-button-@Model.AddToCart.ProductId" class="list-group-item">
+                                                    <span class="glyphicon glyphicon-shopping-cart icon-left"></span>Add to cart<span class="glyphicon glyphicon-menu-right icon-right"></span>
+                                                </a>
+                                                <a href="@Url.RouteUrl("Login")?ReturnUrl=/@Model.SeName" id="add-to-wishlist-button-@Model.AddToCart.ProductId" class="list-group-item">
+                                                    <span class="glyphicon glyphicon-heart icon-left"></span>Add to wishlist<span class="glyphicon glyphicon-menu-right icon-right"></span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    }
+                                    @*For Single Print Only*@
+                                    @if (!hasAllowManyPrints)
+                                    {
+                                        <div class="form-group text-center">
+                                            <button type="button" class="btn btn-primary-custom btn-print-preview" onclick="($('#add-print-to-cart-select').val() ? bm.printPreview(@Model.AddToCart.ProductId, $('#product-details-form')): $('#no-prints-modal').modal());">PREVIEW</button>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="form-group text-center">
+                                            <a href="@Url.RouteUrl("Product", new {SeName = Model.SeName, AddPrints = 1})" class="btn btn-primary-custom btn-print-preview">PREVIEW</a>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                @Html.Raw(Model.FullDescription)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product-collateral">
+                        @await Component.InvokeAsync("ProductsAlsoPurchased", new {productId = Model.Id})
+                        @await Component.InvokeAsync("RelatedProducts", new {productId = Model.Id})
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div id="no-prints-modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">No Prints</h4>
+            </div>
+            <div class="modal-body">
+                @if (!hasAllowManyPrints)
+                {
+                    <p>Please select a print you would like to use first</p>
+                }
+                else
+                {
+                    <p>please click preview to select prints</p>
+                }
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary-custom" data-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script asp-location="Footer">
+    $('.btn-add-new-print').click(function () {
+        bm.addNewPrint();
+    });
+</script>

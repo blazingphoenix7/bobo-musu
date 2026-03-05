@@ -1,0 +1,49 @@
+﻿@using System.Text.Encodings.Web
+@using Nop.Core
+@using Nop.Web.Models.BM
+@model MyPrintListModel
+@inject Nop.Core.IWebHelper webHelper
+@{
+    Layout = "_ColumnsTwo";
+
+    //title
+    Html.AddTitleParts(T("PageTitle.Account").Text);
+    Html.AppendPageCssClassParts("print-vault");
+}
+@section left
+{
+    @await Component.InvokeAsync("BMPrintVaultNavigation", new { selectedTabId = PrintVaultNavigationEnum.SharedPrints })
+}
+
+<div class="page account-page shared-print-panel from-panel">
+    <div class="page-body panel-body element-scroll">
+        @if (!Model.Prints.Any())
+        {
+            <div class="no-data">
+                No data
+            </div>
+        }
+        <div class="row">
+            @foreach (var item in Model.Prints)
+            {
+                <div class="col-xs-6 col-md-3 col-sm-4 print-box">
+                    <div class="thumbnail">
+                        <img src="@item.ThumbnailPath" class="my-print-icon" />
+                        <div class="caption text-center">
+                            <h5>@item.Name</h5>
+                            @if (!string.IsNullOrEmpty(item.SharedBy))
+                            {
+                                <h6><i>Shared by: @item.SharedBy</i></h6>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="row panel-footer element-fixed">
+        <div class="col-xs-12 col-md-12 col-sm-12 text-center">
+            <a href="@Url.RouteUrl("BMMyPrints")" class="btn btn-primary-custom">My Prints</a>
+        </div>
+    </div>
+</div>

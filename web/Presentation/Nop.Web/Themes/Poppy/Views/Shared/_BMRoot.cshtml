@@ -1,0 +1,33 @@
+﻿@{
+    Layout = "_BMRoot.Head";
+    if (Context.Request.IsMobileBrowser())
+    {
+        Html.AppendPageCssClassParts("html-none-scroll");
+    }
+    var controllerName = Url.ActionContext.RouteData.Values["controller"].ToString();
+  var isHomePage = controllerName.Equals("home", StringComparison.InvariantCultureIgnoreCase);
+}
+<div class="container" style="margin:0 auto !important">
+    <div class="master-wrapper-content">
+        @*@await Html.PartialAsync("_BMHeader")*@
+        @*ajax loading window*@
+        <div class="ajax-loading-block-window" style="display: none">
+            <div class="loading-image">
+            </div>
+        </div>
+        <div >
+            @RenderBody()
+        </div>
+    </div>
+</div>
+@if (Context.Request.IsMobileBrowser())
+{
+    <script asp-location="Footer">
+        $(document).ready(function() {
+            bm.scrollContent('.element-scroll');
+            $('.back-prev-page-link').click(function() {
+                window.history.back();
+            });
+        });
+    </script>
+}

@@ -1,0 +1,48 @@
+FROM alpine:3.10
+
+# Add the testing repo in case it's needed for additional dependencies
+# For example, gdal can be installed by using gdal@testing
+RUN echo "@testing http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
+
+# Install system dependencies
+RUN apk add --no-cache --update \
+  bash \
+  gcc \
+  libffi-dev \
+  build-base \
+  musl-dev \
+  postgresql-dev \
+  python3 \
+  python3-dev \
+  py3-pip \
+  curl \
+  # zlib, zlib-dev, and libjpeg-turbo are required by pillow
+  zlib \
+  zlib-dev \
+  libjpeg-turbo \
+  libjpeg-turbo-dev
+RUN pip3 install --no-cache-dir -q pipenv
+
+# Add our code
+ADD ./ /app/webapp/
+
+#WORKDIR /app/webapp/frontend
+
+# Install frontend dependencies
+#RUN npm ci
+
+WORKDIR /app/webapp/backend
+
+# Install dependencies
+RUN pipenv install --deploy --system
+
+# Allow SECRET_KEY to be passed via arg so collectstatic can run during build time
+ARG SECRET_KEY
+RUN python3 manage.py collectstatic --no-input
+
+# Run the image as a non-root user
+RUN adduser -D myuser
+USER myuser
+
+# Run the web server on port $PORT
+CMD waitress-serve --port=$PORT bobo_musu_3479.wsgi:application

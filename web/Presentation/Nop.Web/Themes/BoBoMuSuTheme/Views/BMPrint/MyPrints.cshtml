@@ -1,0 +1,80 @@
+﻿@using System.Text.Encodings.Web
+@using Nop.Core
+@using Nop.Web.Models.BM
+@model MyPrintListModel
+@inject Nop.Core.IWebHelper webHelper
+@{
+    Layout = "_ColumnsTwo";
+
+    //title
+    Html.AddTitleParts(T("PageTitle.Account").Text);
+    Html.AppendPageCssClassParts("print-vault");
+}
+@section left
+{
+    @await Component.InvokeAsync("BMPrintVaultNavigation", new { selectedTabId = PrintVaultNavigationEnum.MyPrints })
+}
+<div class="page account-page my-print-panel from-panel">
+    <div class="page-body panel-body element-scroll">
+        @if (!Model.Prints.Any())
+        {
+            <div class="no-data">
+                No data
+            </div>
+        }
+        <div class="row">
+            @foreach (var item in Model.Prints)
+            {
+                <div class="col-xs-6 col-md-3 col-sm-4 print-box">
+                    <div class="thumbnail">
+                        <a class="btn-delete-print close" href="javascript:void(0);" data-print-id="@item.Id">
+                            <i class="glyphicon glyphicon glyphicon-trash"></i>
+                        </a>
+                        <img src="@item.ThumbnailPath" class="my-print-icon"/>
+                        <div class="caption text-center">
+                            <h5>@item.Name</h5>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="row panel-footer element-fixed">
+        <div class="col-xs-12 col-md-12 col-sm-12 text-center">
+            <button type="button" class="btn btn-primary-custom btn-sm btn-add-new-print">Take a Print</button>
+            <a href="@Url.RouteUrl("BMSharedPrints")" class="btn btn-primary-custom btn-sm">Shared Prints</a>
+        </div>
+    </div>
+</div>
+
+<form asp-route="BMPrint_Delete" class="form-horizontal" method="post">
+    <div id="delete-print-modal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Confirmation</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure delete this item?</p>
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" id="deletePrintId" name="printId" />
+                    <button type="submit" class="btn btn-primary-custom">YES</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">NO</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script asp-location="Footer">
+    $('.btn-add-new-print').click(function () {
+        bm.addNewPrint();
+    });
+    $('.btn-delete-print').click(function () {
+        var printId = $(this).data('print-id');
+        $('#deletePrintId').val(printId);
+        $('#delete-print-modal').modal();
+    });
+</script>
