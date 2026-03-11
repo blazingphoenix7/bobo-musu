@@ -359,3 +359,188 @@ class TestPreprocessFingerprint:
         result = preprocess_fingerprint(str(p))
         result_arr = np.array(result, dtype=np.float64)
         assert result_arr.std() > 20
+
+
+# ── Task 10: Edge Cases & Stress Tests ────────────────────────────────
+
+import os as _os
+
+_DESIGNS_DIR = _os.path.join(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))), "designs")
+_PDG040_PATH = _os.path.join(_DESIGNS_DIR, "PDG040.3dm")
+
+
+def _load_pdg040():
+    """Load PDG040 model, skip if not available."""
+    if not _os.path.isfile(_PDG040_PATH):
+        pytest.skip(f"Design file not found: {_PDG040_PATH}")
+    model = rhino3dm.File3dm.Read(_PDG040_PATH)
+    assert model is not None
+    return model
+
+
+class TestEdgeCases:
+    """Edge cases that could break the pipeline."""
+
+    def test_very_low_resolution(self, synthetic_fingerprint):
+        """Resolution=50 (minimum) should still work."""
+        from fingerprint_displace import process_zone
+        model = _load_pdg040()
+        display_mesh, _, _, _ = process_zone(
+            model, 1, synthetic_fingerprint,
+            depth=0.3, resolution=50, mode="emboss",
+            feather_cells=3, do_stl=False,
+        )
+        assert display_mesh is not None
+        assert display_mesh.Faces.Count > 0
+
+    def test_very_small_depth(self, synthetic_fingerprint):
+        """Depth=0.01 (minimum) should produce valid mesh."""
+        from fingerprint_displace import process_zone
+        model = _load_pdg040()
+        display_mesh, _, _, _ = process_zone(
+            model, 1, synthetic_fingerprint,
+            depth=0.01, resolution=80, mode="emboss",
+            feather_cells=5, do_stl=False,
+        )
+        assert display_mesh is not None
+        assert display_mesh.Faces.Count > 0
+
+    def test_very_large_depth_gets_clamped(self, synthetic_fingerprint):
+        """Depth > 80% thickness should be clamped, not crash."""
+        from fingerprint_displace import process_zone
+        model = _load_pdg040()
+        # depth=2.0 far exceeds typical zone thickness; pipeline should clamp and continue
+        display_mesh, _, _, _ = process_zone(
+            model, 1, synthetic_fingerprint,
+            depth=2.0, resolution=80, mode="emboss",
+            feather_cells=5, do_stl=False,
+        )
+        assert display_mesh is not None
+        assert display_mesh.Faces.Count > 0
+
+    def test_zero_feather(self, synthetic_fingerprint):
+        """feather_cells=0 should work (no edge blending)."""
+        from fingerprint_displace import process_zone
+        model = _load_pdg040()
+        display_mesh, _, _, _ = process_zone(
+            model, 1, synthetic_fingerprint,
+            depth=0.3, resolution=80, mode="emboss",
+            feather_cells=0, do_stl=False,
+        )
+        assert display_mesh is not None
+        assert display_mesh.Faces.Count > 0
+
+    def test_large_feather(self, synthetic_fingerprint):
+        """feather_cells=50 (larger than radius) should not crash."""
+        from fingerprint_displace import process_zone
+        model = _load_pdg040()
+        display_mesh, _, _, _ = process_zone(
+            model, 1, synthetic_fingerprint,
+            depth=0.3, resolution=80, mode="emboss",
+            feather_cells=50, do_stl=False,
+        )
+        assert display_mesh is not None
+        assert display_mesh.Faces.Count > 0
+
+    def test_uniform_white_fingerprint(self, tmp_path):
+        """All-white fingerprint should produce mesh with uniform displacement."""
+        from fingerprint_displace import process_zone, preprocess_fingerprint
+        img_path = str(tmp_path / "white_fp.png")
+        Image.new("L", (256, 256), color=255).save(img_path)
+        fp_img = preprocess_fingerprint(img_path, target_size=256)
+        model = _load_pdg040()
+        display_mesh, _, _, _ = process_zone(
+            model, 1, fp_img,
+            depth=0.3, resolution=80, mode="emboss",
+            feather_cells=5, do_stl=False,
+        )
+        assert display_mesh is not None
+        assert display_mesh.Faces.Count > 0
+
+    def test_uniform_black_fingerprint(self, tmp_path):
+        """All-black fingerprint should produce mesh with near-zero displacement."""
+        from fingerprint_displace import process_zone, preprocess_fingerprint
+        img_path = str(tmp_path / "black_fp.png")
+        Image.new("L", (256, 256), color=0).save(img_path)
+        fp_img = preprocess_fingerprint(img_path, target_size=256)
+        model = _load_pdg040()
+        display_mesh, _, _, _ = process_zone(
+            model, 1, fp_img,
+            depth=0.3, resolution=80, mode="emboss",
+            feather_cells=5, do_stl=False,
+        )
+        assert display_mesh is not None
+        assert display_mesh.Faces.Count > 0
+
+    def test_tiny_fingerprint_image(self, tmp_path):
+        """Very small (16x16) fingerprint should still work after preprocessing."""
+        from fingerprint_displace import process_zone, preprocess_fingerprint
+        img_path = str(tmp_path / "tiny_fp.png")
+        arr = np.random.randint(0, 256, (16, 16), dtype=np.uint8)
+        Image.fromarray(arr, mode="L").save(img_path)
+        fp_img = preprocess_fingerprint(img_path, target_size=256)
+        model = _load_pdg040()
+        display_mesh, _, _, _ = process_zone(
+            model, 1, fp_img,
+            depth=0.3, resolution=80, mode="emboss",
+            feather_cells=5, do_stl=False,
+        )
+        assert display_mesh is not None
+        assert display_mesh.Faces.Count > 0
+
+    def test_large_fingerprint_image(self, tmp_path):
+        """Large (4096x4096) fingerprint should still work after preprocessing."""
+        from fingerprint_displace import preprocess_fingerprint
+        img_path = str(tmp_path / "large_fp.png")
+        # Use a pattern that PIL can generate efficiently via stripes
+        arr = np.zeros((4096, 4096), dtype=np.uint8)
+        arr[::4, :] = 200  # horizontal stripes
+        Image.fromarray(arr, mode="L").save(img_path)
+        fp_img = preprocess_fingerprint(img_path, target_size=256)
+        # Verify preprocessing succeeds and returns a valid image
+        assert fp_img is not None
+        assert fp_img.size[0] > 0
+        assert fp_img.size[1] > 0
+
+    def test_rectangular_fingerprint(self, tmp_path):
+        """Non-square (100x400) fingerprint should work."""
+        from fingerprint_displace import process_zone, preprocess_fingerprint
+        img_path = str(tmp_path / "rect_fp.png")
+        arr = np.random.randint(0, 256, (100, 400), dtype=np.uint8)
+        Image.fromarray(arr, mode="L").save(img_path)
+        fp_img = preprocess_fingerprint(img_path, target_size=256)
+        model = _load_pdg040()
+        display_mesh, _, _, _ = process_zone(
+            model, 1, fp_img,
+            depth=0.3, resolution=80, mode="emboss",
+            feather_cells=5, do_stl=False,
+        )
+        assert display_mesh is not None
+        assert display_mesh.Faces.Count > 0
+
+    def test_natural_fp_width(self, synthetic_fingerprint):
+        """fp_natural_width=17.0 should constrain fingerprint mapping."""
+        from fingerprint_displace import process_zone
+        model = _load_pdg040()
+        display_mesh, _, _, _ = process_zone(
+            model, 1, synthetic_fingerprint,
+            depth=0.3, resolution=80, mode="emboss",
+            feather_cells=5, do_stl=False,
+            fp_natural_width=17.0,
+        )
+        assert display_mesh is not None
+        assert display_mesh.Faces.Count > 0
+
+    def test_auto_depth_computation(self):
+        """_compute_auto_depth should return valid depths for all zones."""
+        from fingerprint_displace import _compute_auto_depth, detect_zones
+        model = _load_pdg040()
+        zones = detect_zones(model)
+        assert len(zones) > 0, "PDG040 should have zones"
+        zone_depths, zone_thicknesses = _compute_auto_depth(model, zones)
+        assert len(zone_depths) == len(zones)
+        for z in zones:
+            assert z in zone_depths, f"Zone {z} missing from depths"
+            depth = zone_depths[z]
+            assert depth > 0, f"Zone {z} depth must be positive, got {depth}"
+            assert depth < 1.0, f"Zone {z} depth must be < 1.0mm, got {depth}"

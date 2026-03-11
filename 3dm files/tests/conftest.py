@@ -63,3 +63,12 @@ def real_fingerprint_img():
     if not os.path.isfile(path):
         pytest.skip(f"Test fingerprint not found: {path}")
     return preprocess_fingerprint(path, target_size=512)
+
+
+@pytest.fixture(scope="session")
+def synthetic_fingerprint(tmp_path_factory):
+    """Generate a synthetic fingerprint image for edge-case tests."""
+    fp_dir = tmp_path_factory.mktemp("synthetic_fp")
+    fp_path = str(fp_dir / "synthetic_fp.png")
+    generate_test_fingerprint(fp_path, size=256)
+    return preprocess_fingerprint(fp_path, target_size=256)
