@@ -521,7 +521,8 @@ def preprocess_fingerprint(img_path, target_size=1024):
 def _build_displaced_mesh_single_face(face_brep, body_brep, fp_img, max_depth, grid_res, mode,
                                       feather_cells=10, watertight=False,
                                       global_cx=None, global_cy=None, global_scale=None,
-                                      fp_natural_width=None, face_index=0):
+                                      fp_natural_width=None, face_index=0,
+                                      skip_boundary_test=False):
     """Build a displaced fingerprint mesh from a single face of a FACE Brep.
 
     face_brep: Brep from FP_ZONE_N_FACE
@@ -529,6 +530,9 @@ def _build_displaced_mesh_single_face(face_brep, body_brep, fp_img, max_depth, g
     face_index: which face of face_brep to process (default 0 for backward compat)
     fp_natural_width: If set (mm), maps fingerprint at natural physical scale.
                       None = legacy behaviour (fill zone edge-to-edge).
+    skip_boundary_test: if True, include all grid points without pip test (used for
+                        multi-face Breps where the UV grid is naturally bounded by
+                        the face's trim and adjacent faces fill seam gaps).
 
     Raises PipelineError on failure.
     """
@@ -567,8 +571,12 @@ def _build_displaced_mesh_single_face(face_brep, body_brep, fp_img, max_depth, g
     print(f"  UV range: U=[{fu_min:.4f}, {fu_max:.4f}], V=[{fv_min:.4f}, {fv_max:.4f}]")
 
     # Trim boundary from FACE edges (Task 4: pass body_brep for untrimmed detection)
-    boundary = extract_trim_boundary(face_brep, body_brep=body_brep)
-    print(f"  Trim boundary: {len(boundary)} points")
+    if not skip_boundary_test:
+        boundary = extract_trim_boundary(face_brep, body_brep=body_brep)
+        print(f"  Trim boundary: {len(boundary)} points")
+    else:
+        boundary = None
+        print(f"  Boundary test: SKIPPED (multi-face mode)")
 
     # Fingerprint as float [0,1]
     fp = np.array(fp_img.convert("L"), dtype=np.float64) / 255.0
@@ -592,7 +600,10 @@ def _build_displaced_mesh_single_face(face_brep, body_brep, fp_img, max_depth, g
                 grid_nrm[i, j] = [-nm.X, -nm.Y, -nm.Z]
             else:
                 grid_nrm[i, j] = [nm.X, nm.Y, nm.Z]
-            grid_in[i, j] = _pip(pt.X, pt.Y, boundary)
+            if skip_boundary_test:
+                grid_in[i, j] = True
+            else:
+                grid_in[i, j] = _pip(pt.X, pt.Y, boundary)
 
     n_inside = int(np.sum(grid_in))
     print(f"  Inside boundary: {n_inside}/{grid_res ** 2} ({100 * n_inside / grid_res ** 2:.1f}%)")
@@ -924,6 +935,7 @@ def build_displaced_mesh(face_brep, body_brep, fp_img, max_depth, grid_res, mode
                 feather_cells=feather_cells, watertight=watertight,
                 global_cx=global_cx, global_cy=global_cy, global_scale=global_scale,
                 fp_natural_width=fp_natural_width, face_index=0,
+                skip_boundary_test=True,
             )
         except PipelineError as e:
             print(f"  Face {fi} skipped: {e}")
