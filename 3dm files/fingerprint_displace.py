@@ -464,6 +464,105 @@ def extract_trim_boundary(face_brep, n_samples=161, body_brep=None):
     return boundary
 
 
+def _extract_boundary_from_body_3d(body_brep, n_samples=161):
+    """Extract the top-Z edges of a BODY Brep as an XYZ boundary.
+
+    Same logic as _extract_boundary_from_body but returns 3D (X, Y, Z) points.
+    For body boundaries, angle-sort is acceptable (body top edges are typically convex).
+    """
+    body_bb = body_brep.GetBoundingBox()
+    top_z = body_bb.Max.Z
+    z_tol = abs(body_bb.Max.Z - body_bb.Min.Z) * 0.05
+    if z_tol < 0.01:
+        z_tol = 0.01
+
+    boundary = []
+    for ei in range(len(body_brep.Edges)):
+        edge = body_brep.Edges[ei]
+        t0, t1 = edge.Domain.T0, edge.Domain.T1
+        # Check if edge midpoint is near the top Z
+        mid_t = (t0 + t1) / 2
+        mid_p = edge.PointAt(mid_t)
+        if abs(mid_p.Z - top_z) > z_tol:
+            continue
+        # Sample this edge (with Z coordinate)
+        for ti in range(n_samples):
+            t = t0 + (t1 - t0) * ti / (n_samples - 1)
+            p = edge.PointAt(t)
+            if abs(p.Z - top_z) <= z_tol:
+                boundary.append((p.X, p.Y, p.Z))
+
+    if not boundary:
+        # Fallback to body bounding box (use top Z for all corners)
+        return [
+            (body_bb.Min.X, body_bb.Min.Y, top_z),
+            (body_bb.Max.X, body_bb.Min.Y, top_z),
+            (body_bb.Max.X, body_bb.Max.Y, top_z),
+            (body_bb.Min.X, body_bb.Max.Y, top_z),
+        ]
+
+    # Order by angle around centroid
+    bcx = sum(p[0] for p in boundary) / len(boundary)
+    bcy = sum(p[1] for p in boundary) / len(boundary)
+    boundary.sort(key=lambda p: math.atan2(p[1] - bcy, p[0] - bcx))
+    return boundary
+
+
+def extract_trim_boundary_3d(face_brep, n_samples=161, body_brep=None):
+    """Extract the trim boundary from a FACE Brep as 3D (X, Y, Z) points.
+
+    Same logic as extract_trim_boundary but returns 3-tuples instead of 2-tuples.
+    Uses edge-walk order (iterate edges sequentially, concatenate points) instead
+    of angle-sort, which correctly handles concave/non-star-shaped boundaries.
+    Deduplicates near-coincident consecutive points (within 0.001mm).
+
+    If body_brep is provided and the face is untrimmed (dome surface),
+    delegates to _extract_boundary_from_body_3d.
+    """
+    # If face is untrimmed and we have a BODY, use BODY boundary
+    if body_brep is not None and is_face_untrimmed(face_brep):
+        print("  Using BODY boundary 3D (face is untrimmed)")
+        return _extract_boundary_from_body_3d(body_brep, n_samples)
+
+    boundary = []
+    for ei in range(len(face_brep.Edges)):
+        edge = face_brep.Edges[ei]
+        t0, t1 = edge.Domain.T0, edge.Domain.T1
+        for ti in range(n_samples):
+            t = t0 + (t1 - t0) * ti / (n_samples - 1)
+            p = edge.PointAt(t)
+            pt = (p.X, p.Y, p.Z)
+            # Deduplicate near-coincident consecutive points
+            if boundary:
+                dx = pt[0] - boundary[-1][0]
+                dy = pt[1] - boundary[-1][1]
+                dz = pt[2] - boundary[-1][2]
+                if math.sqrt(dx * dx + dy * dy + dz * dz) < 0.001:
+                    continue
+            boundary.append(pt)
+
+    if not boundary:
+        bb = face_brep.GetBoundingBox()
+        z_mid = (bb.Min.Z + bb.Max.Z) / 2
+        return [
+            (bb.Min.X, bb.Min.Y, z_mid),
+            (bb.Max.X, bb.Min.Y, z_mid),
+            (bb.Max.X, bb.Max.Y, z_mid),
+            (bb.Min.X, bb.Max.Y, z_mid),
+        ]
+
+    # Also deduplicate last vs first if they are near-coincident
+    if len(boundary) > 1:
+        dx = boundary[-1][0] - boundary[0][0]
+        dy = boundary[-1][1] - boundary[0][1]
+        dz = boundary[-1][2] - boundary[0][2]
+        if math.sqrt(dx * dx + dy * dy + dz * dz) < 0.001:
+            boundary.pop()
+
+    # Edge-walk order: no angle sort needed — edges are iterated sequentially
+    return boundary
+
+
 def _pip(px, py, poly):
     """Point-in-polygon via ray casting."""
     n = len(poly)
