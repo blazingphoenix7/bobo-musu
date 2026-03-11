@@ -1338,6 +1338,11 @@ Examples:
     parser.add_argument("--resolution", type=int, default=250, help="Grid resolution (default: 250)")
     parser.add_argument("--fp-width", type=float, default=None,
                         help="Natural fingerprint width in mm (default: fill zone edge-to-edge)")
+    parser.add_argument("--feather-mm", type=float, default=None,
+                        help="Blending width in mm — how sharply the print fades at zone edges "
+                             "(default: 10 grid cells; Sarah's typical: 0.1 = print to the edge)")
+    parser.add_argument("--casting", action="store_true",
+                        help="Produce casting-ready merged STL (body + fingerprint zones)")
     args = parser.parse_args()
 
     # ── Validate inputs ──
@@ -1527,6 +1532,29 @@ Examples:
         if result["stl_mesh"] is not None:
             stl_path = f"{output_stem}_zone{zone_num}.stl"
             export_stl(result["stl_mesh"], stl_path)
+
+    # ── Casting merge (optional) ──
+    if args.casting:
+        print("\n" + "=" * 60)
+        print("CASTING MERGE: Producing casting-ready merged STL")
+        print("=" * 60)
+        from casting_merge import merge_casting_stl, export_casting_stl, export_casting_3dm
+        casting_result = merge_casting_stl(
+            model=model,
+            fp_img=fp_img,
+            resolution=args.resolution,
+            depth=args.depth if args.depth is not None else 0.3,
+            mode="emboss",
+            feather_cells=10,
+            fp_natural_width=args.fp_width,
+            unified=args.unified,
+        )
+        if casting_result.mesh is not None and len(casting_result.mesh.faces) > 0:
+            base = os.path.splitext(output_path)[0]
+            export_casting_stl(casting_result.mesh, base + "_casting.stl")
+            export_casting_3dm(casting_result.mesh, base + "_casting.3dm")
+        else:
+            print("  WARNING: Casting merge produced no mesh")
 
     # ── Step 5: Validate ──
     print("\n" + "=" * 60)

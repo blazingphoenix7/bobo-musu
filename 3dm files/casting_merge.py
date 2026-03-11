@@ -1,15 +1,19 @@
 """
 Casting-Ready STL Pipeline — Object Classification, Body Mesher,
-Zone Hole Cutting & Boundary Loop Extraction
-================================================================
+Zone Hole Cutting, Boundary Loop Extraction, Stitching, Validation & Merge
+==========================================================================
 Classifies .3dm objects into metal body vs excluded (gems, annotations,
 zone faces), meshes the metal body into a trimesh.Trimesh, cuts zone holes
-for fingerprint stitching, and extracts boundary loops from mesh edges.
+for fingerprint stitching, stitches zone displacement meshes to the body,
+validates the merged result, and exports casting-ready STL / 3dm files.
 
-Part of the casting-ready STL pipeline (Tasks 2, 3, 5, 6, 7).
+Part of the casting-ready STL pipeline (Tasks 2, 3, 5, 6, 7, 8, 9, 10).
 """
 
+import os
 import re
+from dataclasses import dataclass, field
+from typing import List, Optional, Dict
 
 import numpy as np
 import rhino3dm
@@ -754,3 +758,570 @@ def extract_boundary_loop(mesh):
     # Sort by length (largest first)
     loops.sort(key=len, reverse=True)
     return loops
+
+
+# ── Zipper Stitching (Task 8) ────────────────────────────────────
+
+def resample_loop(points, n):
+    """Resample a 3D point loop (Nx3 numpy array) to exactly n evenly-spaced points.
+
+    Computes cumulative arc-length including the closing segment back to the
+    first point, then interpolates n evenly-spaced points along the curve.
+
+    Args:
+        points: Nx3 numpy array of 3D loop vertices
+        n: target number of output points
+
+    Returns:
+        nx3 numpy array of resampled points
+    """
+    pts = np.asarray(points, dtype=float)
+    if len(pts) < 2:
+        return pts
+
+    # Compute segment lengths including closing segment
+    segments = np.diff(pts, axis=0)
+    seg_lengths = np.linalg.norm(segments, axis=1)
+
+    # Closing segment: last point back to first
+    close_seg = np.linalg.norm(pts[0] - pts[-1])
+    all_lengths = np.append(seg_lengths, close_seg)
+
+    # Cumulative arc length
+    cum_len = np.concatenate([[0.0], np.cumsum(all_lengths)])
+    total_len = cum_len[-1]
+
+    if total_len < 1e-12:
+        return np.tile(pts[0], (n, 1))
+
+    # Close the loop for interpolation: append first point
+    closed_pts = np.vstack([pts, pts[0:1]])
+
+    # Target arc lengths
+    targets = np.linspace(0, total_len, n, endpoint=False)
+
+    # Interpolate each target
+    result = np.zeros((n, 3))
+    for i, t in enumerate(targets):
+        # Find segment
+        idx = np.searchsorted(cum_len, t, side='right') - 1
+        idx = min(idx, len(closed_pts) - 2)
+        seg_start = cum_len[idx]
+        seg_end = cum_len[idx + 1]
+        seg_total = seg_end - seg_start
+        if seg_total < 1e-12:
+            result[i] = closed_pts[idx]
+        else:
+            frac = (t - seg_start) / seg_total
+            result[i] = closed_pts[idx] + frac * (closed_pts[idx + 1] - closed_pts[idx])
+
+    return result
+
+
+def align_loops(loop_a, loop_b):
+    """Find rotation offset for loop_b that minimizes total distance to loop_a.
+
+    Tests every rotation of loop_b and returns the offset that minimizes
+    the sum of squared distances between corresponding vertices.
+
+    Args:
+        loop_a: Nx3 numpy array
+        loop_b: Nx3 numpy array (same length as loop_a)
+
+    Returns:
+        int — best rotation offset for loop_b
+    """
+    n = len(loop_a)
+    if n == 0:
+        return 0
+
+    best_offset = 0
+    best_dist = float('inf')
+
+    for offset in range(n):
+        rolled = np.roll(loop_b, offset, axis=0)
+        dist = np.sum((loop_a - rolled) ** 2)
+        if dist < best_dist:
+            best_dist = dist
+            best_offset = offset
+
+    return best_offset
+
+
+def zip_loops(loop_a, loop_b):
+    """Create bridge triangles between two aligned loops of equal length.
+
+    For each pair of adjacent vertices, creates 2 triangles (quad strip).
+
+    Args:
+        loop_a: Nx3 numpy array (e.g., body hole boundary)
+        loop_b: Nx3 numpy array (e.g., zone mesh boundary)
+
+    Returns:
+        (vertices_2Nx3, faces_Mx3) — bridge mesh vertices and triangle indices
+    """
+    n = len(loop_a)
+    if n < 3:
+        return np.empty((0, 3)), np.empty((0, 3), dtype=int)
+
+    # Vertices: loop_a first, then loop_b
+    verts = np.vstack([loop_a, loop_b])
+
+    faces = []
+    for i in range(n):
+        i_next = (i + 1) % n
+        # Indices: loop_a[i]=i, loop_a[i_next]=i_next, loop_b[i]=n+i, loop_b[i_next]=n+i_next
+        a0 = i
+        a1 = i_next
+        b0 = n + i
+        b1 = n + i_next
+
+        # Two triangles per quad
+        faces.append([a0, a1, b0])
+        faces.append([a1, b1, b0])
+
+    return verts, np.array(faces, dtype=int)
+
+
+def _rhino_mesh_to_trimesh(rhino_mesh):
+    """Convert a rhino3dm.Mesh to trimesh.Trimesh.
+
+    Handles both triangles (3-vertex faces) and quads (4-vertex faces,
+    split into 2 triangles).
+
+    Args:
+        rhino_mesh: rhino3dm.Mesh object
+
+    Returns:
+        trimesh.Trimesh
+    """
+    verts = []
+    for i in range(len(rhino_mesh.Vertices)):
+        v = rhino_mesh.Vertices[i]
+        verts.append([v.X, v.Y, v.Z])
+
+    faces = []
+    for fi in range(rhino_mesh.Faces.Count):
+        fv = rhino_mesh.Faces[fi]
+        a, b, c = fv[0], fv[1], fv[2]
+        faces.append([a, b, c])
+        # If quad (4 vertices, and d != c)
+        if len(fv) >= 4 and fv[3] != fv[2]:
+            d = fv[3]
+            faces.append([a, c, d])
+
+    if not verts or not faces:
+        return trimesh.Trimesh()
+
+    return trimesh.Trimesh(
+        vertices=np.array(verts),
+        faces=np.array(faces, dtype=int),
+        process=False,
+    )
+
+
+def stitch_zone_to_body(body_mesh, zone_display_mesh, face_brep):
+    """Stitch a zone displacement mesh into the body mesh hole.
+
+    1. Convert rhino3dm zone mesh to trimesh
+    2. Extract boundary loops from body hole and zone mesh
+    3. Resample both to matching density
+    4. Align rotation
+    5. Create bridge strip
+    6. Concatenate body + zone + bridge
+    7. Merge vertices, fix normals
+
+    Args:
+        body_mesh: trimesh.Trimesh of body with hole already cut
+        zone_display_mesh: rhino3dm.Mesh of the displaced zone surface
+        face_brep: rhino3dm.Brep of the zone FACE (for reference)
+
+    Returns:
+        trimesh.Trimesh — merged mesh with zone stitched in
+    """
+    # Convert rhino3dm mesh to trimesh
+    zone_tm = _rhino_mesh_to_trimesh(zone_display_mesh)
+
+    if len(zone_tm.faces) == 0:
+        return body_mesh
+
+    # Extract boundary loops from both meshes
+    body_loops = extract_boundary_loop(body_mesh)
+    zone_loops = extract_boundary_loop(zone_tm)
+
+    if not body_loops or not zone_loops:
+        # Can't stitch — just concatenate without bridge
+        return trimesh.util.concatenate([body_mesh, zone_tm])
+
+    # Use the largest boundary loop from each
+    body_loop_idx = body_loops[0]
+    zone_loop_idx = zone_loops[0]
+
+    body_loop_pts = body_mesh.vertices[body_loop_idx]
+    zone_loop_pts = zone_tm.vertices[zone_loop_idx]
+
+    # Resample to matching density
+    n = max(len(body_loop_pts), len(zone_loop_pts), 20)
+    body_resampled = resample_loop(body_loop_pts, n)
+    zone_resampled = resample_loop(zone_loop_pts, n)
+
+    # Align rotation
+    offset = align_loops(body_resampled, zone_resampled)
+    zone_resampled = np.roll(zone_resampled, offset, axis=0)
+
+    # Create bridge strip
+    bridge_verts, bridge_faces = zip_loops(body_resampled, zone_resampled)
+
+    if len(bridge_faces) == 0:
+        return trimesh.util.concatenate([body_mesh, zone_tm])
+
+    bridge_mesh = trimesh.Trimesh(
+        vertices=bridge_verts, faces=bridge_faces, process=False
+    )
+
+    # Concatenate all three
+    merged = trimesh.util.concatenate([body_mesh, zone_tm, bridge_mesh])
+
+    # Merge nearby vertices and fix normals
+    merged.merge_vertices(merge_tex=True, merge_norm=True)
+    trimesh.repair.fix_normals(merged)
+
+    return merged
+
+
+# ── Mesh Validation (Task 9) ─────────────────────────────────────
+
+@dataclass
+class ValidationResult:
+    """Result of casting mesh validation checks."""
+    is_watertight: bool = False
+    is_manifold: bool = False
+    normals_consistent: bool = False
+    degenerate_count: int = 0
+    self_intersections_near_stitch: int = 0
+    min_wall_thickness: float = 0.0
+    spill_violations: int = 0
+    file_size_mb: float = 0.0
+    passed: bool = False
+    warnings: List[str] = field(default_factory=list)
+    errors: List[str] = field(default_factory=list)
+
+
+def validate_casting_mesh(mesh, zone_data=None, stl_path=None):
+    """Run all 8 validation checks on a casting mesh.
+
+    Args:
+        mesh: trimesh.Trimesh to validate
+        zone_data: optional dict with 'boundary_uv' for spill check
+        stl_path: optional path to exported STL for file size check
+
+    Returns:
+        ValidationResult with all check results
+    """
+    result = ValidationResult()
+
+    if len(mesh.faces) == 0:
+        result.errors.append("Mesh has no faces")
+        return result
+
+    # 1. Watertight check
+    result.is_watertight = bool(mesh.is_watertight)
+    if not result.is_watertight:
+        result.warnings.append("Mesh is not watertight")
+
+    # 2. Manifold check
+    result.is_manifold = bool(mesh.is_volume)
+    if not result.is_manifold:
+        result.warnings.append("Mesh is not manifold/volume")
+
+    # 3. Normals consistency
+    trimesh.repair.fix_normals(mesh)
+    result.normals_consistent = bool(mesh.is_winding_consistent)
+    if not result.normals_consistent:
+        result.warnings.append("Normals are not consistently wound")
+
+    # 4. Degenerate triangles (area < 1e-10)
+    areas = mesh.area_faces
+    degen_mask = areas < 1e-10
+    result.degenerate_count = int(np.sum(degen_mask))
+    if result.degenerate_count > 0:
+        # Remove degenerate faces
+        mesh.update_faces(~degen_mask)
+        result.warnings.append(f"Removed {result.degenerate_count} degenerate triangles")
+
+    # 5. Self-intersection near stitch: cKDTree of centroids
+    centroids = mesh.triangles_center
+    if len(centroids) > 1:
+        tree = cKDTree(centroids)
+        pairs = tree.query_pairs(0.5)  # 0.5mm threshold
+        # Skip adjacent face pairs (share a vertex)
+        face_arr = mesh.faces
+        si_count = 0
+        for i, j in pairs:
+            shared = set(face_arr[i]) & set(face_arr[j])
+            if len(shared) == 0:
+                si_count += 1
+        result.self_intersections_near_stitch = si_count
+        if si_count > 0:
+            result.warnings.append(
+                f"{si_count} potential self-intersections near stitch (non-adjacent faces within 0.5mm)"
+            )
+
+    # 6. Wall thickness: 500 ray casts with deterministic seed
+    try:
+        rng = np.random.default_rng(42)
+        n_rays = min(500, len(mesh.faces))
+        face_indices = rng.choice(len(mesh.faces), size=n_rays, replace=False)
+        thicknesses = []
+        for fi in face_indices:
+            centroid = centroids[fi]
+            normal = mesh.face_normals[fi]
+            # Cast ray inward (opposite normal)
+            ray_origin = centroid + normal * 0.001  # tiny offset to avoid self-hit
+            ray_dir = -normal
+            locations, _index_ray, _index_tri = mesh.ray.intersects_location(
+                ray_origins=[ray_origin],
+                ray_directions=[ray_dir],
+            )
+            if len(locations) > 0:
+                dists = np.linalg.norm(locations - ray_origin, axis=1)
+                # Filter out self-hits (too close)
+                valid = dists > 0.01
+                if np.any(valid):
+                    thicknesses.append(np.min(dists[valid]))
+
+        if thicknesses:
+            result.min_wall_thickness = float(np.min(thicknesses))
+        else:
+            result.min_wall_thickness = 0.0
+            result.warnings.append("Could not measure wall thickness (no ray hits)")
+    except (ImportError, ModuleNotFoundError):
+        # rtree not installed — skip ray-based wall thickness check
+        result.min_wall_thickness = -1.0
+        result.warnings.append("Wall thickness check skipped (rtree not installed)")
+
+    # 7. Zero spill: check if displacement vertices are inside UV boundary
+    if zone_data is not None and 'boundary_uv' in zone_data:
+        # zone_data['boundary_uv'] should be a Shapely polygon
+        # zone_data['zone_vertices'] should be Nx3 array of displacement verts
+        boundary_uv = zone_data.get('boundary_uv')
+        zone_verts = zone_data.get('zone_vertices')
+        if boundary_uv is not None and zone_verts is not None:
+            violations = 0
+            for v in zone_verts:
+                if not boundary_uv.contains(ShapelyPoint(v[0], v[1])):
+                    violations += 1
+            result.spill_violations = violations
+            if violations > 0:
+                result.errors.append(f"{violations} displacement vertices outside UV boundary")
+
+    # 8. File size check
+    if stl_path is not None and os.path.isfile(stl_path):
+        size_bytes = os.path.getsize(stl_path)
+        result.file_size_mb = size_bytes / (1024 * 1024)
+        if result.file_size_mb > 50:
+            result.warnings.append(f"STL file is {result.file_size_mb:.1f}MB (>50MB)")
+
+    # Overall pass/fail
+    result.passed = len(result.errors) == 0
+    return result
+
+
+# ── Merge Orchestrator (Task 10) ─────────────────────────────────
+
+@dataclass
+class CastingResult:
+    """Result of the full casting merge pipeline."""
+    mesh: Optional[trimesh.Trimesh] = None
+    validation: Optional[ValidationResult] = None
+    zone_results: Dict = field(default_factory=dict)
+    warnings: List[str] = field(default_factory=list)
+
+
+def merge_casting_stl(model, fp_img, resolution=250, depth=0.3, mode="emboss",
+                      feather_cells=10, fp_natural_width=None, unified=False):
+    """Full casting-ready merge pipeline.
+
+    1. classify_objects + mesh_body_python
+    2. detect_zones
+    3. For each zone: process_zone → cut_zone_hole → collect for stitch
+    4. Stitch all zones
+    5. Validate
+
+    Args:
+        model: rhino3dm.File3dm model (already loaded)
+        fp_img: PIL Image (preprocessed fingerprint)
+        resolution: grid resolution for displacement
+        depth: displacement depth in mm
+        mode: "emboss" or "engrave"
+        feather_cells: edge blending width in grid cells
+        fp_natural_width: natural fingerprint width in mm (None = fill zone)
+        unified: whether to use unified fingerprint mapping
+
+    Returns:
+        CastingResult
+    """
+    from fingerprint_displace import (
+        detect_zones, find_zone_face, find_zone_body,
+        process_zone, PipelineError,
+    )
+
+    result = CastingResult()
+
+    # Step 1: Classify and mesh body
+    print("\n  [Casting] Classifying objects...")
+    metal, excluded = classify_objects(model)
+    print(f"  [Casting] Metal: {len(metal)}, Excluded: {len(excluded)}")
+
+    print("  [Casting] Meshing body...")
+    body_mesh = mesh_body_python(metal, resolution=resolution)
+    if len(body_mesh.faces) == 0:
+        result.warnings.append("Body mesh has no faces")
+        return result
+
+    print(f"  [Casting] Body mesh: {len(body_mesh.vertices)} verts, {len(body_mesh.faces)} faces")
+
+    # Step 2: Detect zones
+    zones = detect_zones(model)
+    if not zones:
+        result.warnings.append("No zones detected")
+        result.mesh = body_mesh
+        return result
+
+    print(f"  [Casting] Detected zones: {zones}")
+
+    # Compute unified mapping if needed
+    global_cx = global_cy = global_scale = None
+    if unified:
+        combined_min_x = float("inf")
+        combined_max_x = float("-inf")
+        combined_min_y = float("inf")
+        combined_max_y = float("-inf")
+        for z in zones:
+            _, _, face_brep = find_zone_face(model, z)
+            bb = face_brep.GetBoundingBox()
+            combined_min_x = min(combined_min_x, bb.Min.X)
+            combined_max_x = max(combined_max_x, bb.Max.X)
+            combined_min_y = min(combined_min_y, bb.Min.Y)
+            combined_max_y = max(combined_max_y, bb.Max.Y)
+        global_cx = (combined_min_x + combined_max_x) / 2
+        global_cy = (combined_min_y + combined_max_y) / 2
+        global_half_x = (combined_max_x - combined_min_x) / 2
+        global_half_y = (combined_max_y - combined_min_y) / 2
+        global_scale = max(global_half_x, global_half_y) * 1.05
+
+    # Step 3: Process each zone and cut holes
+    current_body = body_mesh
+    zone_meshes = []
+
+    for zone_num in zones:
+        print(f"\n  [Casting] Processing zone {zone_num}...")
+        try:
+            display_mesh, _stl_mesh, face_brep, body_brep = process_zone(
+                model, zone_num, fp_img, depth, resolution, mode,
+                feather_cells, False,  # do_stl=False for casting
+                global_cx=global_cx, global_cy=global_cy,
+                global_scale=global_scale,
+                fp_natural_width=fp_natural_width,
+            )
+
+            # Cut hole in body
+            print(f"  [Casting] Cutting hole for zone {zone_num}...")
+            current_body = cut_zone_hole(current_body, face_brep, body_brep=body_brep)
+
+            # Collect for stitching
+            zone_meshes.append({
+                'zone_num': zone_num,
+                'display_mesh': display_mesh,
+                'face_brep': face_brep,
+            })
+            result.zone_results[zone_num] = {'status': 'ok'}
+            print(f"  [Casting] Zone {zone_num} OK")
+
+        except PipelineError as e:
+            result.warnings.append(f"Zone {zone_num} failed: {e}")
+            result.zone_results[zone_num] = {'status': 'failed', 'error': str(e)}
+        except Exception as e:
+            result.warnings.append(f"Zone {zone_num} failed unexpectedly: {e}")
+            result.zone_results[zone_num] = {'status': 'failed', 'error': str(e)}
+
+    # Step 4: Stitch all zones
+    merged = current_body
+    for zm in zone_meshes:
+        print(f"  [Casting] Stitching zone {zm['zone_num']}...")
+        try:
+            merged = stitch_zone_to_body(merged, zm['display_mesh'], zm['face_brep'])
+        except Exception as e:
+            result.warnings.append(f"Stitching zone {zm['zone_num']} failed: {e}")
+            # Fall back to simple concatenation
+            zone_tm = _rhino_mesh_to_trimesh(zm['display_mesh'])
+            merged = trimesh.util.concatenate([merged, zone_tm])
+
+    result.mesh = merged
+
+    # Step 5: Validate
+    print("\n  [Casting] Validating merged mesh...")
+    result.validation = validate_casting_mesh(merged)
+    print(f"  [Casting] Validation passed: {result.validation.passed}")
+    if result.validation.warnings:
+        for w in result.validation.warnings:
+            print(f"  [Casting]   Warning: {w}")
+    if result.validation.errors:
+        for e in result.validation.errors:
+            print(f"  [Casting]   Error: {e}")
+
+    return result
+
+
+def export_casting_stl(mesh, path):
+    """Export trimesh as binary STL.
+
+    Args:
+        mesh: trimesh.Trimesh to export
+        path: output file path
+
+    Prints file size and warns if > 50MB.
+    """
+    os.makedirs(os.path.dirname(os.path.abspath(path)), exist_ok=True)
+    mesh.export(path, file_type='stl')
+
+    size_bytes = os.path.getsize(path)
+    size_mb = size_bytes / (1024 * 1024)
+    print(f"  [Casting] STL exported: {path} ({len(mesh.faces)} faces, {size_mb:.1f}MB)")
+    if size_mb > 50:
+        print(f"  [Casting] WARNING: STL file is {size_mb:.1f}MB (>50MB)")
+
+
+def export_casting_3dm(mesh, path):
+    """Export trimesh as a .3dm file with mesh on CASTING_MERGED layer.
+
+    Args:
+        mesh: trimesh.Trimesh to export
+        path: output .3dm file path
+    """
+    os.makedirs(os.path.dirname(os.path.abspath(path)), exist_ok=True)
+
+    out_model = rhino3dm.File3dm()
+
+    # Create layer
+    layer = rhino3dm.Layer()
+    layer.Name = "CASTING_MERGED"
+    layer.Color = (0, 200, 100, 255)
+    out_model.Layers.Add(layer)
+
+    # Build rhino3dm mesh
+    rh_mesh = rhino3dm.Mesh()
+    for v in mesh.vertices:
+        rh_mesh.Vertices.Add(float(v[0]), float(v[1]), float(v[2]))
+    for f in mesh.faces:
+        rh_mesh.Faces.AddFace(int(f[0]), int(f[1]), int(f[2]))
+    rh_mesh.Normals.ComputeNormals()
+    rh_mesh.Compact()
+
+    attr = rhino3dm.ObjectAttributes()
+    attr.LayerIndex = 0
+    attr.Name = "casting_merged"
+    out_model.Objects.AddMesh(rh_mesh, attr)
+
+    ok = out_model.Write(path, 7)
+    print(f"  [Casting] 3dm exported: {path} (write OK: {ok})")
