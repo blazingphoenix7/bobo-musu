@@ -979,9 +979,86 @@ def build_displaced_mesh(face_brep, body_brep, fp_img, max_depth, grid_res, mode
         combined_mesh.Normals.Add(nx, ny, nz)
 
     combined_mesh.Compact()
-    print(f"\n  Combined multi-face mesh: {len(combined_mesh.Vertices)} verts, "
-          f"{combined_mesh.Faces.Count} faces")
-    return combined_mesh
+    pre_weld = len(combined_mesh.Vertices)
+
+    # Weld overlapping vertices from adjacent face patches.
+    # With skip_boundary_test, adjacent faces produce overlapping mesh at seams.
+    # Welding merges duplicate vertices within a small tolerance.
+    weld_tol = 0.01  # mm — smaller than fingerprint ridge detail (~0.1mm)
+    verts = []
+    for vi in range(len(combined_mesh.Vertices)):
+        v = combined_mesh.Vertices[vi]
+        verts.append((v.X, v.Y, v.Z))
+
+    # Build spatial hash for fast neighbor lookup
+    inv_tol = 1.0 / weld_tol
+    grid_map = {}
+    remap = list(range(len(verts)))
+
+    for i, (vx, vy, vz) in enumerate(verts):
+        gx, gy, gz = int(vx * inv_tol), int(vy * inv_tol), int(vz * inv_tol)
+        merged = False
+        for dx in (-1, 0, 1):
+            if merged:
+                break
+            for dy in (-1, 0, 1):
+                if merged:
+                    break
+                for dz in (-1, 0, 1):
+                    key = (gx + dx, gy + dy, gz + dz)
+                    if key in grid_map:
+                        for j in grid_map[key]:
+                            ox, oy, oz = verts[j]
+                            if (abs(vx - ox) < weld_tol and
+                                    abs(vy - oy) < weld_tol and
+                                    abs(vz - oz) < weld_tol):
+                                remap[i] = remap[j]
+                                merged = True
+                                break
+                    if merged:
+                        break
+        key = (gx, gy, gz)
+        if key not in grid_map:
+            grid_map[key] = []
+        grid_map[key].append(i)
+
+    # Build compacted mesh with welded vertices
+    unique_map = {}
+    new_idx = 0
+    final_remap = {}
+    welded_mesh = rhino3dm.Mesh()
+    welded_normals = []
+
+    for i in range(len(verts)):
+        canonical = remap[i]
+        if canonical not in unique_map:
+            unique_map[canonical] = new_idx
+            vx, vy, vz = verts[canonical]
+            welded_mesh.Vertices.Add(vx, vy, vz)
+            if canonical < len(combined_normals):
+                welded_normals.append(combined_normals[canonical])
+            new_idx += 1
+        final_remap[i] = unique_map[canonical]
+
+    for fi in range(combined_mesh.Faces.Count):
+        fv = combined_mesh.Faces[fi]
+        a, b, c = final_remap[fv[0]], final_remap[fv[1]], final_remap[fv[2]]
+        if len(fv) == 4 and fv[3] != fv[2]:
+            d = final_remap[fv[3]]
+            if a != b and b != c and a != c:  # skip degenerate
+                welded_mesh.Faces.AddFace(a, b, c, d)
+        else:
+            if a != b and b != c and a != c:
+                welded_mesh.Faces.AddFace(a, b, c)
+
+    for nx, ny, nz in welded_normals:
+        welded_mesh.Normals.Add(nx, ny, nz)
+
+    welded_mesh.Compact()
+    print(f"\n  Combined multi-face mesh: {pre_weld} verts -> "
+          f"{len(welded_mesh.Vertices)} welded ({pre_weld - len(welded_mesh.Vertices)} merged), "
+          f"{welded_mesh.Faces.Count} faces")
+    return welded_mesh
 
 
 # ── Synthetic fingerprint generator (for testing) ────────────────────
