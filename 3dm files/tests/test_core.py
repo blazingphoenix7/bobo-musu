@@ -15,6 +15,7 @@ import numpy as np
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+from PIL import Image
 import rhino3dm
 from fingerprint_displace import (
     PipelineError,
@@ -32,6 +33,7 @@ from fingerprint_displace import (
     _build_displaced_mesh_single_face,
     build_displaced_mesh,
     _pip,
+    preprocess_fingerprint,
 )
 
 
@@ -300,3 +302,60 @@ class TestIntegration:
 
         assert display_mesh is not None
         assert display_mesh.Faces.Count > 0
+
+
+# ── Task 6: Fingerprint Preprocessing ────────────────────────────────
+
+class TestPreprocessFingerprint:
+    def test_output_is_1024x1024(self, tmp_path):
+        """A 200x300 input image should be resized to 1024x1024."""
+        img = Image.fromarray(
+            np.random.randint(0, 256, (300, 200), dtype=np.uint8), mode="L"
+        )
+        p = tmp_path / "fp.png"
+        img.save(str(p))
+        result = preprocess_fingerprint(str(p))
+        assert result.size == (1024, 1024)
+
+    def test_dark_fingerprint_on_light_bg(self, tmp_path):
+        """White background with dark square: result should have non-zero mean."""
+        arr = np.full((200, 200), 240, dtype=np.uint8)
+        arr[70:130, 70:130] = 30
+        img = Image.fromarray(arr, mode="L")
+        p = tmp_path / "fp_light_bg.png"
+        img.save(str(p))
+        result = preprocess_fingerprint(str(p))
+        result_arr = np.array(result)
+        assert result_arr.mean() > 0
+
+    def test_light_fingerprint_on_dark_bg(self, tmp_path):
+        """Dark background with light square: auto-inversion should produce non-zero mean."""
+        arr = np.full((200, 200), 30, dtype=np.uint8)
+        arr[70:130, 70:130] = 240
+        img = Image.fromarray(arr, mode="L")
+        p = tmp_path / "fp_dark_bg.png"
+        img.save(str(p))
+        result = preprocess_fingerprint(str(p))
+        result_arr = np.array(result)
+        assert result_arr.mean() > 0
+
+    def test_custom_target_size(self, tmp_path):
+        """Passing target_size=512 should produce a 512x512 output."""
+        arr = np.random.randint(0, 256, (150, 150), dtype=np.uint8)
+        img = Image.fromarray(arr, mode="L")
+        p = tmp_path / "fp_custom.png"
+        img.save(str(p))
+        result = preprocess_fingerprint(str(p), target_size=512)
+        assert result.size == (512, 512)
+
+    def test_preserves_contrast(self, tmp_path):
+        """Image with clear dark/light regions should have good dynamic range (std > 20)."""
+        arr = np.zeros((200, 200), dtype=np.uint8)
+        arr[:, :100] = 30
+        arr[:, 100:] = 220
+        img = Image.fromarray(arr, mode="L")
+        p = tmp_path / "fp_contrast.png"
+        img.save(str(p))
+        result = preprocess_fingerprint(str(p))
+        result_arr = np.array(result, dtype=np.float64)
+        assert result_arr.std() > 20
