@@ -13,6 +13,13 @@
       "display_name": "Pendant \u2014 2 Zone",
       "description": "Pendant with 2 fingerprint zones",
       "has_gems": true
+    },
+    {
+      "id": "AAP10985F",
+      "filename": "AAP10985F.3dm",
+      "display_name": "Pendant \u2014 3 Zone",
+      "description": "Pendant with 3 fingerprint zones and 48 gems",
+      "has_gems": true
     }
   ]
 }

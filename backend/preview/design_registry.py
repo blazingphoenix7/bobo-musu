@@ -12,7 +12,7 @@ _PIPELINE_DIR = str(settings.BASE_DIR.parent / "3dm files")
 if _PIPELINE_DIR not in sys.path:
     sys.path.insert(0, _PIPELINE_DIR)
 
-from fingerprint_displace import detect_zones, find_zone_face, find_zone_body
+from fingerprint_displace import detect_zones, find_zone_face, find_zone_body, PipelineError
 import rhino3dm
 
 _cache = {}
@@ -80,7 +80,7 @@ def _build_design_info(entry):
         try:
             meta = _detect_zone_metadata(design_path, z)
             zones.append(meta)
-        except SystemExit:
+        except (PipelineError, SystemExit):
             continue
 
     info = {
