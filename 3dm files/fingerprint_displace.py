@@ -224,7 +224,8 @@ def _find_zone_geo_by_textdot(model, zone_num, role):
                   (bb.Min.Z + bb.Max.Z) / 2)
         dist = math.sqrt(sum((a - b) ** 2 for a, b in zip(dot_point, center)))
         thickness = abs(bb.Max.Z - bb.Min.Z)
-        candidates.append((dist, thickness, obj_idx, obj, brep))
+        extent_xy = max(bb.Max.X - bb.Min.X, bb.Max.Y - bb.Min.Y, 0.01)
+        candidates.append((dist, thickness, extent_xy, obj_idx, obj, brep))
 
     if not candidates:
         return None
@@ -233,15 +234,17 @@ def _find_zone_geo_by_textdot(model, zone_num, role):
     candidates.sort(key=lambda c: c[0])
 
     if role == "FACE":
-        # FACE: prefer the thinnest (flattest) geometry among nearby objects
-        nearby = candidates[:min(6, len(candidates))]
-        nearby.sort(key=lambda c: c[1])  # thinnest first
-        return nearby[0][2], nearby[0][3], nearby[0][4]
+        # FACE: prefer large, thin geometry — a zone face should be a broad
+        # surface, not a tiny gem setting prong that happens to be thin.
+        # Score = thickness / XY_extent (lower = flatter and bigger = better).
+        nearby = candidates[:min(10, len(candidates))]
+        nearby.sort(key=lambda c: c[1] / c[2])  # thin+large first
+        return nearby[0][3], nearby[0][4], nearby[0][5]
     else:  # BODY
         # BODY: prefer the thickest geometry among nearby objects
-        nearby = candidates[:min(6, len(candidates))]
+        nearby = candidates[:min(10, len(candidates))]
         nearby.sort(key=lambda c: -c[1])  # thickest first
-        return nearby[0][2], nearby[0][3], nearby[0][4]
+        return nearby[0][3], nearby[0][4], nearby[0][5]
 
 
 def find_zone_face(model, zone_num):
