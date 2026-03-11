@@ -324,11 +324,14 @@ def is_face_untrimmed(face_brep):
     face = face_brep.Faces[0]
     srf = face.UnderlyingSurface()
 
-    # Sample surface corners to get surface BB
+    # Sample a 5x5 UV grid to estimate surface BB (handles curved surfaces)
     du, dv = srf.Domain(0), srf.Domain(1)
     srf_pts = []
-    for u in [du.T0, du.T1]:
-        for v in [dv.T0, dv.T1]:
+    n_samples = 5
+    for ui in range(n_samples):
+        u = du.T0 + (du.T1 - du.T0) * ui / (n_samples - 1)
+        for vi in range(n_samples):
+            v = dv.T0 + (dv.T1 - dv.T0) * vi / (n_samples - 1)
             p = srf.PointAt(u, v)
             srf_pts.append((p.X, p.Y, p.Z))
 
@@ -435,7 +438,7 @@ def extract_trim_boundary(face_brep, n_samples=161, body_brep=None):
     return boundary
 
 
-def pip(px, py, poly):
+def _pip(px, py, poly):
     """Point-in-polygon via ray casting."""
     n = len(poly)
     inside = False
@@ -566,7 +569,7 @@ def _build_displaced_mesh_single_face(face_brep, body_brep, fp_img, max_depth, g
                 grid_nrm[i, j] = [-nm.X, -nm.Y, -nm.Z]
             else:
                 grid_nrm[i, j] = [nm.X, nm.Y, nm.Z]
-            grid_in[i, j] = pip(pt.X, pt.Y, boundary)
+            grid_in[i, j] = _pip(pt.X, pt.Y, boundary)
 
     n_inside = int(np.sum(grid_in))
     print(f"  Inside boundary: {n_inside}/{grid_res ** 2} ({100 * n_inside / grid_res ** 2:.1f}%)")
@@ -1094,7 +1097,7 @@ def _compute_auto_depth(model, zones):
                 zone_depths[z] = max(0.02, min(depth, 1.0))
             else:
                 zone_depths[z] = 0.3
-        except (PipelineError, SystemExit):
+        except PipelineError:
             zone_depths[z] = 0.3
     return zone_depths, zone_thicknesses
 

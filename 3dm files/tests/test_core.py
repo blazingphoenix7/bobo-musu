@@ -31,7 +31,7 @@ from fingerprint_displace import (
     extract_trim_boundary,
     _build_displaced_mesh_single_face,
     build_displaced_mesh,
-    pip,
+    _pip,
 )
 
 
@@ -256,17 +256,17 @@ class TestHelpers:
     def test_pip_inside(self):
         """Point clearly inside a square polygon."""
         poly = [(0, 0), (10, 0), (10, 10), (0, 10)]
-        assert pip(5, 5, poly) is True
+        assert _pip(5, 5, poly) is True
 
     def test_pip_outside(self):
         """Point clearly outside a square polygon."""
         poly = [(0, 0), (10, 0), (10, 10), (0, 10)]
-        assert pip(15, 15, poly) is False
+        assert _pip(15, 15, poly) is False
 
     def test_pip_edge(self):
         """Point on boundary — either result is acceptable."""
         poly = [(0, 0), (10, 0), (10, 10), (0, 10)]
-        result = pip(0, 5, poly)
+        result = _pip(0, 5, poly)
         assert isinstance(result, bool)
 
 
