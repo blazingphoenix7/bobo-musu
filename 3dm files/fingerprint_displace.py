@@ -323,18 +323,32 @@ def find_zone_body(model, zone_num):
 
 
 def is_face_untrimmed(face_brep):
-    """Detect if a FACE Brep is untrimmed (face BB ~ surface BB, ratio > 0.95).
+    """Detect if a FACE Brep is untrimmed (full surface, not zone-trimmed).
 
     An untrimmed face has edges that match the full underlying surface domain,
     meaning the FACE edges are NOT a useful trim boundary.
+
+    Uses two checks:
+    1. Edge count: an untrimmed rectangular surface domain has exactly 4 edges.
+       Trimmed surfaces have different edge counts (P246 has 2, PDG040 has 3).
+    2. BB ratio: face bounding box must closely match surface bounding box.
+
+    Both must be satisfied to avoid false positives on curved trimmed surfaces
+    where the face happens to cover most of the underlying surface.
     """
     if len(face_brep.Faces) == 0:
+        return False
+
+    # Check 1: Edge count. Untrimmed = exactly 4 edges (UV domain boundaries).
+    # Trimmed surfaces have != 4 edges (P246 teardrop has 2, PDG040 slices have 3).
+    n_edges = len(face_brep.Edges)
+    if n_edges != 4 and n_edges != 0:
         return False
 
     face = face_brep.Faces[0]
     srf = face.UnderlyingSurface()
 
-    # Sample a 5x5 UV grid to estimate surface BB (handles curved surfaces)
+    # Check 2: BB ratio. Sample a 5x5 UV grid to estimate surface BB.
     du, dv = srf.Domain(0), srf.Domain(1)
     srf_pts = []
     n_samples = 5
@@ -352,7 +366,6 @@ def is_face_untrimmed(face_brep):
     face_min = [face_bb.Min.X, face_bb.Min.Y, face_bb.Min.Z]
     face_max = [face_bb.Max.X, face_bb.Max.Y, face_bb.Max.Z]
 
-    # Compare extents on each axis
     for axis in range(3):
         srf_extent = srf_max[axis] - srf_min[axis]
         face_extent = face_max[axis] - face_min[axis]
