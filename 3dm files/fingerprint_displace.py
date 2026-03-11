@@ -17,11 +17,20 @@ Dependencies (conda env bobomusu):
 import argparse
 import math
 import os
+import re
 import sys
 import numpy as np
 from PIL import Image, ImageFilter
 from scipy.ndimage import distance_transform_edt
 import rhino3dm
+
+
+# ── Exception ────────────────────────────────────────────────────────
+
+class PipelineError(Exception):
+    """Raised when the displacement pipeline encounters a recoverable error."""
+    pass
+
 
 # ── Helpers ──────────────────────────────────────────────────────────
 
@@ -33,9 +42,30 @@ def _find_layer_index(model, layer_name):
     return None
 
 
-def detect_zones(model):
-    """Auto-detect all FP_ZONE_N_FACE layers and return sorted zone numbers."""
-    import re
+def _to_brep(geo):
+    """Convert a geometry object to a Brep if possible.
+
+    Handles:
+      - Brep (ObjectType 16): returned as-is
+      - Surface / NurbsSurface (ObjectType 8): converted via .ToBrep()
+    Returns the Brep, or None if conversion fails.
+    """
+    if hasattr(geo, "Faces"):
+        return geo  # Already a Brep
+    if hasattr(geo, "ToBrep"):
+        try:
+            brep = geo.ToBrep()
+            if brep is not None and hasattr(brep, "Faces"):
+                return brep
+        except Exception:
+            pass
+    return None
+
+
+# ── Zone Discovery (Task 1) ──────────────────────────────────────────
+
+def _detect_zones_fp_convention(model):
+    """Strategy 1: Detect zones from FP_ZONE_N_FACE layer naming convention."""
     zones = []
     for i in range(len(model.Layers)):
         m = re.match(r"FP_ZONE_(\d+)_FACE", model.Layers[i].Name)
@@ -44,42 +74,342 @@ def detect_zones(model):
     return sorted(zones)
 
 
-def find_zone_face(model, zone_num):
-    """Return (object_index, object, brep) for the FACE on FP_ZONE_{zone_num}_FACE."""
-    layer_name = f"FP_ZONE_{zone_num}_FACE"
+def _detect_zones_textdot(model):
+    """Strategy 2: Detect zones from TextDot labels.
+
+    Matches patterns like:
+      - "Zone 1", "Zone 2" (simple labels)
+      - "FP_ZONE_1_FACE", "FP_ZONE_2_BODY" (convention labels as TextDots)
+    """
+    zones = []
+    for obj in model.Objects:
+        geo = obj.Geometry
+        if isinstance(geo, rhino3dm.TextDot):
+            text = geo.Text if hasattr(geo, "Text") else ""
+            # Try "FP_ZONE_N_..." pattern first
+            m = re.match(r"FP_ZONE_(\d+)", text)
+            if m:
+                zones.append(int(m.group(1)))
+                continue
+            # Try "Zone N" pattern
+            m = re.match(r"(?i)zone\s*(\d+)", text)
+            if m:
+                zones.append(int(m.group(1)))
+    return sorted(set(zones))
+
+
+def _detect_zones_fuzzy_layers(model):
+    """Strategy 3: Detect zones from layers containing 'zone' or 'fp' with numbers."""
+    zones = []
+    for i in range(len(model.Layers)):
+        name = model.Layers[i].Name.lower()
+        if "zone" in name or "fp" in name:
+            nums = re.findall(r"\d+", model.Layers[i].Name)
+            if nums:
+                zones.append(int(nums[0]))
+    return sorted(set(zones))
+
+
+def detect_zones(model):
+    """Auto-detect all zone numbers using a multi-strategy discovery system.
+
+    Strategies (tried in order):
+    1. FP_ZONE_N_FACE layer convention (primary, existing)
+    2. TextDot labels ("Zone 1", "Zone 2", etc.)
+    3. Layer names containing 'zone' or 'fp' with numbers (fuzzy fallback)
+
+    Returns sorted list of zone numbers.
+    """
+    # Strategy 1: FP_ZONE convention (primary path)
+    zones = _detect_zones_fp_convention(model)
+    if zones:
+        return zones
+
+    # Strategy 2: TextDot labels
+    zones = _detect_zones_textdot(model)
+    if zones:
+        return zones
+
+    # Strategy 3: Fuzzy layer name matching
+    zones = _detect_zones_fuzzy_layers(model)
+    if zones:
+        return zones
+
+    return []
+
+
+# ── Zone Geometry Finders (Task 2) ───────────────────────────────────
+
+def _find_zone_geo_on_layer(model, layer_name):
+    """Find the first Brep-compatible geometry on a named layer.
+
+    Tries both Brep (ObjectType 16) and Surface (ObjectType 8) objects,
+    converting Surface -> Brep via _to_brep().
+
+    Returns (obj_idx, obj, brep) or None.
+    """
     layer_idx = _find_layer_index(model, layer_name)
     if layer_idx is None:
-        sys.exit(f"ERROR: Layer '{layer_name}' not found.\n"
-                 f"  Available: {[model.Layers[i].Name for i in range(len(model.Layers))]}")
+        return None
     for obj_idx, obj in enumerate(model.Objects):
         if obj.Attributes.LayerIndex == layer_idx:
             geo = obj.Geometry
-            if hasattr(geo, "Faces"):
-                return obj_idx, obj, geo
-    sys.exit(f"ERROR: No Brep found on layer '{layer_name}'")
+            brep = _to_brep(geo)
+            if brep is not None:
+                return obj_idx, obj, brep
+    return None
+
+
+def _find_zone_geo_by_textdot(model, zone_num, role):
+    """Find zone geometry near a TextDot labeled for this zone.
+
+    Matches TextDots with labels like:
+      - "FP_ZONE_N_FACE" / "FP_ZONE_N_BODY" (exact role match preferred)
+      - "Zone N" (generic)
+
+    role: 'FACE' or 'BODY' — used to pick the closest object with the
+    appropriate characteristics (FACE = top surface, BODY = thicker solid).
+
+    Returns (obj_idx, obj, brep) or None.
+    """
+    # Find the TextDot for this zone + role
+    dot_point = None
+    for obj in model.Objects:
+        geo = obj.Geometry
+        if isinstance(geo, rhino3dm.TextDot):
+            text = geo.Text if hasattr(geo, "Text") else ""
+            # Prefer exact "FP_ZONE_N_FACE" or "FP_ZONE_N_BODY" match
+            m = re.match(r"FP_ZONE_(\d+)_(\w+)", text)
+            if m and int(m.group(1)) == zone_num and m.group(2).upper() == role:
+                pt = geo.Point
+                dot_point = (pt.X, pt.Y, pt.Z)
+                break
+    # Fallback: generic "Zone N" label
+    if dot_point is None:
+        for obj in model.Objects:
+            geo = obj.Geometry
+            if isinstance(geo, rhino3dm.TextDot):
+                text = geo.Text if hasattr(geo, "Text") else ""
+                m = re.match(r"(?i)zone\s*(\d+)", text)
+                if m and int(m.group(1)) == zone_num:
+                    pt = geo.Point
+                    dot_point = (pt.X, pt.Y, pt.Z)
+                    break
+
+    if dot_point is None:
+        return None
+
+    # Collect all Brep-compatible objects near the dot
+    candidates = []
+    for obj_idx, obj in enumerate(model.Objects):
+        geo = obj.Geometry
+        if isinstance(geo, rhino3dm.TextDot):
+            continue
+        brep = _to_brep(geo)
+        if brep is None:
+            continue
+        bb = brep.GetBoundingBox()
+        center = ((bb.Min.X + bb.Max.X) / 2,
+                  (bb.Min.Y + bb.Max.Y) / 2,
+                  (bb.Min.Z + bb.Max.Z) / 2)
+        dist = math.sqrt(sum((a - b) ** 2 for a, b in zip(dot_point, center)))
+        thickness = abs(bb.Max.Z - bb.Min.Z)
+        candidates.append((dist, thickness, obj_idx, obj, brep))
+
+    if not candidates:
+        return None
+
+    # Sort by distance to the TextDot
+    candidates.sort(key=lambda c: c[0])
+
+    if role == "FACE":
+        # FACE: prefer the thinnest (flattest) geometry among nearby objects
+        nearby = candidates[:min(6, len(candidates))]
+        nearby.sort(key=lambda c: c[1])  # thinnest first
+        return nearby[0][2], nearby[0][3], nearby[0][4]
+    else:  # BODY
+        # BODY: prefer the thickest geometry among nearby objects
+        nearby = candidates[:min(6, len(candidates))]
+        nearby.sort(key=lambda c: -c[1])  # thickest first
+        return nearby[0][2], nearby[0][3], nearby[0][4]
+
+
+def find_zone_face(model, zone_num):
+    """Return (object_index, object, brep) for the FACE of a zone.
+
+    Tries in order:
+    1. FP_ZONE_N_FACE layer convention
+    2. TextDot-based geometry association
+    3. Fuzzy layer name matching
+
+    Raises PipelineError if not found.
+    """
+    # Strategy 1: FP_ZONE convention
+    result = _find_zone_geo_on_layer(model, f"FP_ZONE_{zone_num}_FACE")
+    if result is not None:
+        return result
+
+    # Strategy 2: TextDot association
+    result = _find_zone_geo_by_textdot(model, zone_num, "FACE")
+    if result is not None:
+        return result
+
+    # Strategy 3: Fuzzy layer names
+    for i in range(len(model.Layers)):
+        name = model.Layers[i].Name
+        name_lower = name.lower()
+        if ("zone" in name_lower or "fp" in name_lower) and "face" in name_lower:
+            nums = re.findall(r"\d+", name)
+            if nums and int(nums[0]) == zone_num:
+                res = _find_zone_geo_on_layer(model, name)
+                if res is not None:
+                    return res
+
+    available = [model.Layers[i].Name for i in range(len(model.Layers))]
+    raise PipelineError(
+        f"Zone {zone_num} FACE not found. "
+        f"Tried FP_ZONE_{zone_num}_FACE layer, TextDot labels, and fuzzy layer matching. "
+        f"Available layers: {available}"
+    )
 
 
 def find_zone_body(model, zone_num):
-    """Return (object_index, object, brep) for the BODY on FP_ZONE_{zone_num}_BODY."""
-    layer_name = f"FP_ZONE_{zone_num}_BODY"
-    layer_idx = _find_layer_index(model, layer_name)
-    if layer_idx is None:
-        sys.exit(f"ERROR: Layer '{layer_name}' not found.\n"
-                 f"  Available: {[model.Layers[i].Name for i in range(len(model.Layers))]}")
-    for obj_idx, obj in enumerate(model.Objects):
-        if obj.Attributes.LayerIndex == layer_idx:
-            geo = obj.Geometry
-            if hasattr(geo, "Faces"):
-                return obj_idx, obj, geo
-    sys.exit(f"ERROR: No Brep found on layer '{layer_name}'")
+    """Return (object_index, object, brep) for the BODY of a zone.
+
+    Tries in order:
+    1. FP_ZONE_N_BODY layer convention
+    2. TextDot-based geometry association
+    3. Fuzzy layer name matching
+
+    Raises PipelineError if not found.
+    """
+    # Strategy 1: FP_ZONE convention
+    result = _find_zone_geo_on_layer(model, f"FP_ZONE_{zone_num}_BODY")
+    if result is not None:
+        return result
+
+    # Strategy 2: TextDot association
+    result = _find_zone_geo_by_textdot(model, zone_num, "BODY")
+    if result is not None:
+        return result
+
+    # Strategy 3: Fuzzy layer names
+    for i in range(len(model.Layers)):
+        name = model.Layers[i].Name
+        name_lower = name.lower()
+        if ("zone" in name_lower or "fp" in name_lower) and "body" in name_lower:
+            nums = re.findall(r"\d+", name)
+            if nums and int(nums[0]) == zone_num:
+                res = _find_zone_geo_on_layer(model, name)
+                if res is not None:
+                    return res
+
+    available = [model.Layers[i].Name for i in range(len(model.Layers))]
+    raise PipelineError(
+        f"Zone {zone_num} BODY not found. "
+        f"Tried FP_ZONE_{zone_num}_BODY layer, TextDot labels, and fuzzy layer matching. "
+        f"Available layers: {available}"
+    )
 
 
-def extract_trim_boundary(face_brep, n_samples=161):
-    """Extract the trim boundary from a single-face FACE Brep.
+def is_face_untrimmed(face_brep):
+    """Detect if a FACE Brep is untrimmed (face BB ~ surface BB, ratio > 0.95).
+
+    An untrimmed face has edges that match the full underlying surface domain,
+    meaning the FACE edges are NOT a useful trim boundary.
+    """
+    if len(face_brep.Faces) == 0:
+        return False
+
+    face = face_brep.Faces[0]
+    srf = face.UnderlyingSurface()
+
+    # Sample surface corners to get surface BB
+    du, dv = srf.Domain(0), srf.Domain(1)
+    srf_pts = []
+    for u in [du.T0, du.T1]:
+        for v in [dv.T0, dv.T1]:
+            p = srf.PointAt(u, v)
+            srf_pts.append((p.X, p.Y, p.Z))
+
+    srf_min = [min(p[i] for p in srf_pts) for i in range(3)]
+    srf_max = [max(p[i] for p in srf_pts) for i in range(3)]
+
+    face_bb = face_brep.GetBoundingBox()
+    face_min = [face_bb.Min.X, face_bb.Min.Y, face_bb.Min.Z]
+    face_max = [face_bb.Max.X, face_bb.Max.Y, face_bb.Max.Z]
+
+    # Compare extents on each axis
+    for axis in range(3):
+        srf_extent = srf_max[axis] - srf_min[axis]
+        face_extent = face_max[axis] - face_min[axis]
+        if srf_extent > 0.001:
+            ratio = face_extent / srf_extent
+            if ratio < 0.95:
+                return False
+
+    return True
+
+
+def _extract_boundary_from_body(body_brep, n_samples=161):
+    """Extract the top-Z edges of a BODY Brep as an XY boundary.
+
+    Used when the FACE is untrimmed (dome surface) and its edges don't
+    represent the actual trim boundary. The BODY's top-Z edges define
+    the real zone outline.
+    """
+    body_bb = body_brep.GetBoundingBox()
+    top_z = body_bb.Max.Z
+    z_tol = abs(body_bb.Max.Z - body_bb.Min.Z) * 0.05
+    if z_tol < 0.01:
+        z_tol = 0.01
+
+    boundary = []
+    for ei in range(len(body_brep.Edges)):
+        edge = body_brep.Edges[ei]
+        t0, t1 = edge.Domain.T0, edge.Domain.T1
+        # Check if edge midpoint is near the top Z
+        mid_t = (t0 + t1) / 2
+        mid_p = edge.PointAt(mid_t)
+        if abs(mid_p.Z - top_z) > z_tol:
+            continue
+        # Sample this edge (projected to XY)
+        for ti in range(n_samples):
+            t = t0 + (t1 - t0) * ti / (n_samples - 1)
+            p = edge.PointAt(t)
+            if abs(p.Z - top_z) <= z_tol:
+                boundary.append((p.X, p.Y))
+
+    if not boundary:
+        # Fallback to body bounding box
+        return [
+            (body_bb.Min.X, body_bb.Min.Y),
+            (body_bb.Max.X, body_bb.Min.Y),
+            (body_bb.Max.X, body_bb.Max.Y),
+            (body_bb.Min.X, body_bb.Max.Y),
+        ]
+
+    # Order by angle around centroid
+    bcx = sum(p[0] for p in boundary) / len(boundary)
+    bcy = sum(p[1] for p in boundary) / len(boundary)
+    boundary.sort(key=lambda p: math.atan2(p[1] - bcy, p[0] - bcx))
+    return boundary
+
+
+def extract_trim_boundary(face_brep, n_samples=161, body_brep=None):
+    """Extract the trim boundary from a FACE Brep.
+
+    If body_brep is provided and the face is untrimmed (dome surface),
+    uses the BODY's top-Z edges as the boundary instead.
 
     The FACE Brep's edges ARE the trim boundary — no Z-filtering needed.
     Works for both planar and curved faces.
     """
+    # Task 4: If face is untrimmed and we have a BODY, use BODY boundary
+    if body_brep is not None and is_face_untrimmed(face_brep):
+        print("  Using BODY boundary (face is untrimmed)")
+        return _extract_boundary_from_body(body_brep, n_samples)
+
     boundary = []
     for ei in range(len(face_brep.Edges)):
         edge = face_brep.Edges[ei]
@@ -162,20 +492,21 @@ def preprocess_fingerprint(img_path, target_size=1024):
 
 # ── Main pipeline ────────────────────────────────────────────────────
 
-def build_displaced_mesh(face_brep, body_brep, fp_img, max_depth, grid_res, mode,
-                         feather_cells=10, watertight=False,
-                         global_cx=None, global_cy=None, global_scale=None,
-                         fp_natural_width=None):
-    """Build a displaced fingerprint mesh from the FACE Brep.
+def _build_displaced_mesh_single_face(face_brep, body_brep, fp_img, max_depth, grid_res, mode,
+                                      feather_cells=10, watertight=False,
+                                      global_cx=None, global_cy=None, global_scale=None,
+                                      fp_natural_width=None, face_index=0):
+    """Build a displaced fingerprint mesh from a single face of a FACE Brep.
 
-    face_brep: single-face Brep from FP_ZONE_N_FACE (face index always 0)
+    face_brep: Brep from FP_ZONE_N_FACE
     body_brep: open polysurface Brep from FP_ZONE_N_BODY (used for thickness)
-    fp_natural_width: If set (mm), maps fingerprint at natural physical scale
-                      rather than stretching to fill the entire zone.
-                      A typical adult fingerprint is ~17mm wide.
+    face_index: which face of face_brep to process (default 0 for backward compat)
+    fp_natural_width: If set (mm), maps fingerprint at natural physical scale.
                       None = legacy behaviour (fill zone edge-to-edge).
+
+    Raises PipelineError on failure.
     """
-    face = face_brep.Faces[0]
+    face = face_brep.Faces[face_index]
     srf = face.UnderlyingSurface()
     du, dv = srf.Domain(0), srf.Domain(1)
     reversed_n = face.OrientationIsReversed
@@ -209,8 +540,8 @@ def build_displaced_mesh(face_brep, body_brep, fp_img, max_depth, grid_res, mode
 
     print(f"  UV range: U=[{fu_min:.4f}, {fu_max:.4f}], V=[{fv_min:.4f}, {fv_max:.4f}]")
 
-    # Trim boundary from FACE edges
-    boundary = extract_trim_boundary(face_brep)
+    # Trim boundary from FACE edges (Task 4: pass body_brep for untrimmed detection)
+    boundary = extract_trim_boundary(face_brep, body_brep=body_brep)
     print(f"  Trim boundary: {len(boundary)} points")
 
     # Fingerprint as float [0,1]
@@ -241,7 +572,7 @@ def build_displaced_mesh(face_brep, body_brep, fp_img, max_depth, grid_res, mode
     print(f"  Inside boundary: {n_inside}/{grid_res ** 2} ({100 * n_inside / grid_res ** 2:.1f}%)")
 
     if n_inside == 0:
-        sys.exit("ERROR: No grid points inside the trim boundary. Check boundary extraction.")
+        raise PipelineError("No grid points inside the trim boundary. Check boundary extraction.")
 
     # Zone centroid and scale for fingerprint mapping
     inside_pts = grid_pts[grid_in]
@@ -346,8 +677,8 @@ def build_displaced_mesh(face_brep, body_brep, fp_img, max_depth, grid_res, mode
                 pt[2] + nm[2] * disp,
             )
             # Vertex normals: front face should point outward from the solid.
-            # In emboss: front is the displaced (outer) face → normal = surface normal
-            # In engrave: front is the displaced (inner) face → normal = -surface normal
+            # In emboss: front is the displaced (outer) face -> normal = surface normal
+            # In engrave: front is the displaced (inner) face -> normal = -surface normal
             if mode == "engrave":
                 vertex_normals.append((-nm[0], -nm[1], -nm[2]))
             else:
@@ -485,7 +816,7 @@ def build_displaced_mesh(face_brep, body_brep, fp_img, max_depth, grid_res, mode
         for fv1, fv2 in boundary_edges:
             bv1 = fv1 + 1
             bv2 = fv2 + 1
-            # Side wall quad: front edge → back edge (shared vertices)
+            # Side wall quad: front edge -> back edge (shared vertices)
             if flip:
                 # Engrave: front is below back, reverse winding
                 mesh.Faces.AddFace(bv1, bv2, fv2, fv1)
@@ -502,6 +833,114 @@ def build_displaced_mesh(face_brep, body_brep, fp_img, max_depth, grid_res, mode
 
     mesh.Compact()
     return mesh
+
+
+def build_displaced_mesh(face_brep, body_brep, fp_img, max_depth, grid_res, mode,
+                         feather_cells=10, watertight=False,
+                         global_cx=None, global_cy=None, global_scale=None,
+                         fp_natural_width=None):
+    """Build a displaced fingerprint mesh from the FACE Brep.
+
+    Supports multi-face Breps (Task 3): when face_brep has more than one face,
+    each face is processed independently with resolution allocated proportionally
+    by face area, and meshes are combined.
+
+    For single-face Breps, produces identical results to the original code.
+
+    Raises PipelineError on failure.
+    """
+    n_faces = len(face_brep.Faces)
+
+    if n_faces <= 1:
+        # Single-face: backward-compatible path
+        return _build_displaced_mesh_single_face(
+            face_brep, body_brep, fp_img, max_depth, grid_res, mode,
+            feather_cells=feather_cells, watertight=watertight,
+            global_cx=global_cx, global_cy=global_cy, global_scale=global_scale,
+            fp_natural_width=fp_natural_width, face_index=0,
+        )
+
+    # Multi-face Brep: process each face independently
+    print(f"  Multi-face Brep detected: {n_faces} faces")
+
+    # Compute face areas for proportional resolution allocation
+    face_areas = []
+    for fi in range(n_faces):
+        face = face_brep.Faces[fi]
+        sub_brep = face.DuplicateFace(False)
+        bb = sub_brep.GetBoundingBox()
+        # Approximate area from bounding box (good enough for proportional allocation)
+        area = ((bb.Max.X - bb.Min.X) * (bb.Max.Y - bb.Min.Y) +
+                (bb.Max.X - bb.Min.X) * (bb.Max.Z - bb.Min.Z) +
+                (bb.Max.Y - bb.Min.Y) * (bb.Max.Z - bb.Min.Z))
+        face_areas.append(max(area, 0.001))
+
+    total_area = sum(face_areas)
+    min_res = max(20, grid_res // 5)
+
+    # Combine meshes from all faces
+    combined_mesh = rhino3dm.Mesh()
+    combined_normals = []
+    vertex_offset = 0
+
+    for fi in range(n_faces):
+        # Allocate resolution proportionally by face area
+        face_frac = face_areas[fi] / total_area
+        face_res = max(min_res, int(round(grid_res * math.sqrt(face_frac))))
+        print(f"\n  --- Face {fi}/{n_faces} (area fraction: {face_frac:.2f}, res: {face_res}) ---")
+
+        # Create a sub-brep for this face
+        sub_brep = face_brep.Faces[fi].DuplicateFace(False)
+
+        try:
+            sub_mesh = _build_displaced_mesh_single_face(
+                sub_brep, body_brep, fp_img, max_depth, face_res, mode,
+                feather_cells=feather_cells, watertight=watertight,
+                global_cx=global_cx, global_cy=global_cy, global_scale=global_scale,
+                fp_natural_width=fp_natural_width, face_index=0,
+            )
+        except PipelineError as e:
+            print(f"  Face {fi} skipped: {e}")
+            continue
+
+        # Merge sub_mesh into combined_mesh
+        n_sub_verts = len(sub_mesh.Vertices)
+        for vi in range(n_sub_verts):
+            v = sub_mesh.Vertices[vi]
+            combined_mesh.Vertices.Add(v.X, v.Y, v.Z)
+
+        for ni in range(len(sub_mesh.Normals)):
+            n = sub_mesh.Normals[ni]
+            combined_normals.append((n.X, n.Y, n.Z))
+
+        for fci in range(sub_mesh.Faces.Count):
+            face_verts = sub_mesh.Faces[fci]
+            if len(face_verts) == 4 and face_verts[3] != face_verts[2]:
+                combined_mesh.Faces.AddFace(
+                    face_verts[0] + vertex_offset,
+                    face_verts[1] + vertex_offset,
+                    face_verts[2] + vertex_offset,
+                    face_verts[3] + vertex_offset,
+                )
+            else:
+                combined_mesh.Faces.AddFace(
+                    face_verts[0] + vertex_offset,
+                    face_verts[1] + vertex_offset,
+                    face_verts[2] + vertex_offset,
+                )
+
+        vertex_offset += n_sub_verts
+
+    if combined_mesh.Faces.Count == 0:
+        raise PipelineError("No faces produced any mesh in multi-face Brep processing.")
+
+    for nx, ny, nz in combined_normals:
+        combined_mesh.Normals.Add(nx, ny, nz)
+
+    combined_mesh.Compact()
+    print(f"\n  Combined multi-face mesh: {len(combined_mesh.Vertices)} verts, "
+          f"{combined_mesh.Faces.Count} faces")
+    return combined_mesh
 
 
 # ── Synthetic fingerprint generator (for testing) ────────────────────
@@ -655,7 +1094,7 @@ def _compute_auto_depth(model, zones):
                 zone_depths[z] = max(0.02, min(depth, 1.0))
             else:
                 zone_depths[z] = 0.3
-        except SystemExit:
+        except (PipelineError, SystemExit):
             zone_depths[z] = 0.3
     return zone_depths, zone_thicknesses
 
@@ -748,7 +1187,7 @@ Examples:
     # ── Auto-detect all zones ──
     zones_to_process = detect_zones(model)
     if not zones_to_process:
-        sys.exit("ERROR: No FP_ZONE_N_FACE layers found in the model.")
+        sys.exit("ERROR: No zones found in the model (tried FP_ZONE layers, TextDots, and fuzzy matching).")
     print(f"\n  Auto-detected {len(zones_to_process)} zone(s): {zones_to_process}")
 
     # ── Auto-compute depth if not specified ──
@@ -827,8 +1266,12 @@ Examples:
                 "face_brep": face_brep,
                 "body_brep": body_brep,
             }
-        except (SystemExit, Exception) as e:
+        except PipelineError as e:
             print(f"  ERROR: Zone {zone_num} failed: {e}")
+            failed_zones.append(zone_num)
+            continue
+        except Exception as e:
+            print(f"  ERROR: Zone {zone_num} failed unexpectedly: {e}")
             failed_zones.append(zone_num)
             continue
 

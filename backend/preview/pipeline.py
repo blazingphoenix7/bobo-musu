@@ -22,13 +22,9 @@ from fingerprint_displace import (
     detect_zones,
     process_zone,
     export_stl,
+    PipelineError,
 )
 import rhino3dm
-
-
-class PipelineError(Exception):
-    """Raised when the displacement pipeline fails."""
-    pass
 
 
 # ── Base mesh extraction (Problem 1) ──────────────────────────────
@@ -526,8 +522,8 @@ def generate_preview_stl(
                     global_scale=global_scale,
                     fp_natural_width=fp_natural_width,
                 )
-            except SystemExit as e:
-                raise PipelineError(f"Zone {zone_num} processing failed: {e}")
+            except PipelineError:
+                raise
             except Exception as e:
                 raise PipelineError(f"Zone {zone_num} processing failed: {e}")
 
