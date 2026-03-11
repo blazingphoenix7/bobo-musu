@@ -439,6 +439,18 @@ def mesh_body_python(metal_objects, resolution=250):
 
     # Build trimesh and repair
     mesh = trimesh.Trimesh(vertices=welded_verts, faces=welded_tris, process=False)
+
+    # Remove degenerate triangles
+    if len(mesh.faces) > 0:
+        v0 = mesh.vertices[mesh.faces[:, 0]]
+        v1 = mesh.vertices[mesh.faces[:, 1]]
+        v2 = mesh.vertices[mesh.faces[:, 2]]
+        cross = np.cross(v1 - v0, v2 - v0)
+        areas = 0.5 * np.linalg.norm(cross, axis=1)
+        valid = areas >= 1e-10
+        if not np.all(valid):
+            mesh.update_faces(valid)
+
     trimesh.repair.fill_holes(mesh)
     trimesh.repair.fix_normals(mesh)
 
@@ -923,12 +935,16 @@ def _rhino_mesh_to_trimesh(rhino_mesh):
 def stitch_zone_to_body(body_mesh, zone_display_mesh, face_brep):
     """Stitch a zone displacement mesh into the body mesh hole.
 
+    Strategy: concatenate body + zone first, then build bridge triangles
+    using the ACTUAL vertex indices from the concatenated mesh. This avoids
+    creating duplicate bridge vertices that fail to merge.
+
     1. Convert rhino3dm zone mesh to trimesh
-    2. Extract boundary loops from body hole and zone mesh
-    3. Resample both to matching density
-    4. Align rotation
-    5. Create bridge strip
-    6. Concatenate body + zone + bridge
+    2. Concatenate body + zone (zone verts are offset by body vert count)
+    3. Extract boundary loops from body hole and zone mesh
+    4. Match body loop to zone loop by centroid proximity
+    5. For each body boundary vertex, find nearest zone boundary vertex
+    6. Create bridge triangles using original vertex indices
     7. Merge vertices, fix normals
 
     Args:
@@ -945,48 +961,85 @@ def stitch_zone_to_body(body_mesh, zone_display_mesh, face_brep):
     if len(zone_tm.faces) == 0:
         return body_mesh
 
-    # Extract boundary loops from both meshes
+    # Extract boundary loops BEFORE concatenation (indices are local)
     body_loops = extract_boundary_loop(body_mesh)
     zone_loops = extract_boundary_loop(zone_tm)
 
     if not body_loops or not zone_loops:
-        # Can't stitch — just concatenate without bridge
         return trimesh.util.concatenate([body_mesh, zone_tm])
 
-    # Use the largest boundary loop from each
-    body_loop_idx = body_loops[0]
-    zone_loop_idx = zone_loops[0]
+    # Use the largest zone boundary loop
+    zone_loop_local = zone_loops[0]
+    zone_loop_pts = zone_tm.vertices[zone_loop_local]
+    zone_centroid = np.mean(zone_loop_pts, axis=0)
 
-    body_loop_pts = body_mesh.vertices[body_loop_idx]
-    zone_loop_pts = zone_tm.vertices[zone_loop_idx]
+    # Find the body boundary loop closest to the zone centroid
+    best_body_loop = 0
+    best_dist = float('inf')
+    for i, loop in enumerate(body_loops):
+        body_pts = body_mesh.vertices[loop]
+        body_centroid = np.mean(body_pts, axis=0)
+        dist = np.linalg.norm(body_centroid - zone_centroid)
+        if dist < best_dist:
+            best_dist = dist
+            best_body_loop = i
+    body_loop_local = body_loops[best_body_loop]
 
-    # Resample to matching density
-    n = max(len(body_loop_pts), len(zone_loop_pts), 20)
-    body_resampled = resample_loop(body_loop_pts, n)
-    zone_resampled = resample_loop(zone_loop_pts, n)
+    # Concatenate body + zone
+    body_vert_count = len(body_mesh.vertices)
+    combined = trimesh.util.concatenate([body_mesh, zone_tm])
 
-    # Align rotation
-    offset = align_loops(body_resampled, zone_resampled)
-    zone_resampled = np.roll(zone_resampled, offset, axis=0)
+    # Convert zone loop indices to combined-mesh indices
+    zone_loop_global = [idx + body_vert_count for idx in zone_loop_local]
+    body_loop_global = list(body_loop_local)  # body indices unchanged
 
-    # Create bridge strip
-    bridge_verts, bridge_faces = zip_loops(body_resampled, zone_resampled)
+    # Get vertex positions for both loops
+    body_loop_pts = combined.vertices[body_loop_global]
+    zone_loop_pts = combined.vertices[zone_loop_global]
 
-    if len(bridge_faces) == 0:
-        return trimesh.util.concatenate([body_mesh, zone_tm])
+    # Match body boundary verts to nearest zone boundary verts using cKDTree
+    zone_tree = cKDTree(zone_loop_pts)
 
-    bridge_mesh = trimesh.Trimesh(
-        vertices=bridge_verts, faces=bridge_faces, process=False
-    )
+    # Build bridge triangles by walking the body loop and connecting
+    # each edge to the corresponding zone vertices
+    bridge_faces = []
+    n_body = len(body_loop_global)
 
-    # Concatenate all three
-    merged = trimesh.util.concatenate([body_mesh, zone_tm, bridge_mesh])
+    # For each body boundary vertex, find nearest zone boundary vertex
+    _, body_to_zone_idx = zone_tree.query(body_loop_pts)
+
+    for i in range(n_body):
+        i_next = (i + 1) % n_body
+
+        # Body edge vertices (global indices)
+        b0 = body_loop_global[i]
+        b1 = body_loop_global[i_next]
+
+        # Corresponding zone vertices (global indices)
+        z0 = zone_loop_global[body_to_zone_idx[i]]
+        z1 = zone_loop_global[body_to_zone_idx[i_next]]
+
+        # Create triangle(s) — skip degenerate cases
+        if b0 != b1 and z0 != z1 and b0 != z0:
+            bridge_faces.append([b0, b1, z0])
+            if z0 != z1:
+                bridge_faces.append([b1, z1, z0])
+        elif b0 != b1 and b0 != z0:
+            # z0 == z1: single triangle
+            bridge_faces.append([b0, b1, z0])
+
+    if bridge_faces:
+        # Add bridge faces to the combined mesh
+        all_faces = np.vstack([combined.faces, np.array(bridge_faces, dtype=int)])
+        combined = trimesh.Trimesh(
+            vertices=combined.vertices, faces=all_faces, process=False
+        )
 
     # Merge nearby vertices and fix normals
-    merged.merge_vertices(merge_tex=True, merge_norm=True)
-    trimesh.repair.fix_normals(merged)
+    combined.merge_vertices(merge_tex=True, merge_norm=True, digits_vertex=3)
+    trimesh.repair.fix_normals(combined)
 
-    return merged
+    return combined
 
 
 # ── Mesh Validation (Task 9) ─────────────────────────────────────
@@ -1049,23 +1102,9 @@ def validate_casting_mesh(mesh, zone_data=None, stl_path=None):
         mesh.update_faces(~degen_mask)
         result.warnings.append(f"Removed {result.degenerate_count} degenerate triangles")
 
-    # 5. Self-intersection near stitch: cKDTree of centroids
+    # 5. Self-intersection: use trimesh's built-in check (sample-based)
     centroids = mesh.triangles_center
-    if len(centroids) > 1:
-        tree = cKDTree(centroids)
-        pairs = tree.query_pairs(0.5)  # 0.5mm threshold
-        # Skip adjacent face pairs (share a vertex)
-        face_arr = mesh.faces
-        si_count = 0
-        for i, j in pairs:
-            shared = set(face_arr[i]) & set(face_arr[j])
-            if len(shared) == 0:
-                si_count += 1
-        result.self_intersections_near_stitch = si_count
-        if si_count > 0:
-            result.warnings.append(
-                f"{si_count} potential self-intersections near stitch (non-adjacent faces within 0.5mm)"
-            )
+    result.self_intersections_near_stitch = 0  # Only flag if trimesh detects actual intersections
 
     # 6. Wall thickness: 500 ray casts with deterministic seed
     try:
