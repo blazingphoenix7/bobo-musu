@@ -99,15 +99,25 @@ def _detect_zones_textdot(model):
 
 
 def _detect_zones_fuzzy_layers(model):
-    """Strategy 3: Detect zones from layers containing 'zone' or 'fp' with numbers."""
-    zones = []
+    """Strategy 3: Detect zones from layers containing 'zone' or 'fp' with numbers.
+
+    Only registers a zone if the matched layer actually contains geometry,
+    to avoid false positives from empty annotation layers.
+    """
+    zones = set()
     for i in range(len(model.Layers)):
         name = model.Layers[i].Name.lower()
         if "zone" in name or "fp" in name:
             nums = re.findall(r"\d+", model.Layers[i].Name)
             if nums:
-                zones.append(int(nums[0]))
-    return sorted(set(zones))
+                layer_idx = model.Layers[i].Index
+                has_geo = any(
+                    obj.Attributes.LayerIndex == layer_idx
+                    for obj in model.Objects
+                )
+                if has_geo:
+                    zones.add(int(nums[0]))
+    return sorted(zones)
 
 
 def detect_zones(model):
