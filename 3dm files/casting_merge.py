@@ -1,11 +1,12 @@
 """
-Casting-Ready STL Pipeline — Object Classification & Body Mesher
+Casting-Ready STL Pipeline — Object Classification, Body Mesher,
+Zone Hole Cutting & Boundary Loop Extraction
 ================================================================
 Classifies .3dm objects into metal body vs excluded (gems, annotations,
-zone faces) and meshes the metal body into a trimesh.Trimesh for
-downstream hole-cutting and stitching.
+zone faces), meshes the metal body into a trimesh.Trimesh, cuts zone holes
+for fingerprint stitching, and extracts boundary loops from mesh edges.
 
-Part of the casting-ready STL pipeline (Tasks 2 & 3).
+Part of the casting-ready STL pipeline (Tasks 2, 3, 5, 6, 7).
 """
 
 import re
@@ -13,6 +14,10 @@ import re
 import numpy as np
 import rhino3dm
 import trimesh
+from scipy.spatial import cKDTree
+from shapely.geometry import Polygon, Point as ShapelyPoint
+
+from fingerprint_displace import extract_trim_boundary_3d, is_face_untrimmed
 
 
 # ── Regex patterns for gem / layer detection ─────────────────────────
@@ -434,3 +439,318 @@ def mesh_body_python(metal_objects, resolution=250):
     trimesh.repair.fix_normals(mesh)
 
     return mesh
+
+
+# ── Zone hole cutting (Task 5) ───────────────────────────────────
+
+def _build_surface_uv_index(face_brep, grid_res=50):
+    """Pre-sample a FACE surface on a UV grid and build a cKDTree for fast lookups.
+
+    Returns:
+        (tree, uv_coords_Nx2, points_3d_Nx3, normals_3d_Nx3)
+    """
+    face = face_brep.Faces[0]
+    srf = face.UnderlyingSurface()
+    ud, vd = srf.Domain(0), srf.Domain(1)
+    reversed_n = face.OrientationIsReversed
+
+    u_vals = np.linspace(ud.T0, ud.T1, grid_res)
+    v_vals = np.linspace(vd.T0, vd.T1, grid_res)
+
+    n_pts = grid_res * grid_res
+    uv_coords = np.zeros((n_pts, 2))
+    points_3d = np.zeros((n_pts, 3))
+    normals_3d = np.zeros((n_pts, 3))
+
+    idx = 0
+    for i, u in enumerate(u_vals):
+        for j, v in enumerate(v_vals):
+            pt = srf.PointAt(u, v)
+            nm = srf.NormalAt(u, v)
+            uv_coords[idx] = [u, v]
+            points_3d[idx] = [pt.X, pt.Y, pt.Z]
+            if reversed_n:
+                normals_3d[idx] = [-nm.X, -nm.Y, -nm.Z]
+            else:
+                normals_3d[idx] = [nm.X, nm.Y, nm.Z]
+            idx += 1
+
+    tree = cKDTree(points_3d)
+    return tree, uv_coords, points_3d, normals_3d
+
+
+def _extract_largest_polygon(geom):
+    """Recursively extract the largest Polygon from any Shapely geometry."""
+    if geom is None or geom.is_empty:
+        return None
+    if geom.geom_type == 'Polygon':
+        return geom
+    if hasattr(geom, 'geoms'):
+        candidates = []
+        for g in geom.geoms:
+            p = _extract_largest_polygon(g)
+            if p is not None and p.area > 0:
+                candidates.append(p)
+        if candidates:
+            return max(candidates, key=lambda p: p.area)
+    return None
+
+
+def _build_uv_boundary_polygon(face_brep, n_samples=161, body_brep=None):
+    """Build a Shapely Polygon of the zone boundary in UV space.
+
+    1. Get 3D boundary points via extract_trim_boundary_3d
+    2. Project to UV via high-res cKDTree (grid_res=150 for accuracy)
+    3. Deduplicate consecutive UV points
+    4. Construct Shapely Polygon, make_valid if invalid
+    """
+    from shapely.validation import make_valid
+
+    boundary_3d = extract_trim_boundary_3d(face_brep, n_samples=n_samples,
+                                           body_brep=body_brep)
+    if len(boundary_3d) < 3:
+        return None
+
+    # Use high-res cKDTree for accurate 3D→UV projection
+    tree, uv_coords, _pts3d, _normals = _build_surface_uv_index(face_brep, grid_res=150)
+    boundary_pts_3d = np.array(boundary_3d)
+    _dists, indices = tree.query(boundary_pts_3d)
+    uv_raw = uv_coords[indices]
+
+    # Deduplicate consecutive UV points (within tolerance)
+    tol = 1e-6
+    deduped = [uv_raw[0]]
+    for i in range(1, len(uv_raw)):
+        du = uv_raw[i][0] - deduped[-1][0]
+        dv = uv_raw[i][1] - deduped[-1][1]
+        if du * du + dv * dv > tol * tol:
+            deduped.append(uv_raw[i])
+
+    if len(deduped) < 3:
+        return None
+
+    # Build polygon
+    poly = Polygon(deduped)
+    if not poly.is_valid:
+        poly = make_valid(poly)
+
+    # Extract the largest Polygon from any compound geometry
+    poly = _extract_largest_polygon(poly)
+    if poly is None or poly.is_empty or poly.area <= 0:
+        return None
+    return poly
+
+
+def _get_face_average_normal(face_brep):
+    """Sample normal at 5x5 grid on face surface, return mean unit normal."""
+    face = face_brep.Faces[0]
+    srf = face.UnderlyingSurface()
+    ud, vd = srf.Domain(0), srf.Domain(1)
+    reversed_n = face.OrientationIsReversed
+
+    normals = []
+    for ui in range(5):
+        u = ud.T0 + (ud.T1 - ud.T0) * ui / 4
+        for vi in range(5):
+            v = vd.T0 + (vd.T1 - vd.T0) * vi / 4
+            nm = srf.NormalAt(u, v)
+            if reversed_n:
+                normals.append([-nm.X, -nm.Y, -nm.Z])
+            else:
+                normals.append([nm.X, nm.Y, nm.Z])
+
+    avg = np.mean(normals, axis=0)
+    norm = np.linalg.norm(avg)
+    if norm < 1e-12:
+        return np.array([0.0, 0.0, 1.0])
+    return avg / norm
+
+
+def cut_zone_hole(body_mesh, face_brep, body_brep=None):
+    """Remove body mesh triangles within zone boundary.
+
+    Uses 2D projected containment with Z-depth disambiguation to avoid
+    cutting through the back of a two-sided piece.
+
+    Strategy:
+    1. Get 3D boundary from face_brep, project to dominant 2D plane
+    2. Build cKDTree of FACE surface for distance + normal checks
+    3. For each body mesh triangle centroid:
+       a. Bounding box reject
+       b. Distance to surface < threshold
+       c. Z-depth: normal dot product (skip back-facing)
+       d. 2D projected point-in-polygon containment
+
+    Args:
+        body_mesh: trimesh.Trimesh of the metal body
+        face_brep: rhino3dm.Brep of the zone FACE surface
+        body_brep: optional rhino3dm.Brep of the zone BODY (for untrimmed faces)
+
+    Returns:
+        trimesh.Trimesh with hole cut where the zone was
+    """
+    if len(body_mesh.faces) == 0:
+        return body_mesh
+
+    # Step 1: Get 3D boundary and project to dominant 2D plane
+    boundary_3d = extract_trim_boundary_3d(face_brep, body_brep=body_brep)
+    if len(boundary_3d) < 3:
+        return body_mesh
+
+    bnd_arr = np.array(boundary_3d)
+    face_normal = _get_face_average_normal(face_brep)
+    ax_a, ax_b = _get_dominant_axes(face_normal)
+
+    # Build 2D boundary polygon for containment
+    boundary_2d = [(pt[ax_a], pt[ax_b]) for pt in boundary_3d]
+    boundary_poly = Polygon(boundary_2d)
+    if not boundary_poly.is_valid:
+        from shapely.validation import make_valid
+        boundary_poly = make_valid(boundary_poly)
+        boundary_poly = _extract_largest_polygon(boundary_poly)
+    if boundary_poly is None or boundary_poly.is_empty or boundary_poly.area <= 0:
+        return body_mesh
+
+    # Step 2: Build surface cKDTree for distance + normal queries
+    tree, _uv_coords, pts_3d, normals_3d = _build_surface_uv_index(face_brep, grid_res=80)
+
+    # Step 3: Compute triangle centroids
+    verts = body_mesh.vertices
+    faces = body_mesh.faces
+    centroids = verts[faces].mean(axis=1)  # (N, 3)
+
+    # Step 4: Bounding-box reject
+    face_bb = face_brep.GetBoundingBox()
+    bb_min = np.array([face_bb.Min.X, face_bb.Min.Y, face_bb.Min.Z])
+    bb_max = np.array([face_bb.Max.X, face_bb.Max.Y, face_bb.Max.Z])
+    pad = 3.0  # generous padding in mm
+
+    in_bb = np.all(centroids >= bb_min - pad, axis=1) & np.all(centroids <= bb_max + pad, axis=1)
+    candidate_indices = np.where(in_bb)[0]
+
+    if len(candidate_indices) == 0:
+        return body_mesh
+
+    # Step 5: Batch cKDTree query on candidates
+    candidate_centroids = centroids[candidate_indices]
+    dists, nearest_idx = tree.query(candidate_centroids)
+
+    # Step 6: Per-candidate tests
+    keep_mask = np.ones(len(faces), dtype=bool)
+
+    for ci in range(len(candidate_indices)):
+        tri_idx = candidate_indices[ci]
+        dist = dists[ci]
+        nn = nearest_idx[ci]
+
+        # Distance to surface check (< 2mm)
+        if dist > 2.0:
+            continue
+
+        # Z-depth disambiguation: normal dot product
+        surf_pt = pts_3d[nn]
+        to_centroid = candidate_centroids[ci] - surf_pt
+        to_centroid_norm = np.linalg.norm(to_centroid)
+        if to_centroid_norm > 1e-10:
+            to_centroid_dir = to_centroid / to_centroid_norm
+        else:
+            to_centroid_dir = np.zeros(3)
+
+        surf_normal = normals_3d[nn]
+        dot = np.dot(surf_normal, to_centroid_dir)
+        # If centroid is behind the surface (dot < -0.3), skip — it's the back
+        if dot < -0.3:
+            continue
+
+        # 2D projected containment test
+        cx, cy = candidate_centroids[ci][ax_a], candidate_centroids[ci][ax_b]
+        if boundary_poly.contains(ShapelyPoint(cx, cy)):
+            keep_mask[tri_idx] = False
+
+    # Apply mask
+    kept_faces = faces[keep_mask]
+    if len(kept_faces) == 0:
+        return trimesh.Trimesh()
+
+    result = trimesh.Trimesh(vertices=verts, faces=kept_faces, process=True)
+    return result
+
+
+# ── Boundary loop extraction (Task 7) ────────────────────────────
+
+def extract_boundary_loop(mesh):
+    """Extract ordered boundary edge loops from a mesh.
+
+    Finds edges shared by exactly 1 face (boundary edges), then traces
+    connected loops via edge-adjacency. Tracks visited EDGES (not just
+    vertices) to avoid subtle loop-tracing bugs.
+
+    Args:
+        mesh: trimesh.Trimesh
+
+    Returns:
+        List of loops, each a list of vertex indices. Sorted by length
+        (largest first).
+    """
+    if len(mesh.faces) == 0:
+        return []
+
+    # Step 1: Find boundary edges (shared by exactly 1 face)
+    edge_face_count = {}
+    for face in mesh.faces:
+        edges = [
+            tuple(sorted((face[0], face[1]))),
+            tuple(sorted((face[1], face[2]))),
+            tuple(sorted((face[0], face[2]))),
+        ]
+        for e in edges:
+            edge_face_count[e] = edge_face_count.get(e, 0) + 1
+
+    boundary_edges = set()
+    for e, count in edge_face_count.items():
+        if count == 1:
+            boundary_edges.add(e)
+
+    if not boundary_edges:
+        return []
+
+    # Step 2: Build adjacency from boundary edges
+    adjacency = {}
+    for a, b in boundary_edges:
+        adjacency.setdefault(a, []).append(b)
+        adjacency.setdefault(b, []).append(a)
+
+    # Step 3: Trace loops using edge tracking
+    visited_edges = set()
+    loops = []
+
+    for start_edge in boundary_edges:
+        if start_edge in visited_edges:
+            continue
+
+        # Start from first vertex of an unvisited edge
+        a, b = start_edge
+        loop = [a]
+        visited_edges.add(start_edge)
+        current = b
+
+        while current != a:
+            loop.append(current)
+            neighbors = adjacency.get(current, [])
+            moved = False
+            for nxt in neighbors:
+                edge_key = tuple(sorted((current, nxt)))
+                if edge_key not in visited_edges and edge_key in boundary_edges:
+                    visited_edges.add(edge_key)
+                    current = nxt
+                    moved = True
+                    break
+            if not moved:
+                break  # dead end (non-manifold edge)
+
+        if len(loop) >= 3:
+            loops.append(loop)
+
+    # Sort by length (largest first)
+    loops.sort(key=len, reverse=True)
+    return loops

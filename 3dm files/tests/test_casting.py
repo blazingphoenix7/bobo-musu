@@ -1,4 +1,4 @@
-"""Tests for the casting-ready STL pipeline — object classification & body mesher."""
+"""Tests for the casting-ready STL pipeline — classification, meshing, hole cutting, loops."""
 
 import os
 import sys
@@ -18,6 +18,11 @@ from casting_merge import (
     _pip_2d,
     _weld_vertices,
     _mesh_single_brep_face,
+    _build_surface_uv_index,
+    _build_uv_boundary_polygon,
+    _get_face_average_normal,
+    cut_zone_hole,
+    extract_boundary_loop,
     is_gem_instance,
     classify_objects,
     mesh_body_python,
@@ -286,3 +291,191 @@ class TestBodyMesher:
         metal, _ = classify_objects(pdg040_model)
         mesh = mesh_body_python(metal, resolution=250)
         assert isinstance(mesh, tm.Trimesh)
+
+
+# ── TestZoneHoleCutting (Task 5) ───────────────────────────────────
+
+class TestZoneHoleCutting:
+    """Test zone hole cutting on body meshes."""
+
+    def test_cut_removes_triangles_pdg040(self, pdg040_model):
+        """Cutting zone 1 should remove some triangles from PDG040 body."""
+        metal, _ = classify_objects(pdg040_model)
+        mesh = mesh_body_python(metal, resolution=250)
+        orig_count = len(mesh.faces)
+
+        zones = detect_zones(pdg040_model)
+        zone = zones[0]
+        _, _, face_brep = find_zone_face(pdg040_model, zone)
+        _, _, body_brep = find_zone_body(pdg040_model, zone)
+        assert face_brep is not None
+
+        result = cut_zone_hole(mesh, face_brep, body_brep=body_brep)
+        assert len(result.faces) < orig_count, \
+            f"Expected fewer faces after cut, got {len(result.faces)} vs {orig_count}"
+
+    def test_cut_doesnt_remove_everything(self, pdg040_model):
+        """Cutting a zone should leave most of the body intact."""
+        metal, _ = classify_objects(pdg040_model)
+        mesh = mesh_body_python(metal, resolution=250)
+        orig_count = len(mesh.faces)
+
+        zones = detect_zones(pdg040_model)
+        zone = zones[0]
+        _, _, face_brep = find_zone_face(pdg040_model, zone)
+        _, _, body_brep = find_zone_body(pdg040_model, zone)
+        assert face_brep is not None
+
+        result = cut_zone_hole(mesh, face_brep, body_brep=body_brep)
+        assert len(result.faces) > orig_count * 0.3, \
+            f"Cut removed too many triangles: {len(result.faces)} of {orig_count}"
+
+    def test_surface_uv_index_shape(self, pdg040_model):
+        """_build_surface_uv_index should return correctly shaped arrays."""
+        zones = detect_zones(pdg040_model)
+        zone = zones[0]
+        _, _, face_brep = find_zone_face(pdg040_model, zone)
+        assert face_brep is not None
+
+        tree, uv, pts, normals = _build_surface_uv_index(face_brep, grid_res=20)
+        assert uv.shape == (400, 2)
+        assert pts.shape == (400, 3)
+        assert normals.shape == (400, 3)
+
+    def test_uv_boundary_polygon_valid(self, pdg040_model):
+        """_build_uv_boundary_polygon should return a valid Shapely polygon."""
+        zones = detect_zones(pdg040_model)
+        zone = zones[0]
+        _, _, face_brep = find_zone_face(pdg040_model, zone)
+        _, _, body_brep = find_zone_body(pdg040_model, zone)
+        assert face_brep is not None
+
+        poly = _build_uv_boundary_polygon(face_brep, body_brep=body_brep)
+        assert poly is not None, "UV boundary polygon should not be None"
+        assert poly.is_valid, "UV boundary polygon should be valid"
+        assert poly.area > 0, "UV boundary polygon should have positive area"
+
+    def test_face_average_normal_unit(self, pdg040_model):
+        """_get_face_average_normal should return a unit vector."""
+        zones = detect_zones(pdg040_model)
+        zone = zones[0]
+        _, _, face_brep = find_zone_face(pdg040_model, zone)
+        assert face_brep is not None
+
+        n = _get_face_average_normal(face_brep)
+        assert abs(np.linalg.norm(n) - 1.0) < 1e-6, \
+            f"Expected unit normal, got magnitude {np.linalg.norm(n)}"
+
+
+# ── TestZDepthDisambiguation (Task 6) ─────────────────────────────
+
+class TestZDepthDisambiguation:
+    """Test that hole cutting respects Z-depth — doesn't cut through the back."""
+
+    def test_aap_zone1_front_doesnt_cut_back(self, aap_model):
+        """Zone 1 is one side — should remove less than half the mesh."""
+        metal, _ = classify_objects(aap_model)
+        mesh = mesh_body_python(metal, resolution=250)
+        orig_count = len(mesh.faces)
+
+        zones = detect_zones(aap_model)
+        if not zones:
+            pytest.skip("No zones detected in AAP model")
+
+        zone = zones[0]
+        _, _, face_brep = find_zone_face(aap_model, zone)
+        _, _, body_brep = find_zone_body(aap_model, zone)
+        if face_brep is None:
+            pytest.skip("Zone 1 face not found in AAP model")
+
+        result = cut_zone_hole(mesh, face_brep, body_brep=body_brep)
+        removed = orig_count - len(result.faces)
+        assert removed < orig_count * 0.5, \
+            f"Zone 1 removed {removed} of {orig_count} faces ({removed/orig_count:.1%}) — should be < 50%"
+
+    def test_aap_zone2_back_doesnt_cut_front(self, aap_model):
+        """Zone 2 is small back lobe — should remove < 30%."""
+        metal, _ = classify_objects(aap_model)
+        mesh = mesh_body_python(metal, resolution=250)
+        orig_count = len(mesh.faces)
+
+        zones = detect_zones(aap_model)
+        if len(zones) < 2:
+            pytest.skip("Zone 2 not found in AAP model")
+
+        zone = zones[1]
+        _, _, face_brep = find_zone_face(aap_model, zone)
+        _, _, body_brep = find_zone_body(aap_model, zone)
+        if face_brep is None:
+            pytest.skip("Zone 2 face not found in AAP model")
+
+        result = cut_zone_hole(mesh, face_brep, body_brep=body_brep)
+        removed = orig_count - len(result.faces)
+        assert removed < orig_count * 0.3, \
+            f"Zone 2 removed {removed} of {orig_count} faces ({removed/orig_count:.1%}) — should be < 30%"
+
+
+# ── TestBoundaryLoopExtraction (Task 7) ───────────────────────────
+
+class TestBoundaryLoopExtraction:
+    """Test boundary loop extraction from meshes with holes."""
+
+    def test_extracts_loop_from_mesh_with_hole(self, pdg040_model):
+        """Cut a hole, extract loops — largest should have >= 10 vertices."""
+        metal, _ = classify_objects(pdg040_model)
+        mesh = mesh_body_python(metal, resolution=250)
+
+        zones = detect_zones(pdg040_model)
+        zone = zones[0]
+        _, _, face_brep = find_zone_face(pdg040_model, zone)
+        _, _, body_brep = find_zone_body(pdg040_model, zone)
+        assert face_brep is not None
+
+        cut_mesh = cut_zone_hole(mesh, face_brep, body_brep=body_brep)
+        loops = extract_boundary_loop(cut_mesh)
+
+        assert len(loops) >= 1, "Should find at least one boundary loop"
+        assert len(loops[0]) >= 10, \
+            f"Largest loop has only {len(loops[0])} vertices, expected >= 10"
+
+    def test_loop_forms_connected_chain(self, pdg040_model):
+        """Consecutive loop vertices should have small gaps (< 2mm)."""
+        metal, _ = classify_objects(pdg040_model)
+        mesh = mesh_body_python(metal, resolution=250)
+
+        zones = detect_zones(pdg040_model)
+        zone = zones[0]
+        _, _, face_brep = find_zone_face(pdg040_model, zone)
+        _, _, body_brep = find_zone_body(pdg040_model, zone)
+        assert face_brep is not None
+
+        cut_mesh = cut_zone_hole(mesh, face_brep, body_brep=body_brep)
+        loops = extract_boundary_loop(cut_mesh)
+
+        assert len(loops) >= 1, "Should find at least one boundary loop"
+        loop = loops[0]
+        verts = cut_mesh.vertices
+
+        for i in range(len(loop)):
+            v_curr = verts[loop[i]]
+            v_next = verts[loop[(i + 1) % len(loop)]]
+            gap = np.linalg.norm(v_curr - v_next)
+            assert gap < 2.0, \
+                f"Gap between loop vertices {loop[i]} and {loop[(i+1)%len(loop)]} is {gap:.3f}mm (> 2mm)"
+
+    def test_closed_mesh_has_no_boundary_loops(self):
+        """A closed mesh (sphere) should have no boundary loops."""
+        import trimesh as tm
+        sphere = tm.creation.icosphere(subdivisions=2, radius=5.0)
+        loops = extract_boundary_loop(sphere)
+        assert len(loops) == 0, f"Closed mesh should have 0 loops, got {len(loops)}"
+
+    def test_open_mesh_has_boundary_loop(self):
+        """A simple open mesh (single triangle) should have a boundary loop."""
+        import trimesh as tm
+        verts = np.array([[0, 0, 0], [1, 0, 0], [0.5, 1, 0]], dtype=float)
+        faces = np.array([[0, 1, 2]], dtype=int)
+        mesh = tm.Trimesh(vertices=verts, faces=faces, process=False)
+        loops = extract_boundary_loop(mesh)
+        assert len(loops) == 1, f"Single triangle should have 1 loop, got {len(loops)}"
+        assert len(loops[0]) == 3, f"Loop should have 3 vertices, got {len(loops[0])}"
