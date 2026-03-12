@@ -440,7 +440,10 @@ def mesh_body_python(metal_objects, resolution=250):
     # Build trimesh and repair
     mesh = trimesh.Trimesh(vertices=welded_verts, faces=welded_tris, process=False)
 
-    # Remove degenerate triangles
+    trimesh.repair.fill_holes(mesh)
+    trimesh.repair.fix_normals(mesh)
+
+    # Remove degenerate triangles (after repair, which can introduce them)
     if len(mesh.faces) > 0:
         v0 = mesh.vertices[mesh.faces[:, 0]]
         v1 = mesh.vertices[mesh.faces[:, 1]]
@@ -450,9 +453,6 @@ def mesh_body_python(metal_objects, resolution=250):
         valid = areas >= 1e-10
         if not np.all(valid):
             mesh.update_faces(valid)
-
-    trimesh.repair.fill_holes(mesh)
-    trimesh.repair.fix_normals(mesh)
 
     return mesh
 
